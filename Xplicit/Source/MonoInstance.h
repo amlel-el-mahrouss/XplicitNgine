@@ -54,7 +54,7 @@ namespace Xplicit
 	class XPLICIT_API MonoScriptInstance : public Instance
 	{
 	public:
-		MonoScriptInstance(const char* filename);
+		MonoScriptInstance(const char* filename, bool can_fail);
 		virtual ~MonoScriptInstance();
 
 		MonoScriptInstance& operator=(const MonoScriptInstance&) = default;

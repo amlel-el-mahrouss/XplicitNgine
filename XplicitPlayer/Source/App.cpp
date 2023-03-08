@@ -61,7 +61,7 @@ namespace Xplicit::App
 		if (!net)
 			return false;
 
-		GenericPacket packet_spawn{};
+		NetworkPacket packet_spawn{};
 		packet_spawn.CMD = NETWORK_CMD_BEGIN;
 
 		net->send(packet_spawn);
@@ -82,6 +82,7 @@ namespace Xplicit::App
 		if (setup_network(net))
 		{
 			InstanceManager::get_singleton_ptr()->add<Xplicit::CameraInstance>();
+			InstanceManager::get_singleton_ptr()->add<Xplicit::LocalPlayerInstance>(0);
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::LocalPlayerMoveEvent>();
 		}
 	}

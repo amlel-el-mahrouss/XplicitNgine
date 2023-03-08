@@ -39,7 +39,7 @@ namespace Xplicit
 
 		auto pos = cam->get()->getPosition();
 
-		GenericPacket packet{ };
+		NetworkPacket packet{ };
 
 		packet.CMD = NETWORK_CMD_POS;
 

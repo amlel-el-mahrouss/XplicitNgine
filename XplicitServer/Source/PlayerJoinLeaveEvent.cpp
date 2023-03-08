@@ -14,7 +14,10 @@
 
 namespace Xplicit
 {
-	static void xplicit_join_event(NetworkClient cl, ActorInstance* actor, NetworkServerInstance* server, int64_t counter)
+	static void xplicit_join_event(NetworkClient& cl, 
+		ActorInstance* actor, 
+		NetworkServerInstance* server, 
+		int64_t& counter)
 	{
 		actor->set(cl.addr);
 		actor->set(counter);
@@ -23,45 +26,46 @@ namespace Xplicit
 		cl.packet.ID = actor->id();
 
 		server->send();
+
+		++counter;
 	}
+
+	PlayerJoinLeaveEvent::PlayerJoinLeaveEvent() : m_id_counter(0) {}
+	PlayerJoinLeaveEvent::~PlayerJoinLeaveEvent() {}
 
 	void PlayerJoinLeaveEvent::operator()()
 	{
+		// the main logic for the join and leave event.
+		// here we simply handle player logic.
+
 		this->on_join();
 		this->on_leave();
+
 	}
 
 	bool PlayerJoinLeaveEvent::on_join() noexcept
 	{
-		// check for the instance manager.
-		if (!InstanceManager::get_singleton_ptr())
-			return false;
-
-		auto server_event = EventDispatcher::get_singleton_ptr()->find<NetworkServerEvent>("NetworkServerEvent");
-		if (!server_event) return false;
-
 		auto server = InstanceManager::get_singleton_ptr()->find<NetworkServerInstance>("NetworkServerInstance");
-		if (!server) return false;
+
+		if (!server) 
+			return false;
 
 		for (size_t i = 0; i < server->size(); i++)
 		{
-			auto cl = server->get(i);
-
-			if (cl.packet.CMD == NETWORK_CMD_BEGIN)
+			if (server->get(i).packet.CMD == NETWORK_CMD_BEGIN)
 			{
 				auto actors = InstanceManager::get_singleton_ptr()->find_all<ActorInstance>("ActorInstance");
 
 				for (size_t y = 0; y < actors.size(); y++)
 				{
-					if (actors[y]->sockaddr().sin_addr.S_un.S_addr == cl.addr.sin_addr.S_un.S_addr)
+					if (actors[y]->sockaddr().sin_addr.S_un.S_addr == server->get(i).addr.sin_addr.S_un.S_addr)
 						return false;
 
 					if (actors[y]->sockaddr().sin_addr.S_un.S_addr == 0)
 					{
-						xplicit_join_event(cl, actors[y], server, m_id_counter);
-						++m_id_counter;
+						xplicit_join_event(server->get(i), actors[y], server, m_id_counter);
 
-						XPLICIT_INFO("Reused exisiting actor..");
+						XPLICIT_INFO("[ACTOR] Actor.Update");
 
 						return true;
 					}
@@ -72,8 +76,9 @@ namespace Xplicit
 				if (!actor)
 					throw std::runtime_error("OutOfMemory: Could not allocate further actors!");
 
-				xplicit_join_event(cl, actor, server, m_id_counter);
-				++m_id_counter;
+				xplicit_join_event(server->get(i), actor, server, m_id_counter);
+
+				XPLICIT_INFO("[ACTOR] Actor.New");
 
 				return true;
 			}
@@ -86,7 +91,8 @@ namespace Xplicit
 	{
 		auto server = InstanceManager::get_singleton_ptr()->find<NetworkServerInstance>("NetworkServerInstance");
 
-		if (!server) return false;
+		if (!server) 
+			return false;
 
 		for (size_t i = 0; i < server->size(); i++)
 		{
@@ -98,12 +104,15 @@ namespace Xplicit
 				{
 					if (actors[y]->sockaddr().sin_addr.S_un.S_addr == server->get(i).addr.sin_addr.S_un.S_addr)
 					{
-						server->get(i).packet.CMD = NETWORK_CMD_INVALID;
-						server->get(i).packet.ID = -1;
-
 						actors[y]->reset();
+						server->get(i).reset();
 
+						// decrement the entity counter
 						--m_id_counter;
+
+#ifndef _NDEBUG
+						XPLICIT_INFO("[ACTOR] Actor.Remove");
+#endif
 
 						return true;
 					}

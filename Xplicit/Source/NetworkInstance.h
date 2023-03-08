@@ -73,16 +73,16 @@ namespace Xplicit {
         virtual void update() override;
 
         bool connect(const char* ip);
-        bool send(GenericPacket& cmd);
-        bool read(GenericPacket& packet);
+        bool send(NetworkPacket& cmd);
+        bool read(NetworkPacket& packet);
 
-        GenericPacket get() noexcept { return m_packet; }
+        NetworkPacket get() noexcept { return m_packet; }
 
     private:
         SOCKET m_socket;
 
     private:
-        GenericPacket m_packet;
+        NetworkPacket m_packet;
 
     private:
         struct sockaddr_in m_tmp_inaddr; // temp var.

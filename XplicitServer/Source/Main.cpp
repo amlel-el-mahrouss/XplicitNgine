@@ -12,7 +12,6 @@
 
 #include "PlayerJoinLeaveEvent.h"
 
-static void xplicit_update_position(Xplicit::NetworkServerEvent* env, Xplicit::NetworkServerInstance* server);
 static void xplicit_attach_mono();
 static void xplicit_load_cfg();
 
@@ -96,8 +95,6 @@ static void xplicit_load_cfg()
 	}
 }
 
-// Load the C# DLL 'Xplicit.dll' to let other programs run.
-
 static void xplicit_attach_mono()
 {
 	auto mono = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoEngineInstance>();
@@ -113,7 +110,7 @@ static void xplicit_attach_mono()
 	// we need a script instance, in order to create classes.
 	// a script instance is literally a context for our plugin engine.
 
-	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(path.c_str());
+	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(path.c_str(), false);
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::MonoUpdateEvent>();
 }
 
@@ -125,19 +122,23 @@ static void xplicit_create_common()
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerActorEvent>();
 }
 
+// our main entrypoint.
 int main(int argc, char** argv)
 {
 	try
 	{
+		// init winsock
 		WSADATA wsa;
 		Xplicit::init_winsock(&wsa);
 
+		// create a NULL device.
 		Xplicit::Application::get_singleton().set(irr::createDevice(irr::video::EDT_NULL));
 
 		// the address is located in the XPLICIT_SERVER_ADDR variable.
 		char* addr = getenv("XPLICIT_SERVER_ADDR");
 
-		if (!addr) return 1;
+		if (!addr)
+			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR not found!");
 
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkServerEvent>(server);
@@ -164,6 +165,9 @@ int main(int argc, char** argv)
 		XPLICIT_CIRITICAL(msg);
 #endif
 
+#ifdef __XPLICIT_WINDOWS
+		MessageBoxA(nullptr, msg.c_str(), "FATAL!", MB_OK);
+#endif
 		return -1;
 	}
 	catch (Xplicit::NetworkError err)
@@ -173,6 +177,10 @@ int main(int argc, char** argv)
 		msg += "A network Error occured, application will now quit..";
 
 		XPLICIT_CIRITICAL(msg);
+#endif
+
+#ifdef __XPLICIT_WINDOWS
+		MessageBoxA(nullptr, msg.c_str(), "FATAL!", MB_OK);
 #endif
 
 		return -1;

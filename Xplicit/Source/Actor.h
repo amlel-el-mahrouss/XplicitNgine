@@ -55,12 +55,12 @@ namespace Xplicit
 		ActorInstance(const ActorInstance&) = default;
 
 	public:
-		int16_t& health() noexcept;
-		void reset() noexcept;
-		int64_t id() noexcept;
+		int16_t& health() noexcept; // gets the health of the actor.
+		void reset() noexcept; // reset and reserve actor for future usage
+		int64_t id() noexcept; // gets it's id, assigned by a system.
 		
-		ActorPos& get_pos();
-		NETWORK_CMD get_cmd() const;
+		ActorPos& get_pos(); // gets its position
+		NETWORK_CMD get_cmd() const; // it's current network command.
 
 		virtual const char* name() noexcept override;
 		virtual INSTANCE_TYPE type() noexcept override;
@@ -104,13 +104,7 @@ namespace Xplicit
 		NetworkActorEvent(const NetworkActorEvent&) = default;
 
 		virtual const char* name() noexcept { return ("NetworkActorEvent"); }
-
-		void add(const std::function<void(ActorInstance*)>& fn);
-
 		virtual void operator()();
-
-	private:
-		std::vector<std::function<void(ActorInstance*)>> m_functions;
 
 	};
 
@@ -125,12 +119,7 @@ namespace Xplicit
 
 		virtual const char* name() noexcept { return ("PlayerActorEvent"); }
 
-		void add(const std::function<void(ActorInstance*)>& fn);
-
 		virtual void operator()();
-
-	private:
-		std::vector<std::function<void(ActorInstance*)>> m_functions;
 
 	};
 
@@ -145,12 +134,7 @@ namespace Xplicit
 
 		virtual const char* name() noexcept { return ("ActorPhysicsEvent"); }
 
-		void add(const std::function<void(ActorInstance*)>& fn);
-
 		virtual void operator()();
-
-	private:
-		std::vector<std::function<void(ActorInstance*)>> m_functions;
 
 	};
 }

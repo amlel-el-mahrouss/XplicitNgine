@@ -235,7 +235,7 @@ namespace Xplicit
 	MonoDomain* MonoEngineInstance::domain() noexcept { return m_app_domain; }
 
 	// Script Instance constructor
-	MonoScriptInstance::MonoScriptInstance(const char* filename)
+	MonoScriptInstance::MonoScriptInstance(const char* filename, bool can_fail)
 		: m_filename(filename), m_assembly(nullptr)
 	{
 		this->m_engine_ref = InstanceManager::get_singleton_ptr()->find<MonoEngineInstance>("MonoEngineInstance");
@@ -243,7 +243,9 @@ namespace Xplicit
 
 		// Get the C# assembly.
 		m_assembly = this->m_engine_ref->open(this->m_filename.c_str());
-		assert(m_assembly);
+
+		if (!m_assembly && !can_fail)
+			throw std::runtime_error("MonoScriptInstance: Couldn't load C# DLL..");
 	}
 
 	// destructor

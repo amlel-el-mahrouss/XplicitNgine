@@ -66,6 +66,8 @@ namespace Xplicit
 		}
 	}
 
+	size_t NetworkServerInstance::size() noexcept { return m_clients.size(); }
+	NetworkClient& NetworkServerInstance::get(size_t idx) noexcept { return m_clients[idx]; }
 
 	const char* NetworkServerInstance::name() noexcept { return ("NetworkServerInstance"); }
 
@@ -104,14 +106,13 @@ namespace Xplicit
 				for (size_t i = 0; i < instance->m_clients.size(); i++)
 				{
 					::sendto(instance->m_socket, (const char*)&
-						instance->m_clients[i].packet, sizeof(GenericPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, sizeof(struct sockaddr_in));
+						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, sizeof(struct sockaddr_in));
 				}
 				
 				instance->m_send = false;
 			}
 			else
 			{
-				struct sockaddr_in in{};
 				int sz = sizeof(struct sockaddr_in);
 
 				for (size_t i = 0; i < instance->m_clients.size(); i++)
@@ -119,10 +120,11 @@ namespace Xplicit
 					int sz = sizeof(struct sockaddr_in);
 
 					::recvfrom(instance->m_socket, (char*)&
-						instance->m_clients[i].packet, sizeof(GenericPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, &sz);
+						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, &sz);
 
 					if (sz < 0)
 						return;
+
 				}
 			}
 		}

@@ -40,8 +40,8 @@ namespace Xplicit
 		void send() noexcept;
 
 	public:
-		size_t size() noexcept { return m_clients.size(); }
-		NetworkClient& get(size_t idx) noexcept { return m_clients[idx]; }
+		size_t size() noexcept;
+		NetworkClient& get(size_t idx) noexcept;
 
 	private:
 		std::vector<NetworkClient> m_clients;
@@ -78,7 +78,7 @@ namespace Xplicit
 
 	private:
 		NetworkServerInstance* m_instance;
-		GenericPacket m_tmp_packet;
+		NetworkPacket m_tmp_packet;
 
 		friend NetworkServerTraits;
 

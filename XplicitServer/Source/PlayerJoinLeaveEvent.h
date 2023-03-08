@@ -16,11 +16,16 @@
 
 namespace Xplicit
 {
-	class XPLICIT_API PlayerJoinLeaveEvent : public Event
+	/*
+	* 
+	*	The Purpose of this class is to handle Join and Leave connections
+	*	
+	*/
+	class PlayerJoinLeaveEvent : public Event
 	{
 	public:
-		PlayerJoinLeaveEvent() : m_id_counter(0) {}
-		virtual ~PlayerJoinLeaveEvent() {}
+		PlayerJoinLeaveEvent();
+		virtual ~PlayerJoinLeaveEvent();
 
 		PlayerJoinLeaveEvent& operator=(const PlayerJoinLeaveEvent&) = default;
 		PlayerJoinLeaveEvent(const PlayerJoinLeaveEvent&) = default;

@@ -49,9 +49,7 @@ namespace Xplicit {
         NETWORK_CMD_INVALID = 0xFFFFFFF,
     };
 
-    PACKED_STRUCT
-    (
-    class GenericPacket
+    class NetworkPacket
     {
     public:
         NETWORK_CMD CMD; /* The Command. */
@@ -62,14 +60,38 @@ namespace Xplicit {
         float Y; /* Y position */
         float Z; /* Z position */
 
-    }
-    );
+    };
 
-    class NetworkClient
+    class NetworkClient final
     {
     public:
         struct sockaddr_in addr;
-        GenericPacket packet;
+        NetworkPacket packet;
+
+    public:
+        NetworkClient() : packet(), addr() {}
+        ~NetworkClient() {}
+
+        NetworkClient& operator=(const NetworkClient&) = default;
+        NetworkClient(const NetworkClient&) = default;
+
+        bool operator==(const NetworkClient& cl)
+        {
+            return cl.addr.sin_addr.S_un.S_addr == this->addr.sin_addr.S_un.S_addr;
+        }
+
+        bool operator!=(const NetworkClient& cl)
+        {
+            return cl.addr.sin_addr.S_un.S_addr != this->addr.sin_addr.S_un.S_addr;
+        }
+
+        void reset() noexcept
+        {
+            packet.CMD = NETWORK_CMD_INVALID;
+            packet.ID = -1;
+
+            memset(&addr, 0, sizeof(struct sockaddr_in));
+        }
 
     };
 

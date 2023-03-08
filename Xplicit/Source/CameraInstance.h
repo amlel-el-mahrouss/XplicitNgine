@@ -86,7 +86,7 @@ namespace Xplicit
 
 			if (KB->is_key_down(irr::KEY_ESCAPE))
 			{
-				GenericPacket cmd = {  };
+				NetworkPacket cmd = {  };
 				cmd.CMD = NETWORK_CMD_STOP; // client is shutting down.
 
 				auto net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");

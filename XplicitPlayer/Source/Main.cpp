@@ -12,7 +12,7 @@
 
 #include "App.h"
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
+INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
 	try
 	{
@@ -47,6 +47,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 			Xplicit::InstanceManager::get_singleton_ptr()->update();
 
 			IRR->getVideoDriver()->endScene();
+
+			Xplicit::NetworkPacket packet{};
+			net->read(packet);
 		}
 
 		return 0;

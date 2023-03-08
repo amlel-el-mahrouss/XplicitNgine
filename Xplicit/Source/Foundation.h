@@ -80,6 +80,8 @@ XPLICIT_API void log(const char* str);
 
 #ifdef _MSC_VER
 #define PACKED_STRUCT( decl ) __pragma( pack(push, 1) ) decl; __pragma( pack(pop))
+#else
+#define PACKED_STRUCT( decl )
 #endif
 
 namespace Xplicit 

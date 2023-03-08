@@ -157,37 +157,11 @@ namespace Xplicit
 
 	void ActorInstance::reset() noexcept
 	{
+		m_sockaddr.sin_addr.S_un.S_addr = 0;
 		m_health = 0;
 		m_id = -1;
 
 		this->set(0.f, 0.f, 0.f);
-		memset(&m_sockaddr, 0, sizeof(sockaddr_in));
-
-#ifndef _NDEBUG
-		XPLICIT_INFO("[ACTOR] Actor has been reset!");
-#endif
-	}
-
-	/*
-		Actor Events
-	*/
-
-	void NetworkActorEvent::add(const std::function<void(ActorInstance*)>& fn)
-	{
-		if (fn)
-			m_functions.push_back(fn);
-	}
-
-	void PlayerActorEvent::add(const std::function<void(ActorInstance*)>& fn)
-	{
-		if (fn)
-			m_functions.push_back(fn);
-	}
-
-	void PhysicsActorEvent::add(const std::function<void(ActorInstance*)>& fn)
-	{
-		if (fn)
-			m_functions.push_back(fn);
 	}
 
 	void NetworkActorEvent::operator()()
@@ -197,29 +171,17 @@ namespace Xplicit
 		if (vec_actor.empty())
 			return;
 
-		for (size_t i = 0; i < vec_actor.size(); i++)
-		{
-			for (size_t y = 0; y < m_functions.size(); y++)
-			{
-				if (m_functions[y])
-					m_functions[y](vec_actor[i]);
-			}
-		}
+		// TODO: Place any network code here.
 	}
 
 	void PlayerActorEvent::operator()()
 	{
 		auto vec_actor = InstanceManager::get_singleton_ptr()->find_all<ActorInstance>("ActorInstance");
-		if (vec_actor.empty()) return;
 
-		for (size_t i = 0; i < vec_actor.size(); i++)
-		{
-			for (size_t y = 0; y < m_functions.size(); y++)
-			{
-				if (m_functions[y])
-					m_functions[y](vec_actor[i]);
-			}
-		}
+		if (vec_actor.empty()) 
+			return;
+
+		// TODO: Call C# script
 	}
 
 	void PhysicsActorEvent::operator()()
@@ -229,13 +191,6 @@ namespace Xplicit
 		if (vec_actor.empty()) 
 			return;
 
-		for (size_t i = 0; i < vec_actor.size(); i++)
-		{
-			for (size_t y = 0; y < m_functions.size(); y++)
-			{
-				if (m_functions[y])
-					m_functions[y](vec_actor[i]);
-			}
-		}
+		// TODO: physics engine
 	}
 }

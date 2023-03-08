@@ -18,6 +18,9 @@ namespace Xplicit
 	static void xplicit_set_ioctl(SOCKET sock)
 	{
 		u_long ul = 1;
+		ioctlsocket(sock, FIOASYNC, &ul);
+
+		ul = 1;
 		ioctlsocket(sock, FIONBIO, &ul);
 	}
 
@@ -41,7 +44,7 @@ namespace Xplicit
 	NetworkInstance::~NetworkInstance()
 	{
 		// send a stop command.
-		GenericPacket cmd = {  };
+		NetworkPacket cmd = {  };
 		cmd.CMD = NETWORK_CMD_STOP; // client is shutting down.
 
 		this->send(cmd);
@@ -78,11 +81,11 @@ namespace Xplicit
 		return true;
 	}
 
-	bool NetworkInstance::send(GenericPacket& cmd)
+	bool NetworkInstance::send(NetworkPacket& cmd)
 	{
 		m_packet = cmd;
 
-		int res = ::sendto(m_socket, (const char*)&m_packet, sizeof(GenericPacket), 0, reinterpret_cast<SOCKADDR*>(&m_inaddr), sizeof(m_inaddr));
+		int res = ::sendto(m_socket, (const char*)&m_packet, sizeof(NetworkPacket), 0, reinterpret_cast<SOCKADDR*>(&m_inaddr), sizeof(m_inaddr));
 
 		if (res == SOCKET_ERROR)
 			throw NetworkError(NETERR_INTERNAL_ERROR);
@@ -95,11 +98,11 @@ namespace Xplicit
 		// This is only getting and sending packets, no logic needed here.
 	}
 
-	bool NetworkInstance::read(GenericPacket& packet)
+	bool NetworkInstance::read(NetworkPacket& packet)
 	{
 		int length{ sizeof(struct sockaddr_in) };
 
-		int res = recvfrom(m_socket, (char*)&packet, sizeof(GenericPacket), 0,
+		int res = ::recvfrom(m_socket, (char*)&packet, sizeof(NetworkPacket), 0,
 			(SOCKADDR*)&m_tmp_inaddr, &length);
 
 		if (length > 0)
@@ -123,7 +126,7 @@ namespace Xplicit
 
 		if (net)
 		{
-			GenericPacket packet = net->get();
+			NetworkPacket packet = net->get();
 
 			if (packet.CMD == NETWORK_CMD_KICK || packet.CMD == NETWORK_CMD_STOP)
 			{
