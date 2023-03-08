@@ -15,6 +15,14 @@
 
 namespace Xplicit
 {
+	static void xplicit_set_ioctl(SOCKET sock)
+	{
+
+		// enable non blocking i/o
+		u_long ul = 1;
+		ioctlsocket(sock, FIONBIO, &ul);
+	}
+
 	NetworkServerInstance::NetworkServerInstance(const char* ip)
 		: m_socket(INVALID_SOCKET), m_dns(ip), m_send(false), m_server()
 	{
@@ -32,9 +40,7 @@ namespace Xplicit
 		if (m_socket == SOCKET_ERROR)
 			throw NetworkError(NETERR_INTERNAL_ERROR);
 
-		// enable non blocking i/o
-		u_long ul = 1;
-		ioctlsocket(m_socket, FIONBIO, &ul);
+		xplicit_set_ioctl(m_socket);
 
 		memset(&m_server, 0, sizeof(struct sockaddr_in));
 

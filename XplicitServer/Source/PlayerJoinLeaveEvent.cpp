@@ -25,6 +25,12 @@ namespace Xplicit
 		server->send();
 	}
 
+	void PlayerJoinLeaveEvent::operator()()
+	{
+		this->on_join();
+		this->on_leave();
+	}
+
 	bool PlayerJoinLeaveEvent::on_join() noexcept
 	{
 		// check for the instance manager.
@@ -78,10 +84,6 @@ namespace Xplicit
 
 	bool PlayerJoinLeaveEvent::on_leave() noexcept
 	{
-		auto server_event = EventDispatcher::get_singleton_ptr()->find<NetworkServerEvent>("NetworkServerEvent");
-
-		if (!server_event) return false;
-
 		auto server = InstanceManager::get_singleton_ptr()->find<NetworkServerInstance>("NetworkServerInstance");
 
 		if (!server) return false;
@@ -96,6 +98,9 @@ namespace Xplicit
 				{
 					if (actors[y]->sockaddr().sin_addr.S_un.S_addr == server->get(i).addr.sin_addr.S_un.S_addr)
 					{
+						server->get(i).packet.CMD = NETWORK_CMD_INVALID;
+						server->get(i).packet.ID = -1;
+
 						actors[y]->reset();
 
 						--m_id_counter;

@@ -13,7 +13,15 @@
 #include "NetworkInstance.h"
 #include "Irr.h"
 
-namespace Xplicit {
+namespace Xplicit 
+{
+	static void xplicit_set_ioctl(SOCKET sock)
+	{
+		u_long ul = 1;
+		ioctlsocket(sock, FIONBIO, &ul);
+	}
+
+
 	NetworkInstance::NetworkInstance()
 		: Instance(), m_packet(), m_inaddr(), m_tmp_inaddr()
 	{
@@ -22,8 +30,7 @@ namespace Xplicit {
 		if (m_socket == SOCKET_ERROR)
 			throw NetworkError(NETERR_INTERNAL_ERROR);
 
-		u_long ul = 1;
-		ioctlsocket(m_socket, FIONBIO, &ul);
+		xplicit_set_ioctl(m_socket);
 
 #ifndef _NDEBUG
 		XPLICIT_INFO("Created NetworkInstance");
@@ -105,10 +112,9 @@ namespace Xplicit {
 				return false;
 			}
 
-			return true;
 		}
 
-		return false;
+		return true;
 	}
 
 	void NetworkEvent::operator()()

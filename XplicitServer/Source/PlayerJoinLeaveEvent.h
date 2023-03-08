@@ -25,11 +25,7 @@ namespace Xplicit
 		PlayerJoinLeaveEvent& operator=(const PlayerJoinLeaveEvent&) = default;
 		PlayerJoinLeaveEvent(const PlayerJoinLeaveEvent&) = default;
 
-		virtual void operator()() override
-		{
-			this->on_leave();
-			this->on_join();
-		}
+		virtual void operator()() override;
 
 	private:
 		bool on_leave() noexcept;

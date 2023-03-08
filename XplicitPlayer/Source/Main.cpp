@@ -34,6 +34,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 		Xplicit::App::Application* app = new Xplicit::App::Application();
 
+		auto net = Xplicit::InstanceManager::get_singleton_ptr()->find<Xplicit::NetworkInstance>("NetworkInstance");
+
 		while (IRR->run() && Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{
 			IRR->getVideoDriver()->beginScene(true, true, irr::video::SColor(0, 38, 100, 100));

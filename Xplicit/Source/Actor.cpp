@@ -161,7 +161,6 @@ namespace Xplicit
 		m_id = -1;
 
 		this->set(0.f, 0.f, 0.f);
-
 		memset(&m_sockaddr, 0, sizeof(sockaddr_in));
 
 #ifndef _NDEBUG
