@@ -17,7 +17,12 @@
 #include "Instance.h"
 #include "Foundation.h"
 
+#ifdef __XPLICIT_WINDOWS
 #define XPLICIT_NET_ASSERT(EXPR) if (!(EXPR)) { MessageBoxA(nullptr, #EXPR, "C++ Network Exception", 0); std::terminate(); }
+#else
+#define XPLICIT_NET_ASSERT(EXPR) if (!(EXPR)) { std::string err = #EXPR; err += "C++ Network Exception"; XPLICIT_CRITICAL(err); std::terminate(); }
+#endif
+
 
 #ifndef XPLICIT_SLEEP
 #define XPLICIT_SLEEP Sleep

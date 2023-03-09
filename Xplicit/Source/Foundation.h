@@ -367,8 +367,10 @@ namespace Xplicit
 
 	static inline void open_terminal(FILE* fp = stdout)
 	{
+#ifdef __XPLICIT_WINDOWS
 		AllocConsole();
 		(void)freopen("CONOUT$", "w", fp);
+#endif //!__XPLICIT_WINDOWS
 	}
 
 	class GUI
@@ -382,11 +384,14 @@ namespace Xplicit
 			if (!message)
 				return -1;
 
+#ifdef __XPLICIT_WINDOWS
 			return MessageBoxExW(nullptr, message, title, flags, LANG_ENGLISH);
+#endif // !__XPLICIT_WINDOWS
 		}
 
 		static int32_t message_box(LPCWSTR title, LPCWSTR header, LPCWSTR message, PCWSTR icon, _TASKDIALOG_COMMON_BUTTON_FLAGS buttonFlags)
 		{
+#ifdef __XPLICIT_WINDOWS
 			if (!title)
 				return -1;
 
@@ -409,11 +414,12 @@ namespace Xplicit
 			TaskDialogIndirect(&config, &clicked_button, nullptr, nullptr);
 
 			return clicked_button;
+#endif // !__XPLICIT_WINDOWS
 		}
 
 	};
 
-	class Logger
+	class Logger final
 	{
 	public:
 		Logger() = default;
@@ -454,11 +460,45 @@ namespace Xplicit
 		}
 
 	};
-}
 
-#define XPLICIT_CIRITICAL(XMSG) Xplicit::Logger::get_singleton().get()->critical(XMSG)
+#define XPLICIT_CRITICAL(XMSG) Xplicit::Logger::get_singleton().get()->critical(XMSG)
 #define XPLICIT_ERROR(XMSG) Xplicit::Logger::get_singleton().get()->error(XMSG)
 #define XPLICIT_INFO(XMSG) Xplicit::Logger::get_singleton().get()->info(XMSG)
+
+	class Timer final
+	{
+	public:
+		Timer() noexcept
+			: m_then(std::chrono::steady_clock::now())
+		{
+			XPLICIT_INFO("Timer::Timer");
+		}
+
+		~Timer()
+		{
+			XPLICIT_INFO("Timer::~Timer");
+		}
+
+		std::chrono::steady_clock::time_point now() noexcept
+		{
+			return std::chrono::steady_clock::now();
+		}
+
+		const std::chrono::steady_clock::time_point& start() noexcept
+		{
+			return m_then;
+		}
+
+		std::chrono::duration<double> time_since(const std::chrono::steady_clock::time_point& at) noexcept
+		{
+			return at - m_then;
+		}
+
+	private:
+		std::chrono::steady_clock::time_point m_then;
+
+	};
+}
 
 #define XPLICIT_INIT_COM assert(SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)))
 #define XPLICIT_FINI_COM CoUninitialize()

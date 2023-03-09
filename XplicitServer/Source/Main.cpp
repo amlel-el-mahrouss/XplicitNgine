@@ -106,6 +106,7 @@ static void xplicit_create_common()
 {
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
+	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PhysicsActorEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkActorEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerActorEvent>();
@@ -127,7 +128,7 @@ int main(int argc, char** argv)
 		char* addr = getenv("XPLICIT_SERVER_ADDR");
 
 		if (!addr)
-			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR not found!");
+			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR is non existent");
 
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkServerEvent>(server);
@@ -136,11 +137,21 @@ int main(int argc, char** argv)
 		xplicit_load_cfg();
 		xplicit_create_common();
 
+		Xplicit::Timer timer;
+
 		while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{
 			Xplicit::InstanceManager::get_singleton_ptr()->update();
 			Xplicit::EventDispatcher::get_singleton_ptr()->update();
 		}
+
+		auto time = timer.time_since(timer.now());
+
+		std::string str;
+		str += "Uptime: ";
+		str += std::to_string(time.count());
+
+		XPLICIT_INFO(str);
 
 		return 0;
 	}
@@ -151,7 +162,7 @@ int main(int argc, char** argv)
 		msg += "C++ Runtime Error: ";
 		msg += err.what();
 
-		XPLICIT_CIRITICAL(msg);
+		XPLICIT_CRITICAL(msg);
 #endif
 
 #ifdef __XPLICIT_WINDOWS
@@ -165,7 +176,7 @@ int main(int argc, char** argv)
 		std::string msg;
 		msg += "A network Error occured, application will now quit..";
 
-		XPLICIT_CIRITICAL(msg);
+		XPLICIT_CRITICAL(msg);
 #endif
 
 #ifdef __XPLICIT_WINDOWS

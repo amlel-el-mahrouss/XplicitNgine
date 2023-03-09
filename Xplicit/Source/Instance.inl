@@ -1,15 +1,14 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: Instance.inl
- *			Purpose: Instance System
+ *			File: Instance.h
+ *			Purpose: Object Instancing
  *
  * =====================================================================
  */
-
 
 template <typename T, typename... Args>
 T* Xplicit::InstanceManager::add(Args&&... args)

@@ -1,11 +1,11 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: Instance.cpp
- *			Purpose: Instance System
+ *			File: Instance.h
+ *			Purpose: Object Instancing
  *
  * =====================================================================
  */
