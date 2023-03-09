@@ -36,7 +36,6 @@ static void xplicit_create_opengl()
 	EnableMenuItem(menuHandle, SC_CLOSE, MF_GRAYED);
 
 	IRR->setWindowCaption(Xplicit::App::XPLICIT_APP_NAME);
-
 }
 
 INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)

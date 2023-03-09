@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin C++ Engine
  *			Copyright XPX, all rights reserved.
  *
  *			File: LocalPLayerInstance.h

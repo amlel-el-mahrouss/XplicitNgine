@@ -108,7 +108,7 @@ namespace Xplicit::App
 	void Application::setup(const char* ip)
 	{
 		if (!ip)
-			throw std::runtime_error("DNSError");
+			throw std::runtime_error("Invalid DNS!");
 
 		auto net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");
 		assert(net);
