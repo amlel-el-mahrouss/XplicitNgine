@@ -46,7 +46,7 @@ namespace Xplicit
 
 		m_server.sin_family = AF_INET;
 		inet_pton(AF_INET, ip, &m_server.sin_addr.S_un.S_addr);
-		m_server.sin_port = htons(NETWORK_PORT);
+		m_server.sin_port = htons(XPLICIT_NETWORK_PORT);
 
 		auto ret_bind = bind(m_socket, reinterpret_cast<SOCKADDR*>(&m_server), sizeof(m_server));
 
@@ -77,6 +77,7 @@ namespace Xplicit
 
 	NetworkServerInstance::~NetworkServerInstance()
 	{
+		// don't print that in release builds.
 #ifndef _NDEBUG
 		std::string message;
 		message += "Class NetworkServerInstance::~NetworkServerInstance(), Epoch: ";
@@ -85,14 +86,15 @@ namespace Xplicit
 		XPLICIT_INFO(message);
 #endif
 
-		shutdown(m_socket, SD_BOTH);
-		closesocket(m_socket);
+		if (shutdown(m_socket, SD_BOTH) == SOCKET_ERROR)
+			closesocket(m_socket);
 
 		WSACleanup();
 	}
 
 	const char* NetworkServerInstance::dns() noexcept { return m_dns.c_str(); }
 
+	// mark the packet queue (m_clients) to be sent over the network.
 	void NetworkServerInstance::send() noexcept { m_send = true; }
 
 	// we need a way to tell which client is who.
@@ -105,6 +107,10 @@ namespace Xplicit
 			{
 				for (size_t i = 0; i < instance->m_clients.size(); i++)
 				{
+					instance->m_clients[i].packet.MAG[0] = XPLICIT_NETWORK_MAG_0;
+					instance->m_clients[i].packet.MAG[1] = XPLICIT_NETWORK_MAG_1;
+					instance->m_clients[i].packet.MAG[2] = XPLICIT_NETWORK_MAG_2;
+
 					::sendto(instance->m_socket, (const char*)&
 						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, sizeof(struct sockaddr_in));
 				}
@@ -121,6 +127,13 @@ namespace Xplicit
 
 					::recvfrom(instance->m_socket, (char*)&
 						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, &sz);
+
+					if (instance->m_clients[i].packet.MAG[0] != XPLICIT_NETWORK_MAG_0 || instance->m_clients[i].packet.MAG[1] != XPLICIT_NETWORK_MAG_1 ||
+						instance->m_clients[i].packet.MAG[2] != XPLICIT_NETWORK_MAG_2)
+					{
+						instance->m_clients[i].packet.CMD = NETWORK_CMD_INVALID;
+						instance->m_clients[i].packet.ID = -1;
+					}
 
 					if (sz < 0)
 						return;

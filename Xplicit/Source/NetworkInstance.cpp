@@ -44,9 +44,7 @@ namespace Xplicit
 	NetworkInstance::~NetworkInstance()
 	{
 		// Shutdown and close socket if shutdown failed.
-		int res = shutdown(m_socket, SD_BOTH);
-
-		if (res == SOCKET_ERROR)
+		if (shutdown(m_socket, SD_BOTH) == SOCKET_ERROR)
 			closesocket(m_socket);
 
 #ifndef _NDEBUG
@@ -63,7 +61,7 @@ namespace Xplicit
 
 		m_inaddr.sin_family = AF_INET;
 		inet_pton(AF_INET, ip, &m_inaddr.sin_addr);
-		m_inaddr.sin_port = htons(NETWORK_PORT);
+		m_inaddr.sin_port = htons(XPLICIT_NETWORK_PORT);
 
 		int result = ::connect(m_socket, reinterpret_cast<SOCKADDR*>(&m_inaddr), sizeof(m_inaddr));
 
@@ -77,9 +75,11 @@ namespace Xplicit
 
 	bool NetworkInstance::send(NetworkPacket& cmd)
 	{
-		m_packet = cmd;
+		cmd.MAG[0] = XPLICIT_NETWORK_MAG_0;
+		cmd.MAG[1] = XPLICIT_NETWORK_MAG_1;
+		cmd.MAG[2] = XPLICIT_NETWORK_MAG_2;
 
-		int res = ::sendto(m_socket, (const char*)&m_packet, sizeof(NetworkPacket), 0, reinterpret_cast<SOCKADDR*>(&m_inaddr), sizeof(m_inaddr));
+		int res = ::sendto(m_socket, (const char*)&cmd, sizeof(NetworkPacket), 0, reinterpret_cast<SOCKADDR*>(&m_inaddr), sizeof(m_inaddr));
 
 		if (res == SOCKET_ERROR)
 			throw NetworkError(NETERR_INTERNAL_ERROR);
@@ -89,7 +89,7 @@ namespace Xplicit
 
 	void NetworkInstance::update()
 	{
-		// This is only getting and sending packets, no logic needed here.
+		this->read(m_packet);
 	}
 
 	bool NetworkInstance::read(NetworkPacket& packet)
@@ -98,6 +98,7 @@ namespace Xplicit
 
 		int res = ::recvfrom(m_socket, (char*)&packet, sizeof(NetworkPacket), 0,
 			(SOCKADDR*)&m_tmp_inaddr, &length);
+
 
 		if (length > 0)
 		{
@@ -111,7 +112,8 @@ namespace Xplicit
 
 		}
 
-		return true;
+		return packet.MAG[0] == XPLICIT_NETWORK_MAG_0 && packet.MAG[1] == XPLICIT_NETWORK_MAG_1 &&
+				packet.MAG[2] == XPLICIT_NETWORK_MAG_2;
 	}
 
 	void NetworkEvent::operator()()

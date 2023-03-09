@@ -14,13 +14,19 @@
 
 #include "Foundation.h"
 
-#ifndef NETWORK_PORT
-#define NETWORK_PORT (60000)
-#endif // !NETWORK_PORT
+#ifndef XPLICIT_NETWORK_PORT
+#define XPLICIT_NETWORK_PORT (60000)
+#endif // !XPLICIT_NETWORK_PORT
 
-namespace Xplicit {
+#define XPLICIT_NETWORK_MAG_0 ('I')
+#define XPLICIT_NETWORK_MAG_1 ('r')
+#define XPLICIT_NETWORK_MAG_2 ('r')
+
+namespace Xplicit 
+{
     enum NETWORK_CMD : int 
     {
+        // Network Start/End messages.
         NETWORK_CMD_BEGIN = 9, // start network, handshake
         NETWORK_CMD_STOP, // abort connection
         // PvP
@@ -54,6 +60,8 @@ namespace Xplicit {
     class NetworkPacket
     {
     public:
+        char MAG[3];
+
         NETWORK_CMD CMD; /* The Command. */
         int64_t ID;
 
