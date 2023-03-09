@@ -23,30 +23,30 @@ namespace Xplicit
 		Actor Instance methods.
 	*/
 
-	ActorInstance::ActorInstance(const bool human)
+	Actor::Actor(const bool human)
 		: m_actor_health(100), m_replication(), m_pos(0, 0, 0), m_actor_delay(0), m_actor_id(-1)
 	{
 #ifndef _NDEBUG
-		XPLICIT_INFO("ActorInstance::ActorInstance");
+		XPLICIT_INFO("Actor::Actor");
 #endif
 	}
 
-	ActorInstance::~ActorInstance()
+	Actor::~Actor()
 	{
 #ifndef _NDEBUG
-		XPLICIT_INFO("ActorInstance::~ActorInstance");
+		XPLICIT_INFO("Actor::~Actor");
 #endif
 	}
 
-	ActorInstance::INSTANCE_PHYSICS ActorInstance::physics() noexcept { return FAST; }
+	Actor::INSTANCE_PHYSICS Actor::physics() noexcept { return FAST; }
 
-	bool ActorInstance::has_physics() noexcept { return true; }
+	bool Actor::has_physics() noexcept { return true; }
 
-	int64_t ActorInstance::id() noexcept { return m_actor_id; }
+	const int64_t& Actor::id() noexcept { return m_actor_id; }
 
-	void ActorInstance::update() 
+	void Actor::update() 
 	{
-		auto server = Xplicit::InstanceManager::get_singleton_ptr()->find<Xplicit::NetworkServerInstance>("NetworkServerInstance");
+		auto server = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance");
 
 		if (!server)
 			return;
@@ -115,36 +115,36 @@ namespace Xplicit
 		}
 	}
 
-	int32_t& ActorInstance::health() noexcept { return m_actor_health; }
-	bool ActorInstance::can_collide() noexcept { return true; }
+	const int32_t& Actor::health() noexcept { return m_actor_health; }
+	bool Actor::can_collide() noexcept { return true; }
 
-	void ActorInstance::set(int64_t id) noexcept
+	void Actor::set(int64_t id) noexcept
 	{
 		if (id < 0) return;
 		m_actor_id = id;
 	}
 
-	const char* ActorInstance::name() noexcept { return "ActorInstance"; }
-	ActorInstance::INSTANCE_TYPE ActorInstance::type() noexcept { return ACTOR; }
+	const char* Actor::name() noexcept { return "Actor"; }
+	Actor::INSTANCE_TYPE Actor::type() noexcept { return ACTOR; }
 
 	// Actor's Getters
 
-	ActorInstance::ActorPosition& ActorInstance::pos() noexcept { return m_pos; }
-	ActorInstance::ActorReplicationDelegate& ActorInstance::get() noexcept { return m_replication; }
+	Actor::ActorPosition& Actor::pos() noexcept { return m_pos; }
+	Actor::ActorReplication& Actor::get() noexcept { return m_replication; }
 
 	// Actor's Setters
 
-	void ActorInstance::set(NETWORK_CMD cmd) noexcept { m_replication.cmd = cmd; }
-	void ActorInstance::set(struct sockaddr_in sockaddr) noexcept { m_replication.sockaddr = sockaddr; }
+	void Actor::set(NETWORK_CMD cmd) noexcept { m_replication.cmd = cmd; }
+	void Actor::set(struct sockaddr_in sockaddr) noexcept { m_replication.sockaddr = sockaddr; }
 
-	void ActorInstance::set(float x, float y, float z)  noexcept
+	void Actor::set(float x, float y, float z)  noexcept
 	{
 		m_pos.X = x;
 		m_pos.X = y;
 		m_pos.X = z;
 	}
 
-	void ActorInstance::reset() noexcept
+	void Actor::reset() noexcept
 	{
 		m_replication.sockaddr.sin_addr.S_un.S_addr = 0;
 		m_actor_health = 0;
@@ -157,11 +157,11 @@ namespace Xplicit
 
 	void PhysicsActorEvent::operator()()
 	{
-		auto vec_actor = InstanceManager::get_singleton_ptr()->find_all<ActorInstance>("ActorInstance");
+		auto vec_actor = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
 		
 		if (vec_actor.empty()) 
 			return;
 
-		// TODO: physics engine
+		// TODO: physics engine callback here.
 	}
 }

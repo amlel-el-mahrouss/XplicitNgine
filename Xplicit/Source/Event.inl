@@ -20,7 +20,7 @@ T* Xplicit::EventDispatcher::add(Args&&... args)
 }
 
 template <typename T>
-T* Xplicit::EventDispatcher::find(const char* name)
+T* Xplicit::EventDispatcher::get(const char* name)
 {
 	for (size_t i = 0; i < m_events.size(); i++)
 	{

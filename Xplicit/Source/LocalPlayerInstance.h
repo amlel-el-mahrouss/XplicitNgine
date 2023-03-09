@@ -21,7 +21,7 @@
 namespace Xplicit
 {
 	constexpr const int XPLICIT_NETWORK_DELAY = 1000;
-	constexpr const int XPLICIT_SPEED = 20.f;
+	constexpr const float XPLICIT_SPEED = 20.f;
 
 	class XPLICIT_API LocalPlayerInstance : public Instance
 	{
@@ -29,19 +29,19 @@ namespace Xplicit
 		LocalPlayerInstance(int64_t id)
 			: Instance(), m_then(0), m_cam(nullptr), m_id(id)
 		{
-			m_cam = InstanceManager::get_singleton_ptr()->find<CameraInstance>("CameraInstance");
-			m_net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");
+			m_cam = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");
+			m_net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
 			m_then = IRR->getTimer()->getTime();
 
-#ifdef _NDEBUG
+#ifndef _NDEBUG
 			XPLICIT_INFO("LocalPlayerInstance::LocalPlayerInstance");
 #endif
 		}
 
 		virtual ~LocalPlayerInstance()
 		{
-#ifdef _NDEBUG
+#ifndef _NDEBUG
 			XPLICIT_INFO("LocalPlayerInstance::~LocalPlayerInstance");
 #endif
 		}
@@ -55,7 +55,7 @@ namespace Xplicit
 		virtual void update() override
 		{
 			if (!m_cam)
-				m_cam = InstanceManager::get_singleton_ptr()->find<CameraInstance>("CameraInstance");
+				m_cam = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");
 
 			const u32 now = IRR->getTimer()->getTime();
 			const f32 delta = (f32)(now - m_then) / 1000.f; // Time in seconds

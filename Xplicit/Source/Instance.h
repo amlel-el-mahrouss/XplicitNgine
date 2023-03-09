@@ -36,7 +36,7 @@ namespace Xplicit
 		InstanceManager(const InstanceManager&) = default;
 
 		template <typename T>
-		std::vector<T*> find_all(const char* name);
+		std::vector<T*> get_all(const char* name);
 
 		template <typename T, typename... Args>
 		T* add(Args&&... args);
@@ -45,7 +45,7 @@ namespace Xplicit
 		bool remove(const char* name);
 
 		template <typename T>
-		T* find(const char* name);
+		T* get(const char* name);
 
 		void update() noexcept;
 
@@ -78,7 +78,7 @@ namespace Xplicit
 			SCRIPT,
 			NETWORK,
 			TERRAIN,
-			INSTANCE,
+			INSTANCE, // classic instance, unchanged by the child class.
 			INSTANCE_TYPE_COUNT
 		};
 

@@ -86,7 +86,9 @@ namespace Xplicit::App
 			return false;
 
 		NetworkPacket packet_spawn{};
+
 		packet_spawn.CMD = NETWORK_CMD_BEGIN;
+		packet_spawn.ID = -1;
 
 		net->send(packet_spawn);
 
@@ -98,6 +100,8 @@ namespace Xplicit::App
 
 			if (timeout > 3000)
 				return false;
+
+			++timeout;
 		}
 
 		InstanceManager::get_singleton_ptr()->add<Xplicit::LocalPlayerInstance>(packet_spawn.ID);
@@ -110,7 +114,7 @@ namespace Xplicit::App
 		if (!ip)
 			throw std::runtime_error("Invalid DNS!");
 
-		auto net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");
+		auto net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 		assert(net);
 
 		net->connect(ip);

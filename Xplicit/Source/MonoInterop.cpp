@@ -34,7 +34,7 @@ namespace Xplicit
 
 	MonoClassInstance::MonoClassInstance(const char* namespase, const char* klass)
 		: Instance(), m_klass(nullptr), m_object(nullptr)
-		, m_script(InstanceManager::get_singleton_ptr()->find<MonoScriptInstance>("MonoScriptInstance"))
+		, m_script(InstanceManager::get_singleton_ptr()->get<MonoScriptInstance>("MonoScriptInstance"))
 	{
 		assert(m_script);
 
@@ -128,7 +128,7 @@ namespace Xplicit
 		if (m_name.empty())
 			return;
 
-		auto scripts = InstanceManager::get_singleton_ptr()->find_all<MonoClassInstance>(m_name.c_str());
+		auto scripts = InstanceManager::get_singleton_ptr()->get_all<MonoClassInstance>(m_name.c_str());
 
 		for (size_t i = 0; i < scripts.size(); i++)
 		{

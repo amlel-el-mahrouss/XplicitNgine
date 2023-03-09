@@ -15,7 +15,7 @@
 namespace Xplicit
 {
 	static void xplicit_join_event(NetworkClient& cl, 
-		ActorInstance* actor, 
+		Actor* actor, 
 		NetworkServerInstance* server, 
 		int64_t& counter)
 	{
@@ -27,7 +27,10 @@ namespace Xplicit
 
 		server->send();
 
-		auto env = EventDispatcher::get_singleton_ptr()->find<NetworkServerEvent>("NetworkServerEvent");
+		// force update
+		auto env = EventDispatcher::get_singleton_ptr()->get<NetworkServerEvent>("NetworkServerEvent");
+		XPLICIT_NET_ASSERT(env);
+
 		env->update();
 
 		++counter;
@@ -48,7 +51,7 @@ namespace Xplicit
 
 	bool PlayerJoinLeaveEvent::on_join() noexcept
 	{
-		auto server = InstanceManager::get_singleton_ptr()->find<NetworkServerInstance>("NetworkServerInstance");
+		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
 
 		if (!server) 
 			return false;
@@ -57,7 +60,7 @@ namespace Xplicit
 		{
 			if (server->get(i).packet.CMD == NETWORK_CMD_BEGIN)
 			{
-				auto actors = InstanceManager::get_singleton_ptr()->find_all<ActorInstance>("ActorInstance");
+				auto actors = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
 
 				for (size_t y = 0; y < actors.size(); y++)
 				{
@@ -74,7 +77,7 @@ namespace Xplicit
 					}
 				}
 
-				auto actor = InstanceManager::get_singleton_ptr()->add<ActorInstance>();
+				auto actor = InstanceManager::get_singleton_ptr()->add<Actor>();
 
 				if (!actor)
 					throw std::runtime_error("OutOfMemory: Could not allocate further actors!");
@@ -92,7 +95,7 @@ namespace Xplicit
 
 	bool PlayerJoinLeaveEvent::on_leave() noexcept
 	{
-		auto server = InstanceManager::get_singleton_ptr()->find<NetworkServerInstance>("NetworkServerInstance");
+		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
 
 		if (!server) 
 			return false;
@@ -101,7 +104,7 @@ namespace Xplicit
 		{
 			if (server->get(i).packet.CMD == NETWORK_CMD_STOP)
 			{
-				auto actors = InstanceManager::get_singleton_ptr()->find_all<ActorInstance>("ActorInstance");
+				auto actors = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
 
 				for (size_t y = 0; y < actors.size(); y++)
 				{

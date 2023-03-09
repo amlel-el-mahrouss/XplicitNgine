@@ -167,7 +167,7 @@ namespace Xplicit
 
 	void NetworkEvent::operator()()
 	{
-		auto net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");
+		auto net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
 		if (net)
 		{

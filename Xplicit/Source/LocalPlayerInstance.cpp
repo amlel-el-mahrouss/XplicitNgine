@@ -21,7 +21,7 @@ namespace Xplicit
 		if (!InstanceManager::get_singleton_ptr())
 			return;
 
-		auto net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");
+		auto net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
 		if (!net)
 			return;
@@ -32,7 +32,7 @@ namespace Xplicit
 			return;
 		}
 
-		auto cam = InstanceManager::get_singleton_ptr()->find<CameraInstance>("CameraInstance");
+		auto cam = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");
 
 		if (cam->get()->getPosition() == m_saved_position)
 			return;

@@ -32,7 +32,7 @@ static void xplicit_load_cfg()
 	XPLICIT_GET_DATA_DIR(data_dir);
 
 	if (*data_dir == 0)
-		throw std::runtime_error("NoSuchVariable");
+		throw std::runtime_error("getenv: XPLICIT_DATA_DIR doesn't exist!");
 
 	std::string path = data_dir;
 	path += "\\MANIFEST.xml";
@@ -42,7 +42,7 @@ static void xplicit_load_cfg()
 	if (!XML)
 		throw std::runtime_error("No XML provided..");
 	
-	auto mono = Xplicit::InstanceManager::get_singleton_ptr()->find<Xplicit::MonoEngineInstance>("MonoEngineInstance");
+	auto mono = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::MonoEngineInstance>("MonoEngineInstance");
 
 	const char* argv[] = {"XplicitNgin"};
 
@@ -92,7 +92,7 @@ static void xplicit_attach_mono()
 	XPLICIT_GET_DATA_DIR(data_dir);
 
 	if (*data_dir == 0)
-		throw std::runtime_error("NoSuchVariable: Couldn't read Xplicit's needed files!");
+		throw std::runtime_error("getenv: XPLICIT_DATA_DIR doesn't exist!");
 
 	std::string path = data_dir;
 	path += "\\Lib\\Xplicit.dll";
@@ -124,7 +124,7 @@ static void xplicit_load_shell()
 
 				if (strcmp(cmd_buf, "exit") == 0)
 				{
-					xplicit_send_stop_packet(Xplicit::InstanceManager::get_singleton_ptr()->find<Xplicit::NetworkServerInstance>("NetworkServerInstance"));
+					xplicit_send_stop_packet(Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance"));
 
 					Xplicit::Application::get_singleton().ShouldExit = true;
 				}
@@ -153,7 +153,7 @@ static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server)
 
 	server->send();
 
-	auto env = Xplicit::EventDispatcher::get_singleton_ptr()->find<Xplicit::NetworkServerEvent>("NetworkServerEvent");
+	auto env = Xplicit::EventDispatcher::get_singleton_ptr()->get<Xplicit::NetworkServerEvent>("NetworkServerEvent");
 
 	if (env)
 		env->update();
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
 		char* addr = getenv("XPLICIT_SERVER_ADDR");
 
 		if (!addr)
-			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR is non existent");
+			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
 
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkServerEvent>(server);

@@ -62,8 +62,8 @@ namespace Xplicit
     public:
         char MAG[3]; /* The Packet Identification numbers. */
 
-        NETWORK_CMD CMD; /* The current processed network command. */
-        int64_t ID; /* The server ignores the ID! So any clients sending a different ID will be ignored. */
+        NETWORK_CMD CMD; /* The current network command. */
+        int64_t ID; /* NOTE: The server must ignore the ID! */
 
     public:
         float X; /* X position */

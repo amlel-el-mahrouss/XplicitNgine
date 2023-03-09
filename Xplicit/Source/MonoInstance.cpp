@@ -251,7 +251,7 @@ namespace Xplicit
 	MonoScriptInstance::MonoScriptInstance(const char* filename, bool can_fail)
 		: m_filename(filename), m_assembly(nullptr)
 	{
-		this->m_engine_ref = InstanceManager::get_singleton_ptr()->find<MonoEngineInstance>("MonoEngineInstance");
+		this->m_engine_ref = InstanceManager::get_singleton_ptr()->get<MonoEngineInstance>("MonoEngineInstance");
 		assert(this->m_engine_ref);
 
 		// Get the C# assembly.

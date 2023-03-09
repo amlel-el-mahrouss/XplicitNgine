@@ -25,7 +25,7 @@ namespace Xplicit
 		if (!this->m_watchdog_enabled)
 			return;
 
-		auto server = InstanceManager::get_singleton_ptr()->find<NetworkServerInstance>("NetworkServerInstance");
+		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
 
 		if (server)
 		{

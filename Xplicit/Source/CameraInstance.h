@@ -86,7 +86,7 @@ namespace Xplicit
 
 			if (KB->is_key_down(irr::KEY_ESCAPE))
 			{
-				auto net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");
+				auto net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
 				if (net)
 				{

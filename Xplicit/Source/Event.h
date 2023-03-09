@@ -36,7 +36,7 @@ namespace Xplicit {
 		T* add(Args&&... args);
 
 		template <typename T>
-		T* find(const char* name);
+		T* get(const char* name);
 
 		template <typename T>
 		bool remove(const char* name);

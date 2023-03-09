@@ -20,7 +20,7 @@ T* Xplicit::InstanceManager::add(Args&&... args)
 }
 
 template <typename T>
-T* Xplicit::InstanceManager::find(const char* name)
+T* Xplicit::InstanceManager::get(const char* name)
 {
 	for (size_t i = 0; i < m_instances.size(); ++i)
 	{
@@ -35,7 +35,7 @@ T* Xplicit::InstanceManager::find(const char* name)
 }
 
 template <typename T>
-std::vector<T*> Xplicit::InstanceManager::find_all(const char* name)
+std::vector<T*> Xplicit::InstanceManager::get_all(const char* name)
 {
 	if (!name)
 		return {};

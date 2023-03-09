@@ -1,4 +1,4 @@
 <!-- Server Manifest -->
 
-<CONNECT IP="10.211.55.8"/>
+<CONNECT IP="10.211.55.9"/>
 <PLUGIN VFS="XplicitLuaPlugin.dll"/>
