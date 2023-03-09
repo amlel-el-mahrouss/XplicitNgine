@@ -5,7 +5,8 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: Actor.h
- *			Purpose: Actors, or players
+ *			Purpose: Actors are server-sided entities, they're used to
+ *			describe Players and NPCs..
  *
  * =====================================================================
  */
@@ -14,15 +15,9 @@
 
 #include "ServerInstance.h"
 #include "Foundation.h"
+#include "XplicitApp.h"
 #include "Instance.h"
 #include "Event.h"
-#include "XplicitApp.h"
-
-//
-//	File: Actor.h
-//	Purpose: This file handles actor logic.
-//	Last Edit 3/3/23
-//
 
 namespace Xplicit
 {
@@ -30,8 +25,12 @@ namespace Xplicit
 	class XPLICIT_API ActorInstance final : public Instance
 	{
 	public:
-		struct ActorPos final
+		// an actor position structure.
+		// used to describe where it is.
+
+		class ActorPos final
 		{
+		public:
 			ActorPos(float x, float y, float z)
 				: X(x), Y(y), Z(z)
 			{}
@@ -41,9 +40,28 @@ namespace Xplicit
 			ActorPos& operator=(const ActorPos&) = default;
 			ActorPos(const ActorPos&) = default;
 
+		public:
 			float X;
 			float Y;
 			float Z;
+
+		};
+
+		class ActorReplication final
+		{
+		public:
+			ActorReplication()
+				: sockaddr(), cmd(Xplicit::NETWORK_CMD_INVALID)
+			{}
+
+			~ActorReplication() {}
+
+			ActorReplication& operator=(const ActorReplication&) = default;
+			ActorReplication(const ActorReplication&) = default;
+
+		public:
+			struct sockaddr_in sockaddr; // Actor's socket address
+			NETWORK_CMD cmd; // Actor's current network command.
 
 		};
 
@@ -58,9 +76,9 @@ namespace Xplicit
 		int16_t& health() noexcept; // gets the health of the actor.
 		void reset() noexcept; // reset and reserve actor for future usage
 		int64_t id() noexcept; // gets it's id, assigned by a system.
-		
-		ActorPos& get_pos(); // gets its position
-		NETWORK_CMD get_cmd() const; // it's current network command.
+
+		ActorReplication& get() noexcept; // gets the network replication data.
+		ActorPos& pos() noexcept; // gets its position
 
 		virtual const char* name() noexcept override;
 		virtual INSTANCE_TYPE type() noexcept override;
@@ -74,15 +92,13 @@ namespace Xplicit
 
 	public:
 		virtual INSTANCE_PHYSICS physics() noexcept override;
-		struct sockaddr_in& sockaddr() noexcept;
 
 		virtual bool can_collide() override;
 		virtual bool has_physics() override;
 		bool is_colliding() noexcept;
 
 	private:
-		struct sockaddr_in m_sockaddr; // Actor's socket address
-		NETWORK_CMD m_network_cmd; // Actor's current network command.
+		ActorReplication m_replication;
 
 	private:
 		ActorPos m_pos;

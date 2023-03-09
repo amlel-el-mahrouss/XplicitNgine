@@ -58,10 +58,10 @@ namespace Xplicit
 
 				for (size_t y = 0; y < actors.size(); y++)
 				{
-					if (actors[y]->sockaddr().sin_addr.S_un.S_addr == server->get(i).addr.sin_addr.S_un.S_addr)
+					if (actors[y]->get().sockaddr.sin_addr.S_un.S_addr == server->get(i).addr.sin_addr.S_un.S_addr)
 						return false;
 
-					if (actors[y]->sockaddr().sin_addr.S_un.S_addr == 0)
+					if (actors[y]->get().sockaddr.sin_addr.S_un.S_addr == 0)
 					{
 						xplicit_join_event(server->get(i), actors[y], server, m_id_counter);
 
@@ -102,7 +102,7 @@ namespace Xplicit
 
 				for (size_t y = 0; y < actors.size(); y++)
 				{
-					if (actors[y]->sockaddr().sin_addr.S_un.S_addr == server->get(i).addr.sin_addr.S_un.S_addr)
+					if (actors[y]->get().sockaddr.sin_addr.S_un.S_addr == server->get(i).addr.sin_addr.S_un.S_addr)
 					{
 						actors[y]->reset();
 						server->get(i).reset();

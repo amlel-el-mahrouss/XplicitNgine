@@ -79,7 +79,7 @@ namespace Xplicit
 	{
 #ifndef _NDEBUG
 		std::string message;
-		message += "Class NetworkServerInstance (delete), Epoch: ";
+		message += "Class NetworkServerInstance::~NetworkServerInstance(), Epoch: ";
 		message += std::to_string(get_epoch());
 
 		XPLICIT_INFO(message);
@@ -131,7 +131,7 @@ namespace Xplicit
 	}
 
 	NetworkServerEvent::NetworkServerEvent(NetworkServerInstance* instance)
-		: m_instance(instance), m_tmp_packet()
+		: m_instance(instance)
 	{
 		if (!instance)
 			throw NetworkError(NETERR_INTERNAL_ERROR);
@@ -149,7 +149,7 @@ namespace Xplicit
 
 	void NetworkServerEvent::operator()()
 	{
-		NetworkServerTraits::recv(this, m_instance);
+		NetworkServerTraits::recv(this, m_instance.get());
 	}
 
 	const char* NetworkServerEvent::name() noexcept { return ("NetworkServerEvent"); }

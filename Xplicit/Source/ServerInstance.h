@@ -77,8 +77,7 @@ namespace Xplicit
 		virtual const char* name() noexcept;
 
 	private:
-		NetworkServerInstance* m_instance;
-		NetworkPacket m_tmp_packet;
+		Ref<NetworkServerInstance*> m_instance;
 
 		friend NetworkServerTraits;
 
