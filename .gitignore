@@ -5,6 +5,9 @@
 # Prerequisites
 *.d
 
+*.Interpreter.xml
+*.exe.config
+
 XplicitData/Lib/*.exe
 XplicitData/Lib/*.deps.json
 XplicitData/Lib/*.runtimeconfig.json
