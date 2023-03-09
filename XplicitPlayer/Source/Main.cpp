@@ -1,16 +1,21 @@
 /*
  * =====================================================================
  *
- *						XplicitNgin C++ Game Engine
+ *			XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: Client.cpp
- *			Purpose: Client sources
+ *			File: Main.cpp
+ *			Purpose: Main unit.
  *
  * =====================================================================
  */
 
 #include "App.h"
+
+//
+// creates an opengl device, alongside other things.
+// that's it
+//
 
 static void xplicit_create_opengl()
 {
