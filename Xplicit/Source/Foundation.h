@@ -81,6 +81,22 @@ XPLICIT_API bool open_logger();
 
 namespace Xplicit 
 {
+	class EngineError : public std::runtime_error
+	{
+	public:
+		EngineError(void* caused_by) : std::runtime_error("Engine Error"), m_cause(caused_by) {}
+		~EngineError() = default; // let the ABI define that.
+
+		EngineError& operator=(const EngineError&) = default;
+		EngineError(const EngineError&) = default;
+
+		void* what() { return m_cause; }
+
+	private:
+		void* m_cause;
+
+	};
+
 	class Win32Error : public std::runtime_error 
 	{
 	public:

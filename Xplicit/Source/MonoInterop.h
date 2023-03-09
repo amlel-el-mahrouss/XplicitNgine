@@ -27,7 +27,9 @@ namespace Xplicit
 	{
 	public:
 		MonoClassInstance() = delete;
-		MonoClassInstance(const char* namespase, const char* ctor);
+
+	public:
+		MonoClassInstance(const char* namespase, const char* klass);
 		virtual ~MonoClassInstance();
 
 		MonoClassInstance& operator=(const MonoClassInstance&) = default;
@@ -53,18 +55,24 @@ namespace Xplicit
 
 	};
 
-	class XPLICIT_API MonoUpdateEvent : public Event
+	class XPLICIT_API MonoEvent : public Event
 	{
 	public:
-		MonoUpdateEvent() {}
-		virtual ~MonoUpdateEvent() {}
+		MonoEvent() = delete;
 
-		MonoUpdateEvent& operator=(const MonoUpdateEvent&) = default;
-		MonoUpdateEvent(const MonoUpdateEvent&) = default;
+	public:
+		MonoEvent(const char* event_name);
+		virtual ~MonoEvent() = default;
+
+		MonoEvent& operator=(const MonoEvent&) = default;
+		MonoEvent(const MonoEvent&) = default;
 
 		virtual void operator()() override;
 
 		virtual const char* name() noexcept override;
+
+	private:
+		std::string m_name;
 
 	};
 }

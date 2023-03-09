@@ -18,7 +18,13 @@
 
 namespace Xplicit
 {
-	XPLICIT_API void xplicit_register_class(const char* namespase, const char* klass)
+	static void xplicit_register_events()
+	{
+		mono_add_internal_call("Xplicit.EngineService::RegisterEvent", xplicit_register_event);
+		mono_add_internal_call("Xplicit.EngineService::RegisterClass", xplicit_register_class);
+	}
+
+	XPLICIT_API void xplicit_register_class(MonoString* namespase, MonoString* klass)
 	{
 		if (!namespase)
 			return;
@@ -26,8 +32,14 @@ namespace Xplicit
 		if (!klass)
 			return;
 
-		if (Xplicit::InstanceManager::get_singleton_ptr())
-			Xplicit::InstanceManager::get_singleton_ptr()->add<MonoClassInstance>(namespase, klass);
+		const char* _namespase = mono_string_to_utf8(namespase);
+		const char* _klass = mono_string_to_utf8(klass);
+
+		assert(_namespase);
+		assert(_klass);
+
+		if (_namespase && _klass)
+			InstanceManager::get_singleton_ptr()->add<MonoClassInstance>(_namespase, _klass);
 	}
 
 	static std::string mono_to_cxx(MonoString* str)
@@ -101,7 +113,8 @@ namespace Xplicit
 			if (!mono_domain_set(m_app_domain, true))
 				throw std::runtime_error("MonoDomain: Internal error");
 
-			mono_add_internal_call("Xplicit.RuntimeService::RegisterClass", xplicit_register_class);
+			// finaly do that, register needed API calls for C#.
+			xplicit_register_events();
 		}
 		else
 		{

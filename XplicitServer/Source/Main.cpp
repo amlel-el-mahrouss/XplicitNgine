@@ -92,14 +92,15 @@ static void xplicit_attach_mono()
 	XPLICIT_GET_DATA_DIR(data_dir);
 
 	if (*data_dir == 0)
-		throw std::runtime_error("NoSuchVariable");
+		throw std::runtime_error("NoSuchVariable: Couldn't read Xplicit's needed files!");
 
 	std::string path = data_dir;
 	path += "\\Lib\\Xplicit.dll";
 
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoEngineInstance>();
+
+	// add Xplicit.dll
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(path.c_str(), false);
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::MonoUpdateEvent>();
 }
 
 static void xplicit_create_common()

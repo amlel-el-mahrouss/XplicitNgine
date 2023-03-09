@@ -109,13 +109,26 @@ namespace Xplicit
 		return false;
 	}
 
-	//
-	// Mono events
-	//
-
-	void MonoUpdateEvent::operator()()
+	MonoEvent::MonoEvent(const char* event_name) 
+		: m_name(event_name)
 	{
-		auto scripts = InstanceManager::get_singleton_ptr()->find_all<MonoClassInstance>("MonoClassInstance");
+		if (m_name.empty())
+		{
+			XPLICIT_CRITICAL("EngineError: MonoEvent::MonoEvent");
+			XPLICIT_CRITICAL("EngineError: m_name.empty()");
+		}
+		else
+		{
+			XPLICIT_INFO("MonoEvent: now listens at: " + m_name);
+		}
+	}
+
+	void MonoEvent::operator()()
+	{
+		if (m_name.empty())
+			return;
+
+		auto scripts = InstanceManager::get_singleton_ptr()->find_all<MonoClassInstance>(m_name.c_str());
 
 		for (size_t i = 0; i < scripts.size(); i++)
 		{
@@ -124,9 +137,19 @@ namespace Xplicit
 		}
 	}
 
-	const char* MonoUpdateEvent::name() noexcept
+	const char* MonoEvent::name() noexcept
 	{
-		return ("MonoUpdateEvent");
+		if (m_name.empty())
+			return ("MonoEvent");
+
+		return m_name.c_str();
 	}
 
+	XPLICIT_API void xplicit_register_event(MonoString* event_name)
+	{
+		const char* name = mono_string_to_utf8(event_name);
+
+		if (name)
+			EventDispatcher::get_singleton_ptr()->add<MonoEvent>(name);
+	}
 }
