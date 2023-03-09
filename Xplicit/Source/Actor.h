@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
  *			File: Actor.h
@@ -21,24 +21,22 @@
 
 namespace Xplicit
 {
-	// Server-Side Actor Class
 	class XPLICIT_API ActorInstance final : public Instance
 	{
 	public:
 		// an actor position structure.
 		// used to describe where it is.
-
-		class ActorPos final
+		class ActorPosition final
 		{
 		public:
-			ActorPos(float x, float y, float z)
+			ActorPosition(float x, float y, float z)
 				: X(x), Y(y), Z(z)
 			{}
 
-			~ActorPos() {}
+			~ActorPosition() {}
 
-			ActorPos& operator=(const ActorPos&) = default;
-			ActorPos(const ActorPos&) = default;
+			ActorPosition& operator=(const ActorPosition&) = default;
+			ActorPosition(const ActorPosition&) = default;
 
 		public:
 			float X;
@@ -47,17 +45,18 @@ namespace Xplicit
 
 		};
 
-		class ActorReplication final
+		// a delegate which tells who this actor belongs to.
+		class ActorReplicationDelegate final
 		{
 		public:
-			ActorReplication()
+			ActorReplicationDelegate()
 				: sockaddr(), cmd(Xplicit::NETWORK_CMD_INVALID)
 			{}
 
-			~ActorReplication() {}
+			~ActorReplicationDelegate() {}
 
-			ActorReplication& operator=(const ActorReplication&) = default;
-			ActorReplication(const ActorReplication&) = default;
+			ActorReplicationDelegate& operator=(const ActorReplicationDelegate&) = default;
+			ActorReplicationDelegate(const ActorReplicationDelegate&) = default;
 
 		public:
 			struct sockaddr_in sockaddr; // Actor's socket address
@@ -73,12 +72,12 @@ namespace Xplicit
 		ActorInstance(const ActorInstance&) = default;
 
 	public:
-		int16_t& health() noexcept; // gets the health of the actor.
+		int32_t& health() noexcept; // gets the health of the actor.
 		void reset() noexcept; // reset and reserve actor for future usage
 		int64_t id() noexcept; // gets it's id, assigned by a system.
 
-		ActorReplication& get() noexcept; // gets the network replication data.
-		ActorPos& pos() noexcept; // gets its position
+		ActorReplicationDelegate& get() noexcept; // gets the network replication data.
+		ActorPosition& pos() noexcept; // gets its position
 
 		virtual const char* name() noexcept override;
 		virtual INSTANCE_TYPE type() noexcept override;
@@ -93,51 +92,19 @@ namespace Xplicit
 	public:
 		virtual INSTANCE_PHYSICS physics() noexcept override;
 
-		virtual bool can_collide() override;
-		virtual bool has_physics() override;
-		bool is_colliding() noexcept;
+		virtual bool can_collide() noexcept override;
+		virtual bool has_physics() noexcept override;
 
 	private:
-		ActorReplication m_replication;
+		ActorReplicationDelegate m_replication;
+		ActorPosition m_pos;
 
 	private:
-		ActorPos m_pos;
-
-	private:
-		int32_t m_respawn_delay;
-		int16_t m_actor_health;
+		int32_t m_actor_health;
+		int32_t m_actor_delay;
 		int64_t m_actor_id;
 
 		friend class PlayerActorEvent;
-
-	};
-
-	class XPLICIT_API NetworkActorEvent final : public Event
-	{
-	public:
-		NetworkActorEvent() {}
-		virtual ~NetworkActorEvent() {}
-
-		NetworkActorEvent& operator=(const NetworkActorEvent&) = default;
-		NetworkActorEvent(const NetworkActorEvent&) = default;
-
-		virtual const char* name() noexcept { return ("NetworkActorEvent"); }
-		virtual void operator()();
-
-	};
-
-	class XPLICIT_API PlayerActorEvent final : public Event
-	{
-	public:
-		PlayerActorEvent() {}
-		virtual ~PlayerActorEvent() {}
-
-		PlayerActorEvent& operator=(const PlayerActorEvent&) = default;
-		PlayerActorEvent(const PlayerActorEvent&) = default;
-
-		virtual const char* name() noexcept { return ("PlayerActorEvent"); }
-
-		virtual void operator()();
 
 	};
 
@@ -150,9 +117,8 @@ namespace Xplicit
 		PhysicsActorEvent& operator=(const PhysicsActorEvent&) = default;
 		PhysicsActorEvent(const PhysicsActorEvent&) = default;
 
-		virtual const char* name() noexcept { return ("ActorPhysicsEvent"); }
-
-		virtual void operator()();
+		virtual const char* name() noexcept override;
+		virtual void operator()() override;
 
 	};
 }

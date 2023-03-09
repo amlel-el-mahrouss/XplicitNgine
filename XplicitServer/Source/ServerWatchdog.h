@@ -36,6 +36,8 @@ namespace Xplicit
 
 	public:
 		operator bool();
+
+	public:
 		void set(bool enable) noexcept;
 
 	private:

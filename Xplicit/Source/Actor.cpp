@@ -10,14 +10,10 @@
  * =====================================================================
  */
 
+#include "ServerInstance.h"
+#include "MonoInstance.h"
 #include "Actor.h"
 #include "Event.h"
-
-// for the server api
-#include "ServerInstance.h"
-
-// for C# scripts.
-#include "MonoInstance.h"
 
 namespace Xplicit
 {
@@ -28,7 +24,7 @@ namespace Xplicit
 	*/
 
 	ActorInstance::ActorInstance(const bool human)
-		: m_actor_health(100), m_replication(), m_pos(0, 0, 0), m_respawn_delay(0), m_actor_id(-1)
+		: m_actor_health(100), m_replication(), m_pos(0, 0, 0), m_actor_delay(0), m_actor_id(-1)
 	{
 #ifndef _NDEBUG
 		XPLICIT_INFO("ActorInstance::ActorInstance");
@@ -44,8 +40,7 @@ namespace Xplicit
 
 	ActorInstance::INSTANCE_PHYSICS ActorInstance::physics() noexcept { return FAST; }
 
-	bool ActorInstance::is_colliding() noexcept { return false; }
-	bool ActorInstance::has_physics() { return false; }
+	bool ActorInstance::has_physics() noexcept { return true; }
 
 	int64_t ActorInstance::id() noexcept { return m_actor_id; }
 
@@ -58,14 +53,14 @@ namespace Xplicit
 
 		if (this->get().cmd == NETWORK_CMD_DEAD)
 		{
-			if (this->m_respawn_delay > 0)
+			if (this->m_actor_delay > 0)
 			{
-				--this->m_respawn_delay;
+				--this->m_actor_delay;
 			}
-			else if (this->m_respawn_delay < 1)
+			else if (this->m_actor_delay < 1)
 			{
 				this->set(NETWORK_CMD_SPAWN);
-				this->m_respawn_delay = 0;
+				this->m_actor_delay = 0;
 
 				for (size_t i = 0; i < server->size(); i++)
 				{
@@ -85,7 +80,7 @@ namespace Xplicit
 		if (this->health() < 1)
 		{
 			this->set(NETWORK_CMD_DEAD);
-			this->m_respawn_delay = XPLICIT_ACTOR_COOLDOWN;
+			this->m_actor_delay = XPLICIT_ACTOR_COOLDOWN;
 
 			for (size_t i = 0; i < server->size(); i++)
 			{
@@ -102,9 +97,6 @@ namespace Xplicit
 		{
 			// just do something as a simple as that
 			// rely on the physics engine for collision detection.
-
-			if (this->is_colliding())
-				return;
 
 			for (size_t i = 0; i < server->size(); i++)
 			{
@@ -123,8 +115,8 @@ namespace Xplicit
 		}
 	}
 
-	int16_t& ActorInstance::health() noexcept { return m_actor_health; }
-	bool ActorInstance::can_collide() { return false; }
+	int32_t& ActorInstance::health() noexcept { return m_actor_health; }
+	bool ActorInstance::can_collide() noexcept { return true; }
 
 	void ActorInstance::set(int64_t id) noexcept
 	{
@@ -137,8 +129,8 @@ namespace Xplicit
 
 	// Actor's Getters
 
-	ActorInstance::ActorPos& ActorInstance::pos() noexcept { return m_pos; }
-	ActorInstance::ActorReplication& ActorInstance::get() noexcept { return m_replication; }
+	ActorInstance::ActorPosition& ActorInstance::pos() noexcept { return m_pos; }
+	ActorInstance::ActorReplicationDelegate& ActorInstance::get() noexcept { return m_replication; }
 
 	// Actor's Setters
 
@@ -161,25 +153,7 @@ namespace Xplicit
 		this->set(0.f, 0.f, 0.f);
 	}
 
-	void NetworkActorEvent::operator()()
-	{
-		auto vec_actor = InstanceManager::get_singleton_ptr()->find_all<ActorInstance>("ActorInstance");
-
-		if (vec_actor.empty())
-			return;
-
-		// TODO: Place any network code here.
-	}
-
-	void PlayerActorEvent::operator()()
-	{
-		auto vec_actor = InstanceManager::get_singleton_ptr()->find_all<ActorInstance>("ActorInstance");
-
-		if (vec_actor.empty()) 
-			return;
-
-		// TODO: Call C# script
-	}
+	const char* PhysicsActorEvent::name() noexcept { return ("PhysicsActorEvent"); }
 
 	void PhysicsActorEvent::operator()()
 	{

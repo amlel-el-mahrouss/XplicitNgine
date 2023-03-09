@@ -14,6 +14,24 @@
 
 namespace Xplicit
 {
+	static MonoObject* xplicit_mono_call(const char* method_name, MonoClass* klass)
+	{
+		if (!method_name) return nullptr;
+		if (!klass) return nullptr;
+
+		MonoMethodDesc* update_desc = mono_method_desc_new(method_name, false);
+
+		if (!update_desc)
+			return nullptr;
+
+		MonoMethod* method = mono_method_desc_search_in_class(update_desc, klass);
+
+		if (!method)
+			return nullptr;
+
+		return mono_runtime_invoke(method, klass, nullptr, nullptr);
+	}
+
 	MonoClassInstance::MonoClassInstance(const char* namespase, const char* klass)
 		: Instance(), m_klass(nullptr), m_object(nullptr)
 		, m_script(InstanceManager::get_singleton_ptr()->find<MonoScriptInstance>("MonoScriptInstance"))
@@ -47,30 +65,15 @@ namespace Xplicit
 
 	const char* MonoClassInstance::name() noexcept
 	{
+		MonoObject* obj = xplicit_mono_call(":Name()", m_klass);
+		if (obj) return ((const char*)mono_object_unbox(obj));
+
 		return ("MonoClassInstance");
 	}
 
 	void MonoClassInstance::update() 
 	{
 		// Nothing to do for now.
-	}
-
-	static MonoObject* xplicit_mono_call(const char* method_name, MonoClass* klass)
-	{
-		if (!method_name) return nullptr;
-		if (!klass) return nullptr;
-
-		MonoMethodDesc* update_desc = mono_method_desc_new(method_name, false);
-
-		if (!update_desc)
-			return nullptr;
-
-		MonoMethod* method = mono_method_desc_search_in_class(update_desc, klass);
-
-		if (!method)
-			return nullptr;
-
-		return mono_runtime_invoke(method, klass, nullptr, nullptr);
 	}
 
 	// this method actually updates the C# methods.
@@ -82,7 +85,7 @@ namespace Xplicit
 		xplicit_mono_call(":OnUpdate()", m_klass);
 	}
 
-	bool MonoClassInstance::can_collide()
+	bool MonoClassInstance::can_collide() noexcept
 	{
 		MonoObject* obj = xplicit_mono_call(":CanCollide()", m_klass);
 		if (obj) return *((bool*)mono_object_unbox(obj));
@@ -90,7 +93,7 @@ namespace Xplicit
 		return false;
 	}
 
-	bool MonoClassInstance::has_physics()
+	bool MonoClassInstance::has_physics() noexcept
 	{
 		MonoObject* obj = xplicit_mono_call(":HasPhysics()", m_klass);
 		if (obj) return *((bool*)mono_object_unbox(obj));
@@ -98,7 +101,7 @@ namespace Xplicit
 		return false;
 	}
 
-	bool MonoClassInstance::should_update()
+	bool MonoClassInstance::should_update() noexcept
 	{
 		MonoObject* obj = xplicit_mono_call(":ShouldUpdate()", m_klass);
 		if (obj) return *((bool*)mono_object_unbox(obj));

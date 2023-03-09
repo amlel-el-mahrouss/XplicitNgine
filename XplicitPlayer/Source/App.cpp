@@ -67,7 +67,7 @@ namespace Xplicit::App
 			//we found a new element
 			case irr::io::EXN_ELEMENT:
 			{
-				if (std::string(XML->getNodeName()) == "DNS")
+				if (std::string(XML->getNodeName()) == "CONNECT")
 				{
 					this->setup(XML->getAttributeValue("IP"));
 
@@ -90,6 +90,18 @@ namespace Xplicit::App
 
 		net->send(packet_spawn);
 
+		int32_t timeout = 0;
+
+		while (packet_spawn.CMD != NETWORK_CMD_ACCEPT)
+		{
+			net->read(packet_spawn);
+
+			if (timeout > 3000)
+				return false;
+		}
+
+		InstanceManager::get_singleton_ptr()->add<Xplicit::LocalPlayerInstance>(packet_spawn.ID);
+
 		return true;
 	}
 
@@ -106,7 +118,6 @@ namespace Xplicit::App
 		if (setup_network(net))
 		{
 			InstanceManager::get_singleton_ptr()->add<Xplicit::CameraInstance>();
-			InstanceManager::get_singleton_ptr()->add<Xplicit::LocalPlayerInstance>(0);
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::LocalPlayerMoveEvent>();
 		}
 	}

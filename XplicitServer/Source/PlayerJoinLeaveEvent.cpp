@@ -27,6 +27,9 @@ namespace Xplicit
 
 		server->send();
 
+		auto env = EventDispatcher::get_singleton_ptr()->find<NetworkServerEvent>("NetworkServerEvent");
+		env->update();
+
 		++counter;
 	}
 

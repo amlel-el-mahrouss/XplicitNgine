@@ -65,10 +65,10 @@ namespace Xplicit {
 	Instance::INSTANCE_TYPE Instance::type() noexcept { return INSTANCE; }
 	void Instance::update() {}
 
-	bool Instance::can_collide() { return false; }
-	bool Instance::has_physics() { return false; }
+	bool Instance::can_collide() noexcept { return false; }
+	bool Instance::has_physics() noexcept { return false; }
 
-	bool Instance::should_update() { return true; }
+	bool Instance::should_update() noexcept { return true; }
 
 	Instance::INSTANCE_PHYSICS Instance::physics() noexcept { return FAST; }
 }

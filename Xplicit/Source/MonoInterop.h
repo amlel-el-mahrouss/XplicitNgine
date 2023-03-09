@@ -39,10 +39,10 @@ namespace Xplicit
 		virtual void update() override;
 		void script_update() noexcept;
 
-		virtual bool can_collide() override;
-		virtual bool has_physics() override;
+		virtual bool can_collide() noexcept override;
+		virtual bool has_physics() noexcept override;
 
-		virtual bool should_update() override;
+		virtual bool should_update() noexcept override;
 
 		operator bool();
 

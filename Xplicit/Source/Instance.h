@@ -86,10 +86,9 @@ namespace Xplicit
 		virtual INSTANCE_TYPE type() noexcept;
 		virtual void update();
 
-		virtual bool can_collide();
-		virtual bool has_physics();
-
-		virtual bool should_update();
+		virtual bool can_collide() noexcept;
+		virtual bool has_physics() noexcept;
+		virtual bool should_update() noexcept;
 
 		enum INSTANCE_PHYSICS : uint8_t
 		{

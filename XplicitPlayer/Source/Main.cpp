@@ -64,7 +64,7 @@ INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLi
 	}
 	catch (...)
 	{
-		Xplicit::GUI::message_box(L"Uh oh!", L"Something wrong happened! We can't continue!", MB_OK);
+		Xplicit::GUI::message_box(L"Uh oh!", L"Something wrong happen! We can't continue!", MB_OK);
 
 		return -1;
 	}

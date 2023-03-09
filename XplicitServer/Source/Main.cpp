@@ -108,8 +108,6 @@ static void xplicit_create_common()
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PhysicsActorEvent>();
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkActorEvent>();
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerActorEvent>();
 }
 
 static void xplicit_load_shell()
