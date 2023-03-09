@@ -32,6 +32,7 @@ namespace Xplicit
 		return ptr;
 	}
 
+	void Event::update() noexcept { this->operator()(); }
 
 	void Event::operator()() {}
 
