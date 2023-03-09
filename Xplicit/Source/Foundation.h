@@ -460,5 +460,5 @@ namespace Xplicit
 #define XPLICIT_ERROR(XMSG) Xplicit::Logger::get_singleton().get()->error(XMSG)
 #define XPLICIT_INFO(XMSG) Xplicit::Logger::get_singleton().get()->info(XMSG)
 
-#define INIT_COM assert(SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)))
-#define FINI_COM CoUninitialize()
+#define XPLICIT_INIT_COM assert(SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)))
+#define XPLICIT_FINI_COM CoUninitialize()
