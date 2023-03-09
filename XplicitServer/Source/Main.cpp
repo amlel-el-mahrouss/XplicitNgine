@@ -80,23 +80,6 @@ static void xplicit_load_cfg()
 					XPLICIT_INFO("Bad DLL, skiping..");
 				}
 			}
-			else if (std::string(XML->getNodeName()) == "SCENE")
-			{
-				try
-				{
-					std::string scene_path = data_dir;
-					scene_path += "\\";
-					scene_path += XML->getAttributeValue("VFS");
-
-					if (!IRR->getSceneManager()->loadScene(scene_path.c_str()))
-						throw std::runtime_error("SceneException");
-				}
-				catch (std::runtime_error& err)
-				{
-					XPLICIT_INFO(std::string(err.what()).append(": Bad Scene!, exiting.."));
-					std::exit(3);
-				}
-			}
 
 			break;
 		}

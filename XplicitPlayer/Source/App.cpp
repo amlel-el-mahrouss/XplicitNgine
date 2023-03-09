@@ -70,26 +70,8 @@ namespace Xplicit::App
 				if (std::string(XML->getNodeName()) == "DNS")
 				{
 					this->setup(XML->getAttributeValue("IP"));
-				}
-				else if (std::string(XML->getNodeName()) == "SCENE")
-				{
-					try
-					{
-						std::string scene_path = m_data_path;
-						scene_path += "\\";
-						scene_path += XML->getAttributeValue("VFS");
 
-						if (!IRR->getSceneManager()->loadScene(scene_path.c_str()))
-							throw std::runtime_error("SceneException");
-					}
-					catch (std::runtime_error& err)
-					{
-#ifndef _NDEBUG
-						XPLICIT_INFO(std::string(err.what()).append(": Bad Scene!, exiting.."));
-#endif
-
-						std::exit(3);
-					}
+					return;
 				}
 
 				break;
