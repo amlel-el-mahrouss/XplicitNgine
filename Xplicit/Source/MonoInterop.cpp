@@ -34,19 +34,32 @@ namespace Xplicit
 
 	MonoClassInstance::MonoClassInstance(const char* namespase, const char* klass)
 		: Instance(), m_klass(nullptr), m_object(nullptr)
-		, m_script(InstanceManager::get_singleton_ptr()->get<MonoScriptInstance>("MonoScriptInstance"))
+		, m_script()
 	{
-		assert(m_script);
+		/*
+		 * FIXME: Let MonoScriptInstance have it's own name -> get_all<MonoScriptInstance>("MyScript.dll");
+		 */
 
-		if (m_script)
-			m_klass = m_script->get()->make(m_script, namespase, klass);
-		
-		if (m_klass)
+		auto scripts = InstanceManager::get_singleton_ptr()->get_all<MonoScriptInstance>("MonoScriptInstance");
+
+		for (size_t i = 0; i < scripts.size(); i++)
 		{
-			// search and call the constructor.
-			// surronded with assertions.
-			m_object = mono_object_new(m_script->get()->domain(), m_klass);
-			mono_runtime_object_init(m_object);
+			m_script = scripts[i];
+
+			m_klass = m_script->get()->make(m_script, namespase, klass);
+
+			if (m_klass)
+			{
+#ifndef _NDEBUG
+				XPLICIT_INFO("[C#] Calling ctor()..");
+#endif
+				// search and call the constructor.
+				// surronded with assertions.
+				m_object = mono_object_new(m_script->get()->domain(), m_klass);
+				mono_runtime_object_init(m_object);
+
+				break;
+			}
 		}
 	}
 
@@ -145,11 +158,16 @@ namespace Xplicit
 		return m_name.c_str();
 	}
 
-	XPLICIT_API void xplicit_register_event(MonoString* event_name)
+	XPLICIT_API bool xplicit_register_event(MonoString* event_name)
 	{
 		const char* name = mono_string_to_utf8(event_name);
 
 		if (name)
+		{
 			EventDispatcher::get_singleton_ptr()->add<MonoEvent>(name);
+			return true;
+		}
+
+		return false;
 	}
 }

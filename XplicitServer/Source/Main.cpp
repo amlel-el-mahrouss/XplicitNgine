@@ -60,18 +60,20 @@ static void xplicit_load_cfg()
 				{
 					auto dllPath = XML->getAttributeValue("VFS");
 					if (!dllPath)
-						throw std::runtime_error("BadArgumentException");
+						throw std::runtime_error("Plugin: No plugin provided!");
 
-					std::string str_dllPath = data_dir;
+					std::string str_dll_path = data_dir;
 
-					str_dllPath += "\\Lib\\";
-					str_dllPath += dllPath;
+					str_dll_path += "\\Lib\\";
+					str_dll_path += dllPath;
+					
+					Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(str_dll_path.c_str(), false);
 
-					auto assembly_file = mono->open(str_dllPath.c_str());
+					auto assembly_file = mono->open(str_dll_path.c_str());
 
 					if (assembly_file)
 					{
-						XPLICIT_INFO("Loaded DLL: " + str_dllPath);
+						XPLICIT_INFO("Loaded DLL: " + str_dll_path);
 						mono->run(assembly_file, 1, argv);
 					}
 				}
@@ -99,7 +101,7 @@ static void xplicit_attach_mono()
 
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoEngineInstance>();
 
-	// add Xplicit.dll
+	// adds Xplicit.dll, to the list
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(path.c_str(), false);
 }
 

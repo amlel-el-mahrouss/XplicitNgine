@@ -17,8 +17,6 @@
 #include "Event.h"
 #include "Instance.h"
 #include "Foundation.h"
-
-// for C#
 #include "MonoInstance.h"
 
 namespace Xplicit

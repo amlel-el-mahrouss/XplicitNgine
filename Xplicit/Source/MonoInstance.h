@@ -77,6 +77,6 @@ namespace Xplicit
 
 	};
 
-	XPLICIT_API void xplicit_register_event(MonoString* event_name);
-	XPLICIT_API void xplicit_register_class(MonoString* namespase, MonoString* klass);
+	XPLICIT_API bool xplicit_register_event(MonoString* event_name);
+	XPLICIT_API bool xplicit_register_class(MonoString* namespase, MonoString* klass);
 }

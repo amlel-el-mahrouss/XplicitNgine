@@ -20,18 +20,12 @@ namespace Xplicit
 {
 	static void xplicit_register_events()
 	{
-		mono_add_internal_call("Xplicit.EngineService::RegisterEvent", xplicit_register_event);
-		mono_add_internal_call("Xplicit.EngineService::RegisterClass", xplicit_register_class);
+		mono_add_internal_call("Xplicit.RuntimeService::RegisterEvent", xplicit_register_event);
+		mono_add_internal_call("Xplicit.RuntimeService::RegisterClass", xplicit_register_class);
 	}
 
-	XPLICIT_API void xplicit_register_class(MonoString* namespase, MonoString* klass)
+	XPLICIT_API bool xplicit_register_class(MonoString* namespase, MonoString* klass)
 	{
-		if (!namespase)
-			return;
-
-		if (!klass)
-			return;
-
 		const char* _namespase = mono_string_to_utf8(namespase);
 		const char* _klass = mono_string_to_utf8(klass);
 
@@ -39,7 +33,18 @@ namespace Xplicit
 		assert(_klass);
 
 		if (_namespase && _klass)
+		{
+#ifndef _NDEBUG
+			XPLICIT_INFO(_namespase);
+			XPLICIT_INFO(_klass);
+#endif
+
 			InstanceManager::get_singleton_ptr()->add<MonoClassInstance>(_namespase, _klass);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	static std::string mono_to_cxx(MonoString* str)
@@ -237,9 +242,12 @@ namespace Xplicit
 
 	MonoClass* MonoEngineInstance::make(Ref<MonoScriptInstance*>& assembly, const char* namespase, const char* klass)
 	{
-		MonoImage* img = mono_assembly_get_image(assembly->m_assembly);
+		if (!assembly)
+			return nullptr;
 
-		if (!img)
+		MonoImage* img = mono_assembly_get_image(assembly->m_assembly);
+		
+		if (!img) 
 			return nullptr;
 
 		return mono_class_from_name(img, namespase, klass);
