@@ -18,9 +18,9 @@
 #define XPLICIT_NETWORK_PORT (60000)
 #endif // !XPLICIT_NETWORK_PORT
 
-#define XPLICIT_NETWORK_MAG_0 ('I')
-#define XPLICIT_NETWORK_MAG_1 ('r')
-#define XPLICIT_NETWORK_MAG_2 ('r')
+#define XPLICIT_NETWORK_MAG_0 ('X')
+#define XPLICIT_NETWORK_MAG_1 ('N')
+#define XPLICIT_NETWORK_MAG_2 ('P')
 
 namespace Xplicit 
 {
@@ -60,10 +60,10 @@ namespace Xplicit
     class NetworkPacket
     {
     public:
-        char MAG[3];
+        char MAG[3]; /* The Packet Identification numbers. */
 
-        NETWORK_CMD CMD; /* The Command. */
-        int64_t ID;
+        NETWORK_CMD CMD; /* The current processed network command. */
+        int64_t ID; /* The server ignores the ID! So any clients sending a different ID will be ignored. */
 
     public:
         float X; /* X position */
@@ -75,9 +75,9 @@ namespace Xplicit
     class XPLICIT_API NetworkClient final
     {
     public:
-        struct sockaddr_in addr;
-        NetworkPacket packet;
-        NETWORK_STAT stat;
+        struct sockaddr_in addr; /* the current socket address. */
+        NetworkPacket packet; /* the current packet. */
+        NETWORK_STAT stat; /* used by the watchdog to prevent unused actor to be unuseable. */
 
     public:
         NetworkClient();
