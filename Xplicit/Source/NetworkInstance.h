@@ -17,7 +17,7 @@
 #include "Instance.h"
 #include "Foundation.h"
 
-#ifdef __XPLICIT_WINDOWS
+#ifdef XPLICIT_WINDOWS
 #define XPLICIT_NET_ASSERT(EXPR) if (!(EXPR)) { MessageBoxA(nullptr, #EXPR, "C++ Network Exception", 0); std::terminate(); }
 #else
 #define XPLICIT_NET_ASSERT(EXPR) if (!(EXPR)) { std::string err = #EXPR; err += "C++ Network Exception"; XPLICIT_CRITICAL(err); std::terminate(); }
@@ -78,19 +78,15 @@ namespace Xplicit {
         virtual void update() override;
 
         bool connect(const char* ip);
+
         bool send(NetworkPacket& cmd);
         bool read(NetworkPacket& packet);
 
-        NetworkPacket get() noexcept { return m_packet; }
+        NetworkPacket& get() noexcept;
 
     private:
         SOCKET m_socket;
-
-    private:
         NetworkPacket m_packet;
-
-    private:
-        struct sockaddr_in m_tmp_inaddr; // temp var.
         struct sockaddr_in m_inaddr; // socket descriptor.
 
         friend class NetworkEvent;

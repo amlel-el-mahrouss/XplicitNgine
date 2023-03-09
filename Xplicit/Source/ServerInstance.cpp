@@ -17,10 +17,13 @@ namespace Xplicit
 {
 	static void xplicit_set_ioctl(SOCKET sock)
 	{
-
-		// enable non blocking i/o
+#ifdef XPLICIT_WINDOWS
 		u_long ul = 1;
 		ioctlsocket(sock, FIONBIO, &ul);
+
+#else
+#pragma error("DEFINE ME ServerInstance.cpp")
+#endif
 	}
 
 	NetworkServerInstance::NetworkServerInstance(const char* ip)
@@ -34,6 +37,7 @@ namespace Xplicit
 		XPLICIT_INFO(message);
 #endif
 
+#ifdef XPLICIT_WINDOWS
 		// create ipv4 udp socket.
 		m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
@@ -49,6 +53,9 @@ namespace Xplicit
 		m_server.sin_port = htons(XPLICIT_NETWORK_PORT);
 
 		auto ret_bind = bind(m_socket, reinterpret_cast<SOCKADDR*>(&m_server), sizeof(m_server));
+#else
+#pragma error("DEFINE ME ServerInstance.cpp")
+#endif
 
 		if (ret_bind == SOCKET_ERROR)
 			throw NetworkError(NETERR_INTERNAL_ERROR);
@@ -86,8 +93,12 @@ namespace Xplicit
 		XPLICIT_INFO(message);
 #endif
 
+#ifdef XPLICIT_WINDOWS
 		if (shutdown(m_socket, SD_BOTH) == SOCKET_ERROR)
 			closesocket(m_socket);
+#else
+#pragma error("DEFINE ME ServerInstance.cpp")
+#endif
 
 		WSACleanup();
 	}
@@ -111,8 +122,12 @@ namespace Xplicit
 					instance->m_clients[i].packet.MAG[1] = XPLICIT_NETWORK_MAG_1;
 					instance->m_clients[i].packet.MAG[2] = XPLICIT_NETWORK_MAG_2;
 
+#ifdef XPLICIT_WINDOWS
 					::sendto(instance->m_socket, (const char*)&
 						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, sizeof(struct sockaddr_in));
+#else
+#pragma error("DEFINE ME ServerInstance.cpp")
+#endif
 				}
 				
 				instance->m_send = false;
@@ -123,10 +138,14 @@ namespace Xplicit
 
 				for (size_t i = 0; i < instance->m_clients.size(); i++)
 				{
+#ifdef XPLICIT_WINDOWS
 					int sz = sizeof(struct sockaddr_in);
 
 					::recvfrom(instance->m_socket, (char*)&
 						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, &sz);
+#else
+#pragma error("DEFINE ME ServerInstance.cpp")
+#endif
 
 					if (instance->m_clients[i].packet.MAG[0] != XPLICIT_NETWORK_MAG_0 || instance->m_clients[i].packet.MAG[1] != XPLICIT_NETWORK_MAG_1 ||
 						instance->m_clients[i].packet.MAG[2] != XPLICIT_NETWORK_MAG_2)

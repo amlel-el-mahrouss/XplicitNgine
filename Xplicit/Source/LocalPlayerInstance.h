@@ -30,6 +30,8 @@ namespace Xplicit
 			: Instance(), m_then(0), m_cam(nullptr), m_id(id)
 		{
 			m_cam = InstanceManager::get_singleton_ptr()->find<CameraInstance>("CameraInstance");
+			m_net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");
+
 			m_then = IRR->getTimer()->getTime();
 
 #ifdef _NDEBUG
@@ -100,6 +102,16 @@ namespace Xplicit
 					m_cam->get()->setPosition(pos);
 				}
 			}
+
+			if (m_net)
+			{
+				auto packet = m_net->get();
+
+				if (packet.CMD == NETWORK_CMD_STOP)
+				{
+					IRR->closeDevice();
+				}
+			}
 		}
 
 	private:
@@ -109,6 +121,7 @@ namespace Xplicit
 		irr::EKEY_CODE m_key_code_left = irr::KEY_KEY_A;
 
 	private:
+		NetworkInstance* m_net;
 		CameraInstance* m_cam;
 		int64_t m_id;
 		u32 m_then;

@@ -48,7 +48,7 @@
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #ifdef _WIN32
-#define __XPLICIT_WINDOWS 1
+#define XPLICIT_WINDOWS 1
 #endif
 
 #ifdef __XPLICIT_DLL__
@@ -367,10 +367,10 @@ namespace Xplicit
 
 	static inline void open_terminal(FILE* fp = stdout)
 	{
-#ifdef __XPLICIT_WINDOWS
+#ifdef XPLICIT_WINDOWS
 		AllocConsole();
 		(void)freopen("CONOUT$", "w", fp);
-#endif //!__XPLICIT_WINDOWS
+#endif //!XPLICIT_WINDOWS
 	}
 
 	class GUI
@@ -384,14 +384,14 @@ namespace Xplicit
 			if (!message)
 				return -1;
 
-#ifdef __XPLICIT_WINDOWS
+#ifdef XPLICIT_WINDOWS
 			return MessageBoxExW(nullptr, message, title, flags, LANG_ENGLISH);
-#endif // !__XPLICIT_WINDOWS
+#endif // !XPLICIT_WINDOWS
 		}
 
 		static int32_t message_box(LPCWSTR title, LPCWSTR header, LPCWSTR message, PCWSTR icon, _TASKDIALOG_COMMON_BUTTON_FLAGS buttonFlags)
 		{
-#ifdef __XPLICIT_WINDOWS
+#ifdef XPLICIT_WINDOWS
 			if (!title)
 				return -1;
 
@@ -414,7 +414,7 @@ namespace Xplicit
 			TaskDialogIndirect(&config, &clicked_button, nullptr, nullptr);
 
 			return clicked_button;
-#endif // !__XPLICIT_WINDOWS
+#endif // !XPLICIT_WINDOWS
 		}
 
 	};

@@ -103,6 +103,7 @@ namespace Xplicit
 		irr::io::IXMLWriter* Writer;
 		irr::IrrlichtDevice* Dev;
 		InputReceiver* Keyboard;
+		bool ShouldExit;
 
 	};
 

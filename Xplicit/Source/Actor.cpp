@@ -28,7 +28,7 @@ namespace Xplicit
 	*/
 
 	ActorInstance::ActorInstance(const bool human)
-		: m_actor_health(0), m_replication(), m_pos(0, 0, 0), m_respawn_delay(0), m_actor_id(-1)
+		: m_actor_health(100), m_replication(), m_pos(0, 0, 0), m_respawn_delay(0), m_actor_id(-1)
 	{
 #ifndef _NDEBUG
 		XPLICIT_INFO("ActorInstance::ActorInstance");

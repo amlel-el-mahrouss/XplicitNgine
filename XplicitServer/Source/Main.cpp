@@ -13,23 +13,23 @@
 #include "PlayerJoinLeaveEvent.h"
 #include "ServerWatchdog.h"
 
-#ifndef get_data_dir
-#define get_data_dir(DIR) 	char DIR[4096];\
+#ifndef XPLICIT_GET_DATA_DIR
+#define XPLICIT_GET_DATA_DIR(DIR) 	char DIR[4096];\
 memset(DIR, 0, 4096);\
 \
 GetEnvironmentVariableA("XPLICIT_DATA_DIR", DIR, 4096);\
 
 #endif
 
-
 // forward decl everything.
+static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server);
 static void xplicit_create_common();
 static void xplicit_attach_mono();
 static void xplicit_load_cfg();
 
 static void xplicit_load_cfg()
 {
-	get_data_dir(data_dir);
+	XPLICIT_GET_DATA_DIR(data_dir);
 
 	if (*data_dir == 0)
 		throw std::runtime_error("NoSuchVariable");
@@ -89,7 +89,7 @@ static void xplicit_load_cfg()
 
 static void xplicit_attach_mono()
 {
-	get_data_dir(data_dir);
+	XPLICIT_GET_DATA_DIR(data_dir);
 
 	if (*data_dir == 0)
 		throw std::runtime_error("NoSuchVariable");
@@ -110,6 +110,54 @@ static void xplicit_create_common()
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PhysicsActorEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkActorEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerActorEvent>();
+}
+
+static void xplicit_load_shell()
+{
+	std::thread shell(
+		[]() -> void
+		{
+			char cmd_buf[1024];
+
+			while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
+			{
+				std::cin.getline(cmd_buf, 1024);
+
+				if (strcmp(cmd_buf, "exit") == 0)
+				{
+					xplicit_send_stop_packet(Xplicit::InstanceManager::get_singleton_ptr()->find<Xplicit::NetworkServerInstance>("NetworkServerInstance"));
+
+					Xplicit::Application::get_singleton().ShouldExit = true;
+				}
+
+				if (strncmp(cmd_buf, "print", strlen("print")) == 0)
+				{
+					std::cin.getline(cmd_buf, 1024);
+					XPLICIT_INFO(cmd_buf);
+				}
+			}
+		}
+	);
+
+	shell.detach();
+}
+
+static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server)
+{
+	if (!server)
+		return;
+
+	for (size_t i = 0; i < server->size(); i++)
+	{
+		server->get(i).packet.CMD = Xplicit::NETWORK_CMD_STOP;
+	}
+
+	server->send();
+
+	auto env = Xplicit::EventDispatcher::get_singleton_ptr()->find<Xplicit::NetworkServerEvent>("NetworkServerEvent");
+
+	if (env)
+		env->update();
 }
 
 // our main entrypoint.
@@ -136,22 +184,16 @@ int main(int argc, char** argv)
 		xplicit_attach_mono();
 		xplicit_load_cfg();
 		xplicit_create_common();
-
-		Xplicit::Timer timer;
+		xplicit_load_shell();
 
 		while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{
 			Xplicit::InstanceManager::get_singleton_ptr()->update();
 			Xplicit::EventDispatcher::get_singleton_ptr()->update();
+
+			if (Xplicit::Application::get_singleton().ShouldExit)
+				break;
 		}
-
-		auto time = timer.time_since(timer.now());
-
-		std::string str;
-		str += "Uptime: ";
-		str += std::to_string(time.count());
-
-		XPLICIT_INFO(str);
 
 		return 0;
 	}
@@ -165,7 +207,7 @@ int main(int argc, char** argv)
 		XPLICIT_CRITICAL(msg);
 #endif
 
-#ifdef __XPLICIT_WINDOWS
+#ifdef XPLICIT_WINDOWS
 		MessageBoxA(nullptr, msg.c_str(), "FATAL!", MB_OK);
 #endif
 		return -1;
@@ -179,7 +221,7 @@ int main(int argc, char** argv)
 		XPLICIT_CRITICAL(msg);
 #endif
 
-#ifdef __XPLICIT_WINDOWS
+#ifdef XPLICIT_WINDOWS
 		MessageBoxA(nullptr, msg.c_str(), "FATAL!", MB_OK);
 #endif
 

@@ -73,7 +73,6 @@ namespace Xplicit
 		NetworkServerEvent(const NetworkServerEvent&) = default;
 
 		virtual void operator()() override;
-
 		virtual const char* name() noexcept;
 
 	private:

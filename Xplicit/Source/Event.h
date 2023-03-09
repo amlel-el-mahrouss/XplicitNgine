@@ -62,6 +62,7 @@ namespace Xplicit {
 
 		virtual void operator()();
 		virtual const char* name() noexcept;
+		void update() noexcept { this->operator()(); }
 
 	};
 
