@@ -1,0 +1,3 @@
+[submodule "Vendor/XplicitIrr"]
+	path = Vendor/XplicitIrr
+	url = git@github.com:xpx-org/XplicitIrr.git

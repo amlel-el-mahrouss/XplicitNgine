@@ -12,8 +12,8 @@
 
 #pragma once
 
-#include "XplicitApp.h"
 #include "Instance.h"
+#include "XplicitApp.h"
 #include "NetworkInstance.h"
 
 namespace Xplicit

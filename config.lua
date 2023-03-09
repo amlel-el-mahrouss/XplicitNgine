@@ -19,12 +19,12 @@ XPLICIT_CONFIG = {
     },
     ["_LIBDIR"] = {
         "C:/Program Files/Mono/lib/mono-2.0-sgen",
-    	"XplicitRenderer/lib/Irrlicht"
+    	"Vendor/XplicitIrr/lib/Irrlicht"
     },
     ["_INCDIR"] = {
         "Vendor/",
     	"Xplicit/Vendor/include/",
-    	"XplicitRenderer/include",
+    	"Vendor/XplicitIrr/include",
         "C:/Program Files/Mono/include/mono-2.0",
     }
 };
@@ -44,7 +44,7 @@ XPLICIT_SERVER_CONFIG = {
         },
     },
     ["_LIBDIR"] = {
-    	"XplicitRenderer/lib/Irrlicht",
+    	"Vendor/XplicitIrr/lib/Irrlicht",
     	"bin/Debug/Xplicit",
     },
     ["_INCDIR"] = {
@@ -52,7 +52,7 @@ XPLICIT_SERVER_CONFIG = {
         "Vendor/stb/",
     	"Xplicit/Source/",
         "Vendor/nuklear/",
-    	"XplicitRenderer/include",
+    	"Vendor/XplicitIrr/include",
         "C:/Program Files/Mono/include/mono-2.0",
     }
 };
@@ -73,14 +73,14 @@ XPLICIT_CLIENT_CONFIG = {
         },
     },
     ["_LIBDIR"] = {
-    	"XplicitRenderer/lib/Irrlicht",
+    	"Vendor/XplicitIrr/lib/Irrlicht",
     	"bin/Debug/Xplicit",
     },
     ["_INCDIR"] = {
         "Vendor/",
     	"Xplicit/Source/",
     	"Xplicit/Vendor/include/",
-    	"XplicitRenderer/include",
+    	"Vendor/XplicitIrr/include",
         "Vendor/lua/",
         "Vendor/stb/",
         "Vendor/nuklear/",

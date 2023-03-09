@@ -14,7 +14,6 @@
 
 #include <irrlicht.h>
 #include <uuid/uuid.h>
-
 #include "Foundation.h"
 
 // use these namespaces.
@@ -107,7 +106,7 @@ namespace Xplicit
 
 	};
 
-	class GUID final
+	class GUIDFactory final
 	{
 	public:
 		template <int ver>
