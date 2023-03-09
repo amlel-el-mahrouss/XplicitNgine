@@ -16,7 +16,7 @@
 #include "Foundation.h"
 #include "Instance.h"
 #include "Event.h"
-#include "Irr.h"
+#include "XplicitApp.h"
 
 //
 //	File: Actor.h

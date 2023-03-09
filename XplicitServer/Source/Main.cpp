@@ -116,7 +116,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		// init winsock
+		// init winsock for networking.
 		WSADATA wsa;
 		Xplicit::init_winsock(&wsa);
 

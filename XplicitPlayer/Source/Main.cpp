@@ -19,8 +19,7 @@
 
 static void xplicit_create_opengl()
 {
-	KB = new Xplicit::InputReceiver();
-
+	Xplicit::Application::get_singleton().set(new Xplicit::InputReceiver());
 	if (!KB) throw std::bad_alloc();
 
 	dimension2du dim2d = dimension2du(800, 600);

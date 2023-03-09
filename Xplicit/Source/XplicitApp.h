@@ -4,7 +4,7 @@
  *						XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: Irr.h
+ *			File: XplicitApp.h
  *			Purpose: Irrlicht definitions
  *
  * =====================================================================
@@ -81,7 +81,7 @@ namespace Xplicit
 		Application(const Application&) = default;
 
 	public:
-		static Application& get_singleton()
+		static Application& get_singleton() noexcept
 		{
 			static Application app;
 			return app;
@@ -91,6 +91,12 @@ namespace Xplicit
 		{
 			if (dev)
 				Dev = dev;
+		}
+
+		void set(InputReceiver* kb)
+		{
+			if (kb)
+				Keyboard = kb;
 		}
 
 	public:

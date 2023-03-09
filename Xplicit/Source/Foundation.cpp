@@ -22,10 +22,10 @@ XPLICIT_API FILE* get_logger(void)
 size_t fstrlen(const char* buffer) 
 {
 	if (!buffer) return 0;
-	if (*buffer == END_OF_BUFFER) return 0;
+	if (*buffer == XPLICIT_END_OF_BUFFER) return 0;
 
 	size_t index = 0;
-	while (buffer[index] != END_OF_BUFFER) ++index;
+	while (buffer[index] != XPLICIT_END_OF_BUFFER) ++index;
 
 	return index;
 }

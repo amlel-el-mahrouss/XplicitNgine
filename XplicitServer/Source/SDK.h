@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <Irr.h>
+#include <XplicitApp.h>
 #include <Actor.h>
 #include <Event.h>
 

@@ -61,15 +61,11 @@
 #define XPLICIT_API
 #endif
 
-#ifdef END_OF_BUFFER
-#undef END_OF_BUFFER
-#endif // !END_OF_BUFFER
+#ifdef XPLICIT_END_OF_BUFFER
+#undef XPLICIT_END_OF_BUFFER
+#endif // !XPLICIT_END_OF_BUFFER
 
-#define END_OF_BUFFER '\0'
-
-#define XPLICIT_CIRITICAL(XMSG) spdlog::critical(XMSG)
-#define XPLICIT_ERROR(XMSG) spdlog::error(XMSG)
-#define XPLICIT_INFO(XMSG) spdlog::info(XMSG)
+#define XPLICIT_END_OF_BUFFER '\0'
 
 XPLICIT_API size_t fstrlen(const char* str);
 XPLICIT_API void log(const char* str);
@@ -416,4 +412,50 @@ namespace Xplicit
 		}
 
 	};
+
+	class Logger
+	{
+	public:
+		Logger() = default;
+		~Logger() = default;
+
+		Logger& operator=(const Logger&) = default;
+		Logger(const Logger&) = default;
+
+	public:
+		static Logger& get_singleton() noexcept
+		{
+			static Logger LOGGER;
+			return LOGGER;
+		}
+
+		auto get()
+		{
+			static spdlog::logger* LOGGER = nullptr;
+
+			if (!LOGGER)
+			{
+				auto info = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+				info->set_level(spdlog::level::info);
+				info->set_pattern("[%^ENGINE%$] %v");
+
+				auto critical = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+				critical->set_level(spdlog::level::critical);
+				critical->set_pattern("[%^ENGINE%$] %v");
+
+				auto err = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+				err->set_level(spdlog::level::err);
+				err->set_pattern("[%^ENGINE%$] %v");
+
+				LOGGER = new spdlog::logger("EngineSink", { err, info, critical });
+			}
+
+			return LOGGER;
+		}
+
+	};
 }
+
+#define XPLICIT_CIRITICAL(XMSG) Xplicit::Logger::get_singleton().get()->critical(XMSG)
+#define XPLICIT_ERROR(XMSG) Xplicit::Logger::get_singleton().get()->error(XMSG)
+#define XPLICIT_INFO(XMSG) Xplicit::Logger::get_singleton().get()->info(XMSG)
