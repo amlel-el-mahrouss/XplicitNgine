@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *						XplicitNgin C++ Game Engine
+ *				XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
  *			File: ServerInstance.h
