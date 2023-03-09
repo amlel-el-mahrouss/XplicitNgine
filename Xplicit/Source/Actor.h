@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: Actor.h
  *			Purpose: Actors, or players
@@ -67,8 +67,8 @@ namespace Xplicit
 
 		void set(int64_t id) noexcept;
 		void set(NETWORK_CMD cmd) noexcept;
-		void set(struct sockaddr_in sockaddr) noexcept;
 		void set(float x, float y, float z) noexcept;
+		void set(struct sockaddr_in sockaddr) noexcept;
 
 		virtual void update() override;
 
@@ -81,14 +81,16 @@ namespace Xplicit
 		bool is_colliding() noexcept;
 
 	private:
-		struct sockaddr_in m_sockaddr;
-		NETWORK_CMD m_network_cmd;
+		struct sockaddr_in m_sockaddr; // Actor's socket address
+		NETWORK_CMD m_network_cmd; // Actor's current network command.
+
+	private:
 		ActorPos m_pos;
 
 	private:
 		int32_t m_respawn_delay;
-		int16_t m_health;
-		int64_t m_id;
+		int16_t m_actor_health;
+		int64_t m_actor_id;
 
 		friend class PlayerActorEvent;
 

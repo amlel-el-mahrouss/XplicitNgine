@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: Crc32.h
  *			Purpose: CRC32 checksum

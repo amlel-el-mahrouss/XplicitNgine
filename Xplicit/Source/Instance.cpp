@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: Instance.cpp
  *			Purpose: Instance System

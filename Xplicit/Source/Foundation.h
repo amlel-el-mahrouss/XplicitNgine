@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: Foundation.h
  *			Purpose: Xplicit Foundation Header
@@ -67,16 +67,15 @@
 
 #define END_OF_BUFFER '\0'
 
-// some spdlog helpers
 #define XPLICIT_CIRITICAL(XMSG) spdlog::critical(XMSG)
 #define XPLICIT_ERROR(XMSG) spdlog::error(XMSG)
 #define XPLICIT_INFO(XMSG) spdlog::info(XMSG)
 
-XPLICIT_API size_t fstrlen(const char* deflated);
-XPLICIT_API time_t get_epoch(void);
-XPLICIT_API FILE* get_logger(void);
-XPLICIT_API bool open_logger(void);
+XPLICIT_API size_t fstrlen(const char* str);
 XPLICIT_API void log(const char* str);
+XPLICIT_API time_t get_epoch();
+XPLICIT_API FILE* get_logger();
+XPLICIT_API bool open_logger();
 
 #ifdef _MSC_VER
 #define PACKED_STRUCT( decl ) __pragma( pack(push, 1) ) decl; __pragma( pack(pop))

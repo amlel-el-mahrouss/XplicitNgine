@@ -2,10 +2,10 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: Protocol.h
- *			Purpose: Network Protocol Definitions
+ *			Purpose: Game Network Protocol
  *
  * =====================================================================
  */
@@ -28,25 +28,27 @@ namespace Xplicit {
         NETWORK_CMD_DAMAGE,
         NETWORK_CMD_SPAWN,
         NETWORK_CMD_ERROR,
-        // tools
+        // Tools
         NETWORK_CMD_TOOL_MOUNT,
         NETWORK_CMD_TOOL_UNMOUNT,
         NETWORK_CMD_TOOL_USE,
-        // position
+        // Position Update
         NETWORK_CMD_POS,
-        // script update command.
-        NETWORK_CMD_SCRIPT,
-        // accept current connection
+        // Connection Status
         NETWORK_CMD_ACCEPT,
         NETWORK_CMD_REFUSE,
+        NETWORK_CMD_WATCHDOG,
         NETWORK_CMD_ACK,
-        // communication packets
-        NETWORK_CMD_MESSAGE,
-        NETWORK_CMD_VOICE_CHAT_BEGIN,
-        NETWORK_CMD_VOICE_CHAT_END,
-        // kick
+        // Kick
         NETWORK_CMD_KICK,
         NETWORK_CMD_INVALID = 0xFFFFFFF,
+    };
+
+    enum NETWORK_STAT : int
+    {
+        NETWORK_STAT_CONNECTED,
+        NETWORK_STAT_CONNECTING,
+        NETWORK_STAT_DISCONNECTED,
     };
 
     class NetworkPacket
@@ -62,36 +64,24 @@ namespace Xplicit {
 
     };
 
-    class NetworkClient final
+    class XPLICIT_API NetworkClient final
     {
     public:
         struct sockaddr_in addr;
         NetworkPacket packet;
+        NETWORK_STAT stat;
 
     public:
-        NetworkClient() : packet(), addr() {}
-        ~NetworkClient() {}
+        NetworkClient();
+        ~NetworkClient();
 
         NetworkClient& operator=(const NetworkClient&) = default;
         NetworkClient(const NetworkClient&) = default;
 
-        bool operator==(const NetworkClient& cl)
-        {
-            return cl.addr.sin_addr.S_un.S_addr == this->addr.sin_addr.S_un.S_addr;
-        }
+        bool operator==(const NetworkClient& cl);
+        bool operator!=(const NetworkClient& cl);
 
-        bool operator!=(const NetworkClient& cl)
-        {
-            return cl.addr.sin_addr.S_un.S_addr != this->addr.sin_addr.S_un.S_addr;
-        }
-
-        void reset() noexcept
-        {
-            packet.CMD = NETWORK_CMD_INVALID;
-            packet.ID = -1;
-
-            memset(&addr, 0, sizeof(struct sockaddr_in));
-        }
+        void reset() noexcept;
 
     };
 

@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: Foundation.cpp
  *			Purpose: Xplicit Foundation Header
@@ -46,7 +46,6 @@ void log(const char* msg)
 	snprintf(buf, sizeof(time_t), "%llu", get_epoch());
 	fprintf(stdlog, "[%s - LOG] %s", buf, msg);
 #endif // !NDEBUG
-
 }
 
 char dbg_filename[256];

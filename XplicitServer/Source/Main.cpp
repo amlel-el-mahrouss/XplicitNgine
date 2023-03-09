@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: Server.cpp
  *			Purpose: Server Main Procedure
@@ -11,19 +11,28 @@
  */
 
 #include "PlayerJoinLeaveEvent.h"
+#include "ServerWatchdog.h"
 
+#ifndef get_data_dir
+#define get_data_dir(DIR) 	char DIR[4096];\
+memset(DIR, 0, 4096);\
+\
+GetEnvironmentVariableA("XPLICIT_DATA_DIR", DIR, 4096);\
+
+#endif
+
+
+// forward decl everything.
+static void xplicit_create_common();
 static void xplicit_attach_mono();
 static void xplicit_load_cfg();
 
 static void xplicit_load_cfg()
 {
-	char data_dir[4096];
-	memset(data_dir, 0, 4096);
-
-	GetEnvironmentVariableA("XPLICIT_DATA_DIR", data_dir, 4096);
+	get_data_dir(data_dir);
 
 	if (*data_dir == 0)
-		throw std::runtime_error("getenv: no such variable!");
+		throw std::runtime_error("NoSuchVariable");
 
 	std::string path = data_dir;
 	path += "\\MANIFEST.xml";
@@ -51,7 +60,7 @@ static void xplicit_load_cfg()
 				{
 					auto dllPath = XML->getAttributeValue("VFS");
 					if (!dllPath)
-						throw std::runtime_error("Bad DLL path!");
+						throw std::runtime_error("BadArgumentException");
 
 					std::string str_dllPath = data_dir;
 
@@ -97,19 +106,15 @@ static void xplicit_load_cfg()
 
 static void xplicit_attach_mono()
 {
-	auto mono = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoEngineInstance>();
+	get_data_dir(data_dir);
 
-	char data_dir[4096];
-	memset(data_dir, 0, 4096);
-
-	GetEnvironmentVariableA("XPLICIT_DATA_DIR", data_dir, 4096);
+	if (*data_dir == 0)
+		throw std::runtime_error("NoSuchVariable");
 
 	std::string path = data_dir;
 	path += "\\Lib\\Xplicit.dll";
 
-	// we need a script instance, in order to create classes.
-	// a script instance is literally a context for our plugin engine.
-
+	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoEngineInstance>();
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(path.c_str(), false);
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::MonoUpdateEvent>();
 }
@@ -117,6 +122,7 @@ static void xplicit_attach_mono()
 static void xplicit_create_common()
 {
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
+	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PhysicsActorEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkActorEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerActorEvent>();

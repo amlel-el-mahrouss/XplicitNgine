@@ -1,7 +1,49 @@
+/*
+ * =====================================================================
+ *
+ *						XplicitNgin C++ Game Engine
+ *			Copyright XPX, all rights reserved.
+ *
+ *			File: App.cpp
+ *			Purpose: Application Implementation
+ *
+ * =====================================================================
+ */
+
 #include "App.h"
 
 namespace Xplicit::App
 {
+	Application::Application()
+		: m_wsa(), m_data_path("")
+	{
+		memset(m_data_path, 0, 4096);
+		GetEnvironmentVariableA("XPLICIT_DATA_DIR", m_data_path, 4096);
+
+		if (*m_data_path == 0)
+			throw std::runtime_error("getenv: no such variable!");
+
+		Xplicit::init_winsock(&m_wsa);
+
+#ifndef _NDEBUG
+		Xplicit::open_terminal();
+#endif
+
+		this->setup_xml();
+		this->setup_read_cfg();
+	}
+
+	Application::~Application()
+	{
+		if (!InstanceManager::get_singleton_ptr())
+			return;
+
+		InstanceManager::get_singleton_ptr()->remove<NetworkInstance>("NetworkInstance");
+		InstanceManager::get_singleton_ptr()->remove<CameraInstance>("CameraInstance");
+		InstanceManager::get_singleton_ptr()->remove<LocalPlayerInstance>("LocalPlayerInstance");
+		EventDispatcher::get_singleton_ptr()->remove<LocalPlayerMoveEvent>("LocalPlayerMoveEvent");
+	}
+
 	void Application::setup_xml()
 	{
 		InstanceManager::get_singleton_ptr()->add<NetworkInstance>();
@@ -17,12 +59,12 @@ namespace Xplicit::App
 		if (!XML)
 			throw std::runtime_error("No XML provided..");
 
-		// read until nothing cant be read.
+		// read until EOF.
 		while (XML->read())
 		{
 			switch (XML->getNodeType())
 			{
-				//we found a new element
+			//we found a new element
 			case irr::io::EXN_ELEMENT:
 			{
 				if (std::string(XML->getNodeName()) == "DNS")
@@ -72,7 +114,7 @@ namespace Xplicit::App
 	void Application::setup(const char* ip)
 	{
 		if (!ip)
-			throw std::runtime_error("DNSError: Invalid Host!");
+			throw std::runtime_error("DNSError");
 
 		auto net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");
 		assert(net);

@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: Actor.h
  *			Purpose: Actors, or players
@@ -28,7 +28,7 @@ namespace Xplicit
 	*/
 
 	ActorInstance::ActorInstance(const bool human)
-		: m_health(0), m_network_cmd(NETWORK_CMD_INVALID), m_pos(0, 0, 0), m_sockaddr(), m_respawn_delay(0), m_id(-1)
+		: m_actor_health(0), m_network_cmd(NETWORK_CMD_INVALID), m_pos(0, 0, 0), m_sockaddr(), m_respawn_delay(0), m_actor_id(-1)
 	{
 #ifndef _NDEBUG
 		XPLICIT_INFO("ActorInstance::ActorInstance");
@@ -48,7 +48,7 @@ namespace Xplicit
 	bool ActorInstance::is_colliding() noexcept { return false; }
 	bool ActorInstance::has_physics() { return false; }
 
-	int64_t ActorInstance::id() noexcept { return m_id; }
+	int64_t ActorInstance::id() noexcept { return m_actor_id; }
 
 	void ActorInstance::update() 
 	{
@@ -73,7 +73,7 @@ namespace Xplicit
 					if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_sockaddr.sin_addr.S_un.S_addr)
 					{
 						server->get(i).packet.CMD = NETWORK_CMD_SPAWN;
-						server->get(i).packet.ID = this->m_id;
+						server->get(i).packet.ID = this->m_actor_id;
 
 						break;
 					}
@@ -93,7 +93,7 @@ namespace Xplicit
 				if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_sockaddr.sin_addr.S_un.S_addr)
 				{
 					server->get(i).packet.CMD = NETWORK_CMD_DEAD;
-					server->get(i).packet.ID = this->m_id;
+					server->get(i).packet.ID = this->m_actor_id;
 
 					break;
 				}
@@ -112,7 +112,7 @@ namespace Xplicit
 				if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_sockaddr.sin_addr.S_un.S_addr)
 				{
 					server->get(i).packet.CMD = NETWORK_CMD_POS;
-					server->get(i).packet.ID = this->m_id;
+					server->get(i).packet.ID = this->m_actor_id;
 
 					server->get(i).packet.X = m_pos.X;
 					server->get(i).packet.Y = m_pos.Y;
@@ -124,7 +124,7 @@ namespace Xplicit
 		}
 	}
 
-	int16_t& ActorInstance::health() noexcept { return m_health; }
+	int16_t& ActorInstance::health() noexcept { return m_actor_health; }
 	bool ActorInstance::can_collide() { return false; }
 
 	ActorInstance::ActorPos& ActorInstance::get_pos() { return m_pos; }
@@ -132,7 +132,7 @@ namespace Xplicit
 	void ActorInstance::set(int64_t id) noexcept
 	{
 		if (id < 0) return;
-		m_id = id;
+		m_actor_id = id;
 	}
 
 	const char* ActorInstance::name() noexcept { return "ActorInstance"; }
@@ -158,8 +158,8 @@ namespace Xplicit
 	void ActorInstance::reset() noexcept
 	{
 		m_sockaddr.sin_addr.S_un.S_addr = 0;
-		m_health = 0;
-		m_id = -1;
+		m_actor_health = 0;
+		m_actor_id = -1;
 
 		this->set(0.f, 0.f, 0.f);
 	}

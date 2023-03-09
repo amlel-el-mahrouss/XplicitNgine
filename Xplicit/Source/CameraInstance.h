@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: CameraInstance.h
  *			Purpose: Camera Controller
@@ -86,13 +86,16 @@ namespace Xplicit
 
 			if (KB->is_key_down(irr::KEY_ESCAPE))
 			{
-				NetworkPacket cmd = {  };
-				cmd.CMD = NETWORK_CMD_STOP; // client is shutting down.
-
 				auto net = InstanceManager::get_singleton_ptr()->find<NetworkInstance>("NetworkInstance");
 
 				if (net)
+				{
+					// send a stop command.
+					NetworkPacket cmd = {  };
+					cmd.CMD = NETWORK_CMD_STOP; // client is shutting down.
+
 					net->send(cmd);
+				}
 
 				IRR->closeDevice();
 			}

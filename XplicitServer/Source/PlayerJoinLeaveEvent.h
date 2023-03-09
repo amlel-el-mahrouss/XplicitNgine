@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: PlayerJoinLeaveEvent.h
  *			Purpose: Player Join and Leave Event
@@ -31,12 +31,11 @@ namespace Xplicit
 		PlayerJoinLeaveEvent(const PlayerJoinLeaveEvent&) = default;
 
 		virtual void operator()() override;
+		virtual const char* name() noexcept override;
 
 	private:
 		bool on_leave() noexcept;
 		bool on_join() noexcept;
-
-		virtual const char* name() noexcept override;
 
 	private:
 		int64_t m_id_counter;

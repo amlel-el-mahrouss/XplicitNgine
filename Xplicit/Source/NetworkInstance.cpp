@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *						XplicitNgin C++ Game Engine
- *			Copyright XPX Technologies all rights reserved.
+ *			Copyright XPX, all rights reserved.
  *
  *			File: NetworkInstance.cpp
  *			Purpose: UDP Networking API
@@ -43,12 +43,6 @@ namespace Xplicit
 
 	NetworkInstance::~NetworkInstance()
 	{
-		// send a stop command.
-		NetworkPacket cmd = {  };
-		cmd.CMD = NETWORK_CMD_STOP; // client is shutting down.
-
-		this->send(cmd);
-
 		// Shutdown and close socket if shutdown failed.
 		int res = shutdown(m_socket, SD_BOTH);
 
