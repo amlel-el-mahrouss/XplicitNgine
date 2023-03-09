@@ -1,4 +1,3 @@
 <!-- Server Manifest -->
 
 <CONNECT IP="10.211.55.8"/>
-<PLUGIN VFS="GameServer.dll"/>
