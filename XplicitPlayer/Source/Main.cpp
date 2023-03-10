@@ -50,7 +50,8 @@ INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLi
 
 		while (IRR->run() && Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{
-			IRR->getVideoDriver()->beginScene(true, true, irr::video::SColor(0, 38, 100, 100));
+			// To match the loading's screen colour.
+			IRR->getVideoDriver()->beginScene(true, true, irr::video::SColor(40, 40, 40, 100));
 
 			IRR->getSceneManager()->drawAll();
 			IRR->getGUIEnvironment()->drawAll();
@@ -63,9 +64,11 @@ INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLi
 
 		return 0;
 	}
-	catch (...)
+	catch (std::runtime_error err)
 	{
-		Xplicit::GUI::message_box(L"XplicitNgin", L"This is a fatal error, we can't continue :(", MB_OK);
+#ifdef XPLICIT_WINDOWS
+		MessageBoxA(nullptr, err.what(), "XplicitNgin, Error!", MB_OK);
+#endif
 
 		return -1;
 	}

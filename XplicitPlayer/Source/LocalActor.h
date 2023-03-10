@@ -23,7 +23,7 @@ namespace Xplicit::Client
 	constexpr const int XPLICIT_NETWORK_DELAY = 100;
 	constexpr const float XPLICIT_SPEED = 20.f;
 
-	class XPLICIT_API LocalActor : public Instance
+	class LocalActor : public Instance
 	{
 	public:
 		LocalActor(int64_t id);

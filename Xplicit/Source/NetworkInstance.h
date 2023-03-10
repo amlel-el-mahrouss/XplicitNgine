@@ -77,8 +77,8 @@ namespace Xplicit {
 
         virtual void update() override;
 
+        void reset() noexcept;
         bool connect(const char* ip);
-
         bool send(NetworkPacket& cmd);
         bool read(NetworkPacket& packet);
 

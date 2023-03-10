@@ -18,7 +18,7 @@
 
 namespace Xplicit::Client
 {
-	class XPLICIT_API CameraInstance : public Instance
+	class CameraInstance : public Instance
 	{
 	public:
 		CameraInstance();

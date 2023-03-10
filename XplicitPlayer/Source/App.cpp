@@ -10,6 +10,7 @@
  * =====================================================================
  */
 
+#include "LoadingScreenInstance.h"
 #include "App.h"
 
 namespace Xplicit::App
@@ -46,8 +47,6 @@ namespace Xplicit::App
 
 	void Application::setup_xml()
 	{
-		InstanceManager::get_singleton_ptr()->add<NetworkInstance>();
-
 		std::string path = m_data_path;
 		path += "\\MANIFEST.xml";
 
@@ -69,68 +68,17 @@ namespace Xplicit::App
 			{
 				if (std::string(XML->getNodeName()) == "CONNECT")
 				{
-					this->setup_connect(XML->getAttributeValue("IP"));
+					auto loading = InstanceManager::get_singleton_ptr()->add<Client::LoadingScreenInstance>();
+					loading->connect(XML->getAttributeValue("IP"));
 
-					return;
+#ifdef XPLICIT_DEBUG
+					XPLICIT_INFO("Connecting to server: " + std::string(XML->getAttributeValue("IP")));
+#endif
 				}
 
 				break;
 			}
 			}
-		}
-	}
-
-	bool Application::setup_network(NetworkInstance* net)
-	{
-		if (!net)
-			return false;
-
-		NetworkPacket packet_spawn{};
-
-		packet_spawn.CMD = NETWORK_CMD_BEGIN;
-		packet_spawn.ID = -1;
-
-		net->send(packet_spawn);
-
-		int32_t timeout = 0;
-
-		while (packet_spawn.CMD != NETWORK_CMD_ACCEPT)
-		{
-			net->read(packet_spawn);
-
-			if (timeout > 30)
-			{
-#ifndef _NDEBUG
-				XPLICIT_INFO("Timeout reached..");
-#endif
-
-				return false;
-			}
-
-			++timeout;
-		}
-
-		assert(packet_spawn.ID != -1);
-
-		InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet_spawn.ID);
-
-		return true;
-	}
-
-	void Application::setup_connect(const char* ip)
-	{
-		if (!ip)
-			throw std::runtime_error("Invalid DNS!");
-
-		auto net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
-		assert(net);
-
-		net->connect(ip);
-
-		if (setup_network(net))
-		{
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::CameraInstance>();
-			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalActorMoveEvent>();
 		}
 	}
 }

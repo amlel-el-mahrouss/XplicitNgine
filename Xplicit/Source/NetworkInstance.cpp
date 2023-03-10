@@ -49,16 +49,21 @@ namespace Xplicit
 
 	NetworkInstance::~NetworkInstance()
 	{
+		this->reset();
+
+#ifndef _NDEBUG
+		XPLICIT_INFO("~NetworkInstance, Epoch: " + std::to_string(get_epoch()));
+#endif
+	}
+
+	void NetworkInstance::reset() noexcept
+	{
 #ifdef XPLICIT_WINDOWS
 		// Shutdown and close socket if shutdown failed.
 		if (shutdown(m_socket, SD_BOTH) == SOCKET_ERROR)
 			closesocket(m_socket);
 #else
 #pragma error("DEFINE ME NetworkInstance.cpp")
-#endif
-
-#ifndef _NDEBUG
-		XPLICIT_INFO("~NetworkInstance, Epoch: " + std::to_string(get_epoch()));
 #endif
 	}
 

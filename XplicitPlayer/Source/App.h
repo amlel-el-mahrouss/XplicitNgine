@@ -20,7 +20,6 @@
 /* Client instances */
 #include "LocalActor.h"
 #include "CameraInstance.h"
-#include <NetworkInstance.h>
 
 namespace Xplicit::App
 {
@@ -38,8 +37,6 @@ namespace Xplicit::App
 	private:
 		void setup_xml();
 		void setup_cfg();
-		void setup_connect(const char* ip);
-		bool setup_network(NetworkInstance* net);
 
 	private:
 		WSADATA m_wsa;
