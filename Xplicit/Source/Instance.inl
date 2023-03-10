@@ -10,10 +10,14 @@
  * =====================================================================
  */
 
+#include "Avx.h"
+
 template <typename T, typename... Args>
 T* Xplicit::InstanceManager::add(Args&&... args)
 {
 	T* ptr = new T{ args... };
+	assert(ptr);
+
 	m_instances.push_back(ptr);
 
 	return ptr;
@@ -27,7 +31,11 @@ T* Xplicit::InstanceManager::get(const char* name)
 		if (!m_instances[i])
 			continue;
 
+#ifdef XPLICIT_USE_AVX
+		if (avx_strcmp(name, m_instances[i]->name()))
+#else
 		if (strcmp(name, m_instances[i]->name()) == 0)
+#endif
 			return static_cast<T*>(m_instances[i]);
 	}
 
@@ -50,7 +58,11 @@ std::vector<T*> Xplicit::InstanceManager::get_all(const char* name)
 		if (!m_instances[i])
 			continue;
 
+#ifdef XPLICIT_USE_AVX
+		if (avx_strcmp(name, m_instances[i]->name()))
+#else
 		if (strcmp(name, m_instances[i]->name()) == 0)
+#endif
 			list.push_back(static_cast<T*>(m_instances[i]));
 	}
 
@@ -68,7 +80,11 @@ bool Xplicit::InstanceManager::remove(const char* name)
 
 	for (auto it = 0; it < m_instances.size(); ++it)
 	{
+#ifdef XPLICIT_USE_AVX
+		if (m_instances[it] && avx_strcmp(name, m_instances[it]->name()))
+#else
 		if (m_instances[it] && strcmp(name, m_instances[it]->name()) == 0)
+#endif
 		{
 			auto obj = m_instances[it];
 

@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: Instance.h
- *			Purpose: Object Instancing
+ *			Purpose: Xplicit's ECS
  *
  * =====================================================================
  */

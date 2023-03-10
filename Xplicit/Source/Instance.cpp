@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: Instance.h
- *			Purpose: Object Instancing
+ *			Purpose: Xplicit's ECS
  *
  * =====================================================================
  */
@@ -15,9 +15,6 @@
 namespace Xplicit {
 	void InstanceManager::update() noexcept
 	{
-		// invalid instance list.
-		std::vector<size_t> m_invalid_instances;
-
 		for (size_t i = 0; i < m_instances.size(); i++)
 		{
 			// either delete or invalidate the instance.
@@ -25,29 +22,6 @@ namespace Xplicit {
 			{
 				if (m_instances[i]->should_update())
 					m_instances[i]->update();
-			}
-			else
-			{
-				m_invalid_instances.push_back(i);
-			}
-		}
-
-		// clean out some mess.
-		for (size_t i = 0; i < m_invalid_instances.size(); ++i)
-		{
-			// am i even deleting some that is valid?
-			if (!m_instances.at(m_invalid_instances[i]))
-			{
-				auto element = std::find(m_instances.cbegin(), m_instances.cend(), m_instances[m_invalid_instances[i]]);
-
-				if (element != m_instances.cend())
-				{
-					m_instances.erase(element);
-
-#ifndef _NDEBUG
-					XPLICIT_INFO("Removed unused Instance..");
-#endif
-				}
 			}
 		}
 	}
