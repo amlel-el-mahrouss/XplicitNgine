@@ -1,3 +1,15 @@
+/*
+ * =====================================================================
+ *
+ *				XplicitNgin C++ Game Engine
+ *			Copyright XPX, all rights reserved.
+ *
+ *			File: LoadingSreenInstance.cpp
+ *			Purpose: Client Loading Screen
+ *
+ * =====================================================================
+ */
+
 #include "LoadingScreenInstance.h"
 #include "CameraInstance.h"
 #include "LocalActor.h"

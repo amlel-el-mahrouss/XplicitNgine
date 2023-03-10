@@ -49,14 +49,14 @@ namespace Xplicit
 
 	};
 
-	class XPLICIT_API Application final
+	class XPLICIT_API ApplicationContext final
 	{
 	private:
-		Application()
+		ApplicationContext()
 			: Keyboard(nullptr), Dev(nullptr), Reader(nullptr), Writer(nullptr), ShouldExit(false)
 		{}
 
-		~Application() 
+		~ApplicationContext() 
 		{
 			if (Dev)
 				Dev->drop();
@@ -68,13 +68,15 @@ namespace Xplicit
 				Writer->drop();
 		}
 
-		Application& operator=(const Application&) = default;
-		Application(const Application&) = default;
+		ApplicationContext& operator=(const ApplicationContext&) = default;
+		ApplicationContext(const ApplicationContext&) = default;
 
 	public:
-		static Application& get_singleton() noexcept
+		static ApplicationContext& get_singleton() noexcept
 		{
-			static Application app;
+			static ApplicationContext app;
+
+			// return a static singleton, simple!
 			return app;
 		}
 
@@ -127,6 +129,18 @@ namespace Xplicit
 	};
 }
 
-#define XML Xplicit::Application::get_singleton().Reader
-#define IRR  Xplicit::Application::get_singleton().Dev
-#define KB  Xplicit::Application::get_singleton().Keyboard
+#define XML Xplicit::ApplicationContext::get_singleton().Reader
+#define IRR  Xplicit::ApplicationContext::get_singleton().Dev
+#define KB  Xplicit::ApplicationContext::get_singleton().Keyboard
+
+#ifdef XPLICIT_WINDOWS
+#ifndef XPLICIT_GET_DATA_DIR
+#define XPLICIT_GET_DATA_DIR(DIR) 	char DIR[4096];\
+memset(DIR, 0, 4096);\
+\
+GetEnvironmentVariableA("XPLICIT_DATA_DIR", DIR, 4096);\
+
+#endif
+#else
+#error You need XPLICIT_GET_DATA_DIR!
+#endif

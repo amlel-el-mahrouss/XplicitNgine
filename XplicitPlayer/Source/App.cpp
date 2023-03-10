@@ -18,8 +18,9 @@ namespace Xplicit::App
 	Application::Application()
 		: m_wsa(), m_data_path("")
 	{
-		memset(m_data_path, 0, 4096);
-		GetEnvironmentVariableA("XPLICIT_DATA_DIR", m_data_path, 4096);
+		XPLICIT_GET_DATA_DIR(data_tmp);
+
+		memcpy_s(m_data_path, 4096, data_tmp, 4096);
 
 		if (*m_data_path == 0)
 			throw std::runtime_error("getenv: no such variable!");

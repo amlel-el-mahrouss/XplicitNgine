@@ -1,24 +1,11 @@
 /*
  * =====================================================================
  *
- *			XplicitNgin C++ Engine
+ *				XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: UI.h
- *			Purpose: Sleek UI
+ *			File: Avx.cpp
+ *			Purpose: Intel AVX based C functions.
  *
  * =====================================================================
  */
-
-#pragma once
-
-#include <Application.h>
-
-#ifdef XPLICIT_WINDOWS
-#include "DriverD3D11.h"
-#endif
-
-namespace Xplicit::UI
-{
-
-}

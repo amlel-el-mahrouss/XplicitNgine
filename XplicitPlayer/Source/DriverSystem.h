@@ -1,20 +1,18 @@
+/*
+ * =====================================================================
+ *
+ *				XplicitNgin C++ Game Engine
+ *			Copyright XPX, all rights reserved.
+ *
+ *			File: DriverSystem.h
+ *			Purpose: C++ Rendering Driver
+ *
+ * =====================================================================
+ */
+
 #pragma once
 
 #include <Foundation.h>
-
-#ifdef XPLICIT_WINDOWS
-
-#include <intrin.h>
-#include <d3d11.h>
-
-#include <nuklear/nuklear.h>
-#include <nuklear/nuklear_d3d11.h>
-#include <nuklear/nuklear_d3d11_pixel_shader.h>
-#include <nuklear/nuklear_d3d11_vertex_shader.h>
-
-#endif
-
-#include <nuklear/nuklear.h>
 
 namespace Xplicit::Renderer
 {

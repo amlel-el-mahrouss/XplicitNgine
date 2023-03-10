@@ -1,3 +1,15 @@
+/*
+ * =====================================================================
+ *
+ *				XplicitNgin C++ Game Engine
+ *			Copyright XPX, all rights reserved.
+ *
+ *			File: DriverSystem.cpp
+ *			Purpose: C++ Rendering Driver
+ *
+ * =====================================================================
+ */
+
 #include "DriverSystem.h"
 
 namespace Xplicit::Renderer

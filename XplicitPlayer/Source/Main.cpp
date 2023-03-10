@@ -19,14 +19,14 @@
 
 static void xplicit_create_opengl()
 {
-	Xplicit::Application::get_singleton().set(new Xplicit::InputReceiver());
+	Xplicit::ApplicationContext::get_singleton().set(new Xplicit::InputReceiver());
 	
 	if (!KB) 
 		throw std::bad_alloc();
 
 	dimension2du dim = dimension2du(800, 600);
 
-	Xplicit::Application::get_singleton().set(irr::createDevice(irr::video::EDT_OPENGL,
+	Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_OPENGL,
 		dim,
 		16U,
 		false,
@@ -51,7 +51,7 @@ INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLi
 		while (IRR->run() && Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{
 			// To match the loading's screen colour.
-			IRR->getVideoDriver()->beginScene(true, true, irr::video::SColor(40, 40, 40, 100));
+			IRR->getVideoDriver()->beginScene(true, true, irr::video::SColor(40, 40, 40, 40));
 
 			IRR->getSceneManager()->drawAll();
 			IRR->getGUIEnvironment()->drawAll();

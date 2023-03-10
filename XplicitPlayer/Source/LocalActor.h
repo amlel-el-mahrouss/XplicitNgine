@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			XplicitNgin C++ Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: LocalPlayer.h
@@ -17,7 +17,7 @@
 #include "CameraInstance.h"
 #include "NetworkInstance.h"
 
-
+// FIXME: rework them when we will roll our own renderer.
 namespace Xplicit::Client
 {
 	constexpr const int XPLICIT_NETWORK_DELAY = 100;

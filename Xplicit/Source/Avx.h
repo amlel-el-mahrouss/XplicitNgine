@@ -1,12 +1,11 @@
 /*
  * =====================================================================
  *
- *			XplicitNgin C++ Game Engine
+ *				XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: Avx.h
- *			Purpose: C functions using AVX, keep in mind that AVX
- *			is not supported on every machine.
+ *			File: Avx.j
+ *			Purpose: Intel AVX based C functions.
  *
  * =====================================================================
  */
@@ -28,6 +27,8 @@ static inline bool avx_strcmp(const char* str1, const char* str2)
 	unsigned bitmask = _mm256_movemask_epi8(pcmp);
 	return (bitmask == 0xffffffffU);
 }
+
+// use XPLICIT_USE_AVX, in order to tell if you want AVX or not.
 
 #ifdef XPLICIT_WANT_AVX
 #define XPLICIT_USE_AVX (1)

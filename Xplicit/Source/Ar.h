@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: Ar.h
@@ -13,10 +13,6 @@
 #pragma once
 
 #include "Foundation.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 constexpr auto AR_MAGIC = 0xBADF00D;
 
@@ -99,11 +95,6 @@ ar_flush(struct ar_context* ctx);
 XPLICIT_API bool
 ar_close(struct ar_context* ctx);
 
-#ifdef __cplusplus
-};
-#endif
-
-#ifdef __cplusplus
 namespace Xplicit 
 {
     class ArchiveManager final 
@@ -202,5 +193,3 @@ namespace Xplicit
     };
 
 }
-
-#endif

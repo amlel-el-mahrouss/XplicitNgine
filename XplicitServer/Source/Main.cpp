@@ -13,14 +13,6 @@
 #include "PlayerJoinLeaveEvent.h"
 #include "ServerWatchdog.h"
 
-#ifndef XPLICIT_GET_DATA_DIR
-#define XPLICIT_GET_DATA_DIR(DIR) 	char DIR[4096];\
-memset(DIR, 0, 4096);\
-\
-GetEnvironmentVariableA("XPLICIT_DATA_DIR", DIR, 4096);\
-
-#endif
-
 // forward decl everything.
 static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server); // called when the server stops.
 static void xplicit_create_common(); // create common events/instances.
@@ -137,7 +129,7 @@ static void xplicit_load_shell()
 				{
 					xplicit_send_stop_packet(Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance"));
 
-					Xplicit::Application::get_singleton().ShouldExit = true;
+					Xplicit::ApplicationContext::get_singleton().ShouldExit = true;
 				}
 
 				if (strncmp(cmd_buf, "print", strlen("print")) == 0)
@@ -180,7 +172,7 @@ int main(int argc, char** argv)
 		Xplicit::init_winsock(&wsa);
 
 		// create a NULL device.
-		Xplicit::Application::get_singleton().set(irr::createDevice(irr::video::EDT_NULL));
+		Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_NULL));
 
 		// the address is located in the XPLICIT_SERVER_ADDR variable.
 		char* addr = getenv("XPLICIT_SERVER_ADDR");
@@ -201,7 +193,7 @@ int main(int argc, char** argv)
 			Xplicit::InstanceManager::get_singleton_ptr()->update();
 			Xplicit::EventDispatcher::get_singleton_ptr()->update();
 
-			if (Xplicit::Application::get_singleton().ShouldExit)
+			if (Xplicit::ApplicationContext::get_singleton().ShouldExit)
 				break;
 		}
 

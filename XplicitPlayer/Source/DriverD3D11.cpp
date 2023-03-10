@@ -1,24 +1,13 @@
 /*
  * =====================================================================
  *
- *			XplicitNgin C++ Engine
+ *				XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: UI.h
- *			Purpose: Sleek UI
+ *			File: DriverD3D11.cpp
+ *			Purpose: C++ Rendering Driver for Direct 3D 11
  *
  * =====================================================================
  */
 
-#pragma once
-
-#include <Application.h>
-
-#ifdef XPLICIT_WINDOWS
 #include "DriverD3D11.h"
-#endif
-
-namespace Xplicit::UI
-{
-
-}
