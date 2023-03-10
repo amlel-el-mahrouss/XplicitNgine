@@ -98,8 +98,14 @@ namespace Xplicit::App
 		{
 			net->read(packet_spawn);
 
-			if (timeout > 3000)
+			if (timeout > 30)
+			{
+#ifndef _NDEBUG
+				XPLICIT_INFO("Timeout reached..");
+#endif
+
 				return false;
+			}
 
 			++timeout;
 		}

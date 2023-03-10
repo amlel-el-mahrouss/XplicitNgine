@@ -4,23 +4,15 @@
  *				XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: XplicitApp.h
- *			Purpose: Irrlicht definitions
+ *			File: Application.h
+ *			Purpose: Application Header
  *
  * =====================================================================
  */
 
 #pragma once
 
-#include <irrlicht.h>
-#include <uuid/uuid.h>
 #include "Foundation.h"
-
-// use these namespaces.
-using namespace irr;
-using namespace core;
-using namespace video;
-using namespace scene;
 
 namespace Xplicit
 {
@@ -61,7 +53,7 @@ namespace Xplicit
 	{
 	private:
 		Application()
-			: Keyboard(nullptr), Dev(nullptr), Reader(nullptr), Writer(nullptr)
+			: Keyboard(nullptr), Dev(nullptr), Reader(nullptr), Writer(nullptr), ShouldExit(false)
 		{}
 
 		~Application() 
@@ -107,7 +99,7 @@ namespace Xplicit
 
 	};
 
-	class GUIDFactory final
+	class UUIDFactory final
 	{
 	public:
 		template <int ver>

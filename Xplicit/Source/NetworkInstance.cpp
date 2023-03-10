@@ -11,7 +11,6 @@
  */
 
 #include "NetworkInstance.h"
-#include "XplicitApp.h"
 
 namespace Xplicit 
 {

@@ -12,16 +12,16 @@
 
 #pragma once
 
-#include <XplicitApp.h>
+#include <Application.h>
 #include <Event.h>
 #include <Instance.h>
 #include <Foundation.h>
 
 // instances
-#include <CameraInstance.h>
+#include "CameraInstance.h"
 #include <ServerInstance.h>
 #include <NetworkInstance.h>
-#include <LocalPlayerInstance.h>
+#include "LocalPlayerInstance.h"
 
 // XML
 #include <rapidxml/rapidxml.hpp>

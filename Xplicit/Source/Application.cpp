@@ -4,10 +4,10 @@
  *				XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: CameraInstance.cpp
- *			Purpose: Camera Controller
+ *			File: Irr.cpp
+ *			Purpose: Application Source Unit
  *
  * =====================================================================
  */
 
-#include "CameraInstance.h"
+#include "Application.h"

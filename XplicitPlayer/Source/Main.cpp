@@ -20,12 +20,14 @@
 static void xplicit_create_opengl()
 {
 	Xplicit::Application::get_singleton().set(new Xplicit::InputReceiver());
-	if (!KB) throw std::bad_alloc();
+	
+	if (!KB) 
+		throw std::bad_alloc();
 
-	dimension2du dim2d = dimension2du(800, 600);
+	dimension2du dim = dimension2du(800, 600);
 
 	Xplicit::Application::get_singleton().set(irr::createDevice(irr::video::EDT_OPENGL,
-		dim2d,
+		dim,
 		16U,
 		false,
 		false,
@@ -63,7 +65,7 @@ INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLi
 	}
 	catch (...)
 	{
-		Xplicit::GUI::message_box(L"Uh oh!", L"Something wrong happen! We can't continue!", MB_OK);
+		Xplicit::GUI::message_box(L"XplicitNgin", L"This is a fatal error, we can't continue :(", MB_OK);
 
 		return -1;
 	}

@@ -15,7 +15,6 @@
 
 #include "ServerInstance.h"
 #include "Foundation.h"
-#include "XplicitApp.h"
 #include "Instance.h"
 #include "Event.h"
 

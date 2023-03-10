@@ -12,63 +12,18 @@
 
 #pragma once
 
-#include <ctime>
-#include <cstdio>
-#include <clocale>
-#include <cstring>
-#include <cassert>
-#include <cstdlib>
-#include <cstdint>
-
-#include <WinSock2.h>
-#include <ws2tcpip.h>
-
-#pragma comment(lib, "Ws2_32.lib")
-
-#include <tuple>
-#include <array>
-#include <thread>
-#include <string>
-#include <memory>
-#include <fstream>
-#include <iostream>
-#include <concepts>
-#include <stdexcept>
-#include <algorithm>
-#include <filesystem>
-
-#include <spdlog/spdlog.h>
-
-#include <Windows.h>
-#include <tlhelp32.h>
-#include <shellapi.h>
-
-#include <CommCtrl.h>
-#pragma comment(lib,"comctl32.lib")
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-
-#ifdef _WIN32
-#define XPLICIT_WINDOWS 1
-#endif
-
-#ifdef __XPLICIT_DLL__
-#ifdef __EXPORT_XPLICIT__
-#define XPLICIT_API __declspec(dllexport)
-#else
-#define XPLICIT_API __declspec(dllimport)
-#endif
-#else
-#define XPLICIT_API
-#endif
+#include "Config.h"
 
 #ifdef XPLICIT_END_OF_BUFFER
 #undef XPLICIT_END_OF_BUFFER
-#endif // !XPLICIT_END_OF_BUFFER
+#endif // ifdef XPLICIT_END_OF_BUFFER
 
 #define XPLICIT_END_OF_BUFFER '\0'
 
 XPLICIT_API size_t fstrlen(const char* str);
+
 XPLICIT_API void log(const char* str);
+
 XPLICIT_API time_t get_epoch();
 XPLICIT_API FILE* get_logger();
 XPLICIT_API bool open_logger();
@@ -84,13 +39,15 @@ namespace Xplicit
 	class EngineError : public std::runtime_error
 	{
 	public:
+		/* should allocated on the heap btw, anything on the stack can pop out.. */
 		EngineError(void* caused_by) : std::runtime_error("Engine Error"), m_cause(caused_by) {}
 		~EngineError() = default; // let the ABI define that.
 
 		EngineError& operator=(const EngineError&) = default;
 		EngineError(const EngineError&) = default;
 
-		void* what() { return m_cause; }
+		template <typename T = void>
+		T* what() { return reinterpret_cast<T*>(m_cause); }
 
 	private:
 		void* m_cause;

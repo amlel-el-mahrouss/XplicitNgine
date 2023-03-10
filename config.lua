@@ -18,12 +18,12 @@ XPLICIT_CONFIG = {
         },
     },
     ["_LIBDIR"] = {
+    	"Vendor/XplicitIrr/lib/Irrlicht",
         "C:/Program Files/Mono/lib/mono-2.0-sgen",
-    	"Vendor/XplicitIrr/lib/Irrlicht"
     },
     ["_INCDIR"] = {
         "Vendor/",
-    	"Xplicit/Vendor/include/",
+    	  "Xplicit/Vendor/include/",
     	"Vendor/XplicitIrr/include",
         "C:/Program Files/Mono/include/mono-2.0",
     }

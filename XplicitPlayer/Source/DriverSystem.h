@@ -27,14 +27,14 @@ namespace Xplicit::Renderer
 		VULKAN,
 	};
 
-	class IDriverSystem
+	class DriverSystem
 	{
 	public:
-		IDriverSystem() {}
-		virtual ~IDriverSystem() {}
+		DriverSystem() {}
+		virtual ~DriverSystem() {}
 
-		IDriverSystem& operator=(const IDriverSystem&) = default;
-		IDriverSystem(const IDriverSystem&) = default;
+		DriverSystem& operator=(const DriverSystem&) = default;
+		DriverSystem(const DriverSystem&) = default;
 
 		virtual const char* name() noexcept;
 		virtual RENDER_SYSTEM api();
