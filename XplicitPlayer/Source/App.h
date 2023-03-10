@@ -12,20 +12,15 @@
 
 #pragma once
 
-#include <Application.h>
 #include <Event.h>
 #include <Instance.h>
 #include <Foundation.h>
+#include <Application.h>
 
-// instances
+/* Client instances */
+#include "LocalActor.h"
 #include "CameraInstance.h"
-#include <ServerInstance.h>
 #include <NetworkInstance.h>
-#include "LocalPlayerInstance.h"
-
-// XML
-#include <rapidxml/rapidxml.hpp>
-#include <rapidxml/rapidxml_utils.hpp>
 
 namespace Xplicit::App
 {

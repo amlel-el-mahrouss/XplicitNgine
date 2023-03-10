@@ -49,7 +49,7 @@ namespace Xplicit
 		{
 		public:
 			ActorReplication()
-				: sockaddr(), cmd(Xplicit::NETWORK_CMD_INVALID)
+				: sockaddr(), cmd(Xplicit::NETWORK_CMD_INVALID), health(100)
 			{}
 
 			~ActorReplication() {}
@@ -60,6 +60,7 @@ namespace Xplicit
 		public:
 			struct sockaddr_in sockaddr; // Actor's socket address
 			NETWORK_CMD cmd; // Actor's current network command.
+			int64_t health;
 
 		};
 
@@ -73,6 +74,7 @@ namespace Xplicit
 	public:
 		void reset() noexcept; // reset the actor for future usage.
 
+		void health(const int32_t& health) noexcept;
 		const int32_t& health() noexcept; // gets the health of the actor.
 		const int64_t& id() noexcept; // gets it's id, assigned by a system.
 
@@ -98,23 +100,20 @@ namespace Xplicit
 
 	private:
 		ActorReplication m_replication;
-		int32_t m_actor_health;
-		int32_t m_actor_delay;
 		ActorPosition m_pos;
 		int64_t m_actor_id;
-
-		friend class PlayerActorEvent;
+		int32_t m_delay;
 
 	};
 
-	class XPLICIT_API PhysicsActorEvent final : public Event
+	class XPLICIT_API ActorEvent final : public Event
 	{
 	public:
-		PhysicsActorEvent() {}
-		virtual ~PhysicsActorEvent() {}
+		ActorEvent() {}
+		virtual ~ActorEvent() {}
 
-		PhysicsActorEvent& operator=(const PhysicsActorEvent&) = default;
-		PhysicsActorEvent(const PhysicsActorEvent&) = default;
+		ActorEvent& operator=(const ActorEvent&) = default;
+		ActorEvent(const ActorEvent&) = default;
 
 		virtual const char* name() noexcept override;
 		virtual void operator()() override;

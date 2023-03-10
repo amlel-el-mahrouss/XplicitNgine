@@ -12,7 +12,7 @@
 
 #include "CameraInstance.h"
 
-namespace Xplicit
+namespace Xplicit::Client
 {
 	CameraInstance::CameraInstance()
 		: Instance(), m_camera(nullptr), m_idle_tex(nullptr), m_moving_tex(nullptr), m_typing_tex(nullptr)

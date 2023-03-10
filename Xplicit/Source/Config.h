@@ -60,3 +60,9 @@ using namespace scene;
 #ifdef _MSC_VER
 #define XPLICIT_CXX_COMPILER "Visual C++"
 #endif // ifdef _MSC_VER
+
+#ifndef _NDEBUG
+#define XPLICIT_DEBUG (1)
+#else
+#define XPLICIT_RELEASE (2)
+#endif

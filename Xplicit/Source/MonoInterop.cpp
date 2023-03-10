@@ -25,6 +25,7 @@ namespace Xplicit
 			return nullptr;
 
 		MonoMethod* method = mono_method_desc_search_in_class(update_desc, klass);
+		mono_method_desc_free(update_desc);
 
 		if (!method)
 			return nullptr;
@@ -33,8 +34,7 @@ namespace Xplicit
 	}
 
 	MonoClassInstance::MonoClassInstance(const char* namespase, const char* klass)
-		: Instance(), m_klass(nullptr), m_object(nullptr)
-		, m_script()
+		: Instance(), m_klass(nullptr), m_object_klass(nullptr), m_script()
 	{
 		/*
 		 * FIXME: Let MonoScriptInstance have it's own name -> get_all<MonoScriptInstance>("MyScript.dll");
@@ -51,12 +51,12 @@ namespace Xplicit
 			if (m_klass)
 			{
 #ifndef _NDEBUG
-				XPLICIT_INFO("[C#] Calling ctor()..");
+				XPLICIT_INFO("[C#] Calling :ctor()..");
 #endif
 				// search and call the constructor.
 				// surronded with assertions.
-				m_object = mono_object_new(m_script->get()->domain(), m_klass);
-				mono_runtime_object_init(m_object);
+				m_object_klass = mono_object_new(m_script->get()->domain(), m_klass);
+				mono_runtime_object_init(m_object_klass);
 
 				break;
 			}
@@ -79,7 +79,11 @@ namespace Xplicit
 	const char* MonoClassInstance::name() noexcept
 	{
 		MonoObject* obj = xplicit_mono_call(":Name()", m_klass);
-		if (obj) return ((const char*)mono_object_unbox(obj));
+
+		if (obj) 
+		{
+			return mono_string_to_utf8((MonoString*)obj);
+		}
 
 		return ("MonoClassInstance");
 	}
@@ -92,7 +96,7 @@ namespace Xplicit
 	// this method actually updates the C# methods.
 	void MonoClassInstance::script_update() noexcept
 	{
-		if (this->should_update())
+		if (!this->should_update())
 			return;
 
 		xplicit_mono_call(":OnUpdate()", m_klass);
@@ -132,7 +136,7 @@ namespace Xplicit
 		}
 		else
 		{
-			XPLICIT_INFO("MonoEvent: now listens at: " + m_name);
+			XPLICIT_INFO("MonoEvent: Listening at: " + m_name);
 		}
 	}
 

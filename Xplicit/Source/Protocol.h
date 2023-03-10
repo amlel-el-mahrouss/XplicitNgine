@@ -34,10 +34,8 @@ namespace Xplicit
         NETWORK_CMD_DAMAGE,
         NETWORK_CMD_SPAWN,
         NETWORK_CMD_ERROR,
-        // Tools
-        NETWORK_CMD_TOOL_MOUNT,
-        NETWORK_CMD_TOOL_UNMOUNT,
-        NETWORK_CMD_TOOL_USE,
+        // Script message
+        NETWORK_CMD_SCRIPT,
         // Position Update
         NETWORK_CMD_POS,
         // Connection Status
@@ -60,8 +58,9 @@ namespace Xplicit
     class NetworkPacket
     {
     public:
-        char MAG[3]; /* The Packet Identification numbers. */
+        char MAG[3]; /* The Packet magic numbers. */
 
+        /* Command and Actor ID. */
         NETWORK_CMD CMD; /* The current network command. */
         int64_t ID; /* NOTE: The server must ignore the ID! */
 
@@ -69,6 +68,9 @@ namespace Xplicit
         float X; /* X position */
         float Y; /* Y position */
         float Z; /* Z position */
+
+    public:
+        char Data[256]; /* Optional Data array */
 
     };
 

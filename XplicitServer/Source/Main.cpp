@@ -22,10 +22,11 @@ GetEnvironmentVariableA("XPLICIT_DATA_DIR", DIR, 4096);\
 #endif
 
 // forward decl everything.
-static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server);
-static void xplicit_create_common();
-static void xplicit_attach_mono();
-static void xplicit_load_cfg();
+static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server); // called when the server stops.
+static void xplicit_create_common(); // create common events/instances.
+static void xplicit_attach_mono(); // attach mono plugins
+static void xplicit_load_shell(); // loads a shell..
+static void xplicit_load_cfg(); // load from MANIFEST.xml
 
 static void xplicit_load_cfg()
 {
@@ -109,8 +110,7 @@ static void xplicit_create_common()
 {
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PhysicsActorEvent>();
+	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
 }
 
 static void xplicit_load_shell()
@@ -122,6 +122,8 @@ static void xplicit_load_shell()
 
 			while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 			{
+				std::cout << "# ";
+
 				std::cin.getline(cmd_buf, 1024);
 
 				if (strcmp(cmd_buf, "exit") == 0)

@@ -39,9 +39,9 @@ namespace Xplicit::App
 			return;
 
 		InstanceManager::get_singleton_ptr()->remove<NetworkInstance>("NetworkInstance");
-		InstanceManager::get_singleton_ptr()->remove<CameraInstance>("CameraInstance");
-		InstanceManager::get_singleton_ptr()->remove<LocalPlayerInstance>("LocalPlayerInstance");
-		EventDispatcher::get_singleton_ptr()->remove<LocalPlayerMoveEvent>("LocalPlayerMoveEvent");
+		InstanceManager::get_singleton_ptr()->remove<Client::CameraInstance>("CameraInstance");
+		InstanceManager::get_singleton_ptr()->remove<Client::LocalActor>("LocalActor");
+		EventDispatcher::get_singleton_ptr()->remove<Client::LocalActorMoveEvent>("LocalActorMoveEvent");
 	}
 
 	void Application::setup_xml()
@@ -110,7 +110,7 @@ namespace Xplicit::App
 			++timeout;
 		}
 
-		InstanceManager::get_singleton_ptr()->add<Xplicit::LocalPlayerInstance>(packet_spawn.ID);
+		InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet_spawn.ID);
 
 		return true;
 	}
@@ -127,8 +127,8 @@ namespace Xplicit::App
 
 		if (setup_network(net))
 		{
-			InstanceManager::get_singleton_ptr()->add<Xplicit::CameraInstance>();
-			EventDispatcher::get_singleton_ptr()->add<Xplicit::LocalPlayerMoveEvent>();
+			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::CameraInstance>();
+			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalActorMoveEvent>();
 		}
 	}
 }

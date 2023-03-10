@@ -4,17 +4,17 @@
  *				XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: LocalPLayerInstance.cpp
+ *			File: LocalPlayer.cpp
  *			Purpose: Client-side Player Instance
  *
  * =====================================================================
  */
 
-#include "LocalPlayerInstance.h"
+#include "LocalActor.h"
 
-namespace Xplicit
+namespace Xplicit::Client
 {
-	LocalPlayerInstance::LocalPlayerInstance(int64_t id)
+	LocalActor::LocalActor(int64_t id)
 		: Instance(), m_then(0), m_cam(nullptr), m_id(id)
 	{
 		m_cam = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");
@@ -23,62 +23,47 @@ namespace Xplicit
 		m_then = IRR->getTimer()->getTime();
 
 #ifndef _NDEBUG
-		XPLICIT_INFO("LocalPlayerInstance::LocalPlayerInstance");
+		XPLICIT_INFO("LocalActor::LocalActor");
 #endif
 	}
 
-	LocalPlayerInstance::~LocalPlayerInstance()
+	LocalActor::~LocalActor()
 	{
 #ifndef _NDEBUG
-		XPLICIT_INFO("LocalPlayerInstance::~LocalPlayerInstance");
+		XPLICIT_INFO("LocalActor::~LocalActor");
 #endif
 	}
 
 
-	LocalPlayerMoveEvent::LocalPlayerMoveEvent() : m_cooldown(0), m_last_pos(0, 0, 0) {}
+	LocalActorMoveEvent::LocalActorMoveEvent() : m_last_pos(0, 0, 0), m_packet() {}
 
-	LocalPlayerMoveEvent::~LocalPlayerMoveEvent() {}
+	LocalActorMoveEvent::~LocalActorMoveEvent() {}
 
-	const char* LocalPlayerMoveEvent::name() noexcept { return ("LocalPlayerMoveEvent"); }
+	const char* LocalActorMoveEvent::name() noexcept { return ("LocalActorMoveEvent"); }
 
-	void LocalPlayerMoveEvent::operator()()
+	void LocalActorMoveEvent::operator()()
 	{
-		if (!InstanceManager::get_singleton_ptr())
-			return;
-
 		auto net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
-
-		if (!net)
-			return;
-
-		if (m_cooldown > 0)
-		{
-			--m_cooldown;
-			return;
-		}
+		if (!net) return;
 
 		auto cam = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");
-
-		if (cam->get()->getPosition() == m_last_pos)
-			return;
+		if (cam->get()->getPosition() == m_last_pos) return;
 
 		auto pos = cam->get()->getPosition();
+		if (pos == m_last_pos) return;
 
-		NetworkPacket packet{ };
+		m_packet.CMD = NETWORK_CMD_POS;
 
-		packet.CMD = NETWORK_CMD_POS;
+		m_packet.X = pos.X;
+		m_packet.Y = pos.Y;
+		m_packet.Z = pos.Z;
 
-		packet.X = pos.X;
-		packet.Y = pos.Y;
-		packet.Z = pos.Z;
-
-		net->send(packet);
+		net->send(m_packet);
 
 		m_last_pos = pos;
-		m_cooldown = XPLICIT_NETWORK_DELAY;
 	}
 
-	void LocalPlayerInstance::update()
+	void LocalActor::update()
 	{
 		if (!m_cam)
 			m_cam = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");

@@ -77,6 +77,11 @@ namespace Xplicit
 
 	};
 
+	/* Networking */
+	XPLICIT_API MonoString* xplicit_read_packet();
+	XPLICIT_API void xplicit_write_packet(char* data, int64_t sz);
+
+	/* Event and Class management. */
 	XPLICIT_API bool xplicit_register_event(MonoString* event_name);
 	XPLICIT_API bool xplicit_register_class(MonoString* namespase, MonoString* klass);
 }

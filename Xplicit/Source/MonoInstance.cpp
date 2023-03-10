@@ -10,6 +10,9 @@
  * =====================================================================
  */
 
+#include "NetworkInstance.h"
+#include "ServerInstance.h"
+
 #include "MonoInstance.h"
 #include "MonoInterop.h"
 
@@ -22,6 +25,9 @@ namespace Xplicit
 	{
 		mono_add_internal_call("Xplicit.RuntimeService::RegisterEvent", xplicit_register_event);
 		mono_add_internal_call("Xplicit.RuntimeService::RegisterClass", xplicit_register_class);
+
+		mono_add_internal_call("Xplicit.NetworkService::Read", xplicit_read_packet);
+		mono_add_internal_call("Xplicit.NetworkService::Write", xplicit_write_packet);
 	}
 
 	XPLICIT_API bool xplicit_register_class(MonoString* namespase, MonoString* klass)
@@ -45,6 +51,53 @@ namespace Xplicit
 		}
 
 		return false;
+	}
+
+	XPLICIT_API MonoString* xplicit_read_packet()
+	{
+		auto engine = InstanceManager::get_singleton_ptr()->get<MonoEngineInstance>("MonoEngineInstance");
+		
+		
+		if (engine)
+		{
+			auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
+
+			if (server)
+			{
+				for (size_t i = 0; i < server->size(); i++)
+				{
+					if (server->get(i).packet.CMD == NETWORK_CMD_SCRIPT)
+					{
+						auto ret_data = mono_string_new(engine->domain(), server->get(i).packet.Data);
+						return ret_data;
+					}
+				}
+			}
+			else
+			{
+				auto cl = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
+
+				if (cl)
+				{
+					if (cl->get().CMD == NETWORK_CMD_SCRIPT)
+					{
+						auto ret_data = mono_string_new(engine->domain(), cl->get().Data);
+						return ret_data;
+					}
+				}
+			}
+
+			auto null_ = mono_string_new(engine->domain(), "(null)");
+			return null_;
+		}
+
+		return nullptr;
+	}
+
+	XPLICIT_API void xplicit_write_packet(char* data, int64_t sz)
+	{
+		(void)data;
+		(void)sz;
 	}
 
 	static std::string mono_to_cxx(MonoString* str)

@@ -24,7 +24,7 @@ namespace Xplicit
 	*/
 
 	Actor::Actor(const bool human)
-		: m_actor_health(100), m_replication(), m_pos(0, 0, 0), m_actor_delay(0), m_actor_id(-1)
+		: m_replication(), m_pos(0, 0, 0), m_delay(0), m_actor_id(-1)
 	{
 #ifndef _NDEBUG
 		XPLICIT_INFO("Actor::Actor");
@@ -53,14 +53,14 @@ namespace Xplicit
 
 		if (this->get().cmd == NETWORK_CMD_DEAD)
 		{
-			if (this->m_actor_delay > 0)
+			if (this->m_delay > 0)
 			{
-				--this->m_actor_delay;
+				--this->m_delay;
 			}
-			else if (this->m_actor_delay < 1)
+			else if (this->m_delay < 1)
 			{
 				this->set(NETWORK_CMD_SPAWN);
-				this->m_actor_delay = 0;
+				this->m_delay = 0;
 
 				for (size_t i = 0; i < server->size(); i++)
 				{
@@ -75,12 +75,10 @@ namespace Xplicit
 			}
 		}
 
-		// prepare a packet 
-
 		if (this->health() < 1)
 		{
 			this->set(NETWORK_CMD_DEAD);
-			this->m_actor_delay = XPLICIT_ACTOR_COOLDOWN;
+			this->m_delay = XPLICIT_ACTOR_COOLDOWN;
 
 			for (size_t i = 0; i < server->size(); i++)
 			{
@@ -93,7 +91,8 @@ namespace Xplicit
 				}
 			}
 		}
-		else if (this->get().cmd == NETWORK_CMD_POS)
+		
+		if (this->get().cmd == NETWORK_CMD_POS)
 		{
 			// just do something as a simple as that
 			// rely on the physics engine for collision detection.
@@ -109,13 +108,21 @@ namespace Xplicit
 					server->get(i).packet.Y = m_pos.Y;
 					server->get(i).packet.Z = m_pos.Y;
 
+					XPLICIT_INFO("Position");
+
 					break;
 				}
 			}
 		}
 	}
 
-	const int32_t& Actor::health() noexcept { return m_actor_health; }
+	void Actor::health(const int32_t& health) noexcept 
+	{ 
+		this->get().health = health;
+	}
+
+	const int32_t& Actor::health() noexcept { return this->get().health; }
+
 	bool Actor::can_collide() noexcept { return true; }
 
 	void Actor::set(int64_t id) noexcept
@@ -146,22 +153,28 @@ namespace Xplicit
 
 	void Actor::reset() noexcept
 	{
-		m_replication.sockaddr.sin_addr.S_un.S_addr = 0;
-		m_actor_health = 0;
-		m_actor_id = -1;
-
+		this->get().sockaddr.sin_addr.S_un.S_addr = 0;
 		this->set(0.f, 0.f, 0.f);
+		this->get().health = 0;
+
+		m_actor_id = -1;
 	}
 
-	const char* PhysicsActorEvent::name() noexcept { return ("PhysicsActorEvent"); }
+	const char* ActorEvent::name() noexcept { return ("ActorEvent"); }
 
-	void PhysicsActorEvent::operator()()
+	void ActorEvent::operator()()
 	{
-		auto vec_actor = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
+		auto actors = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
 		
-		if (vec_actor.empty()) 
+		if (actors.empty())
 			return;
 
-		// TODO: physics engine callback here.
+		for (size_t i = 0; i < actors.size(); i++)
+		{
+			if (!actors[i] || !actors[i]->can_collide() || !actors[i]->has_physics() || actors[i]->id() < 0)
+				continue;
+
+
+		}
 	}
 }

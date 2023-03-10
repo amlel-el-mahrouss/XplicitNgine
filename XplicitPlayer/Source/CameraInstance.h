@@ -16,7 +16,7 @@
 #include "Application.h"
 #include "NetworkInstance.h"
 
-namespace Xplicit
+namespace Xplicit::Client
 {
 	class XPLICIT_API CameraInstance : public Instance
 	{

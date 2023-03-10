@@ -4,7 +4,7 @@
  *			XplicitNgin C++ Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: LocalPLayerInstance.h
+ *			File: LocalPlayer.h
  *			Purpose: Client-side Player Instance
  *
  * =====================================================================
@@ -18,22 +18,22 @@
 #include "NetworkInstance.h"
 
 
-namespace Xplicit
+namespace Xplicit::Client
 {
-	constexpr const int XPLICIT_NETWORK_DELAY = 1000;
+	constexpr const int XPLICIT_NETWORK_DELAY = 100;
 	constexpr const float XPLICIT_SPEED = 20.f;
 
-	class XPLICIT_API LocalPlayerInstance : public Instance
+	class XPLICIT_API LocalActor : public Instance
 	{
 	public:
-		LocalPlayerInstance(int64_t id);
-		virtual ~LocalPlayerInstance();
+		LocalActor(int64_t id);
+		virtual ~LocalActor();
 
-		LocalPlayerInstance& operator=(const LocalPlayerInstance&) = default;
-		LocalPlayerInstance(const LocalPlayerInstance&) = default;
+		LocalActor& operator=(const LocalActor&) = default;
+		LocalActor(const LocalActor&) = default;
 
 		virtual INSTANCE_TYPE type() noexcept override { return CAMERA; }
-		virtual const char* name() noexcept override { return ("LocalPlayerInstance"); }
+		virtual const char* name() noexcept override { return ("LocalActor"); }
 
 		virtual void update() override;
 
@@ -45,21 +45,21 @@ namespace Xplicit
 
 	};
 
-	class XPLICIT_API LocalPlayerMoveEvent : public Event
+	class XPLICIT_API LocalActorMoveEvent : public Event
 	{
 	public:
-		LocalPlayerMoveEvent();
-		virtual ~LocalPlayerMoveEvent();
+		LocalActorMoveEvent();
+		virtual ~LocalActorMoveEvent();
 
-		LocalPlayerMoveEvent& operator=(const LocalPlayerMoveEvent&) = default;
-		LocalPlayerMoveEvent(const LocalPlayerMoveEvent&) = default;
+		LocalActorMoveEvent& operator=(const LocalActorMoveEvent&) = default;
+		LocalActorMoveEvent(const LocalActorMoveEvent&) = default;
 
 		virtual void operator()() override;
 		const char* name() noexcept;
 
 	private:
 		irr::core::vector3df m_last_pos;
-		int64_t m_cooldown;
+		NetworkPacket m_packet;
 
 	};
 }

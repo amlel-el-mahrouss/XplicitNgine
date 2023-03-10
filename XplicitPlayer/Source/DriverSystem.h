@@ -16,8 +16,6 @@
 
 #include <nuklear/nuklear.h>
 
-// Our WIP renderer, to replace irrlicht.
-
 namespace Xplicit::Renderer
 {
 	enum class RENDER_SYSTEM : uint8_t

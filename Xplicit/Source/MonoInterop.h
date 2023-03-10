@@ -48,7 +48,7 @@ namespace Xplicit
 
 	private:
 		Ref<MonoScriptInstance*> m_script; // Image Handle, for the specified Mono app.
-		MonoObject* m_object;
+		MonoObject* m_object_klass;
 		MonoClass* m_klass;
 
 	};
