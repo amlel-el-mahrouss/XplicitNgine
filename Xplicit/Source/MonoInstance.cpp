@@ -40,13 +40,7 @@ namespace Xplicit
 
 		if (_namespase && _klass)
 		{
-#ifndef _NDEBUG
-			XPLICIT_INFO(_namespase);
-			XPLICIT_INFO(_klass);
-#endif
-
 			InstanceManager::get_singleton_ptr()->add<MonoClassInstance>(_namespase, _klass);
-
 			return true;
 		}
 
