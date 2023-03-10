@@ -44,5 +44,5 @@ namespace Xplicit {
 
 	bool Instance::should_update() noexcept { return true; }
 
-	Instance::INSTANCE_PHYSICS Instance::physics() noexcept { return FAST; }
+	Instance::INSTANCE_PHYSICS Instance::physics() noexcept { return PHYSICS_FAST; }
 }

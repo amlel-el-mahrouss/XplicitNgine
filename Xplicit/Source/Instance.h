@@ -16,8 +16,8 @@
 
 namespace Xplicit 
 {
-	class Instance;
 	class InstanceManager;
+	class Instance;
 
 	class XPLICIT_API InstanceManager final 
 	{
@@ -66,15 +66,14 @@ namespace Xplicit
 
 		enum INSTANCE_TYPE : uint8_t 
 		{
-			MESH,
 			ACTOR,
-			LOGIC,
+			LOGIC, // Generic Logic Instance
 			CAMERA,
 			SCRIPT,
+			RENDER, // Renderable instance.
 			NETWORK,
-			TERRAIN,
 			INSTANCE, // classic instance, unchanged by the child class.
-			INSTANCE_TYPE_COUNT
+			TYPE_COUNT
 		};
 
 		virtual const char* name() noexcept;
@@ -87,9 +86,9 @@ namespace Xplicit
 
 		enum INSTANCE_PHYSICS : uint8_t
 		{
-			FAST,
-			COMPLEX,
-			INSTANCE_PHYSICS_COUNT,
+			PHYSICS_FAST, // Fast physics calculation
+			PHYSICS_COMPLEX, // Complex physics calculation
+			PHYSICS_COUNT,
 		};
 
 		virtual INSTANCE_PHYSICS physics() noexcept;

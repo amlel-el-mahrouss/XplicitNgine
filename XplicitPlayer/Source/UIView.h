@@ -13,6 +13,7 @@
 #pragma once
 
 #include <Application.h>
+#include <Instance.h>
 
 #ifdef XPLICIT_WINDOWS
 #include "DriverD3D11.h"
@@ -20,5 +21,9 @@
 
 namespace Xplicit::UI
 {
+	class UIView final : public Instance
+	{
 
+
+	};
 }

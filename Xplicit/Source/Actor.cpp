@@ -38,7 +38,7 @@ namespace Xplicit
 #endif
 	}
 
-	Actor::INSTANCE_PHYSICS Actor::physics() noexcept { return FAST; }
+	Actor::INSTANCE_PHYSICS Actor::physics() noexcept { return PHYSICS_FAST; }
 
 	bool Actor::has_physics() noexcept { return true; }
 
