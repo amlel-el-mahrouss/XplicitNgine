@@ -20,5 +20,10 @@
 #include <Application.h>
 #include <MonoInstance.h>
 #include <ServerInstance.h>
-#include <rapidxml/rapidxml.hpp>
-#include <rapidxml/rapidxml_utils.hpp>
+
+#ifdef XPLICIT_WINDOWS
+extern "C"
+{
+#	include <conio.h>
+};
+#endif

@@ -28,6 +28,7 @@ static void xplicit_attach_mono(); // attach mono plugins
 static void xplicit_load_shell(); // loads a shell..
 static void xplicit_load_cfg(); // load from MANIFEST.xml
 
+// loads everything from the MANIFEST.xml file.
 static void xplicit_load_cfg()
 {
 	XPLICIT_GET_DATA_DIR(data_dir);
@@ -115,6 +116,12 @@ static void xplicit_create_common()
 
 static void xplicit_load_shell()
 {
+#ifdef XPLICIT_WINDOWS
+	// change window title to 'Xplicit Server'
+	HWND wnd = GetConsoleWindow();
+	SetWindowTextA(wnd, "Xplicit Server");
+#endif
+
 	std::thread shell(
 		[]() -> void
 		{

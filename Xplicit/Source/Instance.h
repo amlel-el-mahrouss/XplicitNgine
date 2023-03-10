@@ -14,11 +14,6 @@
 
 #include "Foundation.h"
 
-//
-// Xplicit Instance System
-// For C++/C# instances.
-//
-
 namespace Xplicit 
 {
 	class Instance;

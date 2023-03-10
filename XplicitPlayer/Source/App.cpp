@@ -30,7 +30,7 @@ namespace Xplicit::App
 #endif
 
 		this->setup_xml();
-		this->setup_read_cfg();
+		this->setup_cfg();
 	}
 
 	Application::~Application()
@@ -54,7 +54,7 @@ namespace Xplicit::App
 		XML = IRR->getFileSystem()->createXMLReaderUTF8(path.c_str());
 	}
 
-	void Application::setup_read_cfg()
+	void Application::setup_cfg()
 	{
 		if (!XML)
 			throw std::runtime_error("No XML provided..");
@@ -69,7 +69,7 @@ namespace Xplicit::App
 			{
 				if (std::string(XML->getNodeName()) == "CONNECT")
 				{
-					this->setup(XML->getAttributeValue("IP"));
+					this->setup_connect(XML->getAttributeValue("IP"));
 
 					return;
 				}
@@ -110,12 +110,14 @@ namespace Xplicit::App
 			++timeout;
 		}
 
+		assert(packet_spawn.ID != -1);
+
 		InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet_spawn.ID);
 
 		return true;
 	}
 
-	void Application::setup(const char* ip)
+	void Application::setup_connect(const char* ip)
 	{
 		if (!ip)
 			throw std::runtime_error("Invalid DNS!");

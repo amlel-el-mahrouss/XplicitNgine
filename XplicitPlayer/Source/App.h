@@ -32,11 +32,14 @@ namespace Xplicit::App
 		Application();
 		~Application();
 
+		Application& operator=(const Application&) = delete;
+		Application(const Application&) = delete;
+
 	private:
 		void setup_xml();
-		void setup_read_cfg();
+		void setup_cfg();
+		void setup_connect(const char* ip);
 		bool setup_network(NetworkInstance* net);
-		void setup(const char* ip);
 
 	private:
 		WSADATA m_wsa;
