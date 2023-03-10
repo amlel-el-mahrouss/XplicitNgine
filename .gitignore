@@ -5,6 +5,8 @@
 # Prerequisites
 *.d
 
+*.ini
+
 *.Interpreter.xml
 *.exe.config
 
