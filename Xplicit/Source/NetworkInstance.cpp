@@ -101,7 +101,8 @@ namespace Xplicit
 		packet.Magic[2] = XPLICIT_NETWORK_MAG_2;
 
 #ifdef XPLICIT_WINDOWS
-		int res = ::sendto(m_socket, (const char*)&packet, sizeof(NetworkPacket), 0, reinterpret_cast<SOCKADDR*>(&m_inaddr), sizeof(m_inaddr));
+		int res = ::sendto(m_socket, (const char*)&packet, sizeof(NetworkPacket), 0, 
+			reinterpret_cast<SOCKADDR*>(&m_inaddr), sizeof(m_inaddr));
 
 		if (res == SOCKET_ERROR)
 			throw NetworkError(NETERR_INTERNAL_ERROR);
@@ -173,21 +174,4 @@ namespace Xplicit
 
 	NetworkPacket& NetworkInstance::get() noexcept { return m_packet; }
 
-	void NetworkEvent::operator()()
-	{
-		auto net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
-
-		if (net)
-		{
-			NetworkPacket packet = net->get();
-
-			if (packet.CMD == NETWORK_CMD_KICK || packet.CMD == NETWORK_CMD_STOP)
-			{
-				XPLICIT_INFO(packet.CMD == NETWORK_CMD_KICK ? "[CLIENT] Server kicked us!" :
-							 "[CLIENT] Server shutdown!");
-
-				InstanceManager::get_singleton_ptr()->remove<NetworkInstance>("NetworkInstance");
-			}
-		}
-	}
 }

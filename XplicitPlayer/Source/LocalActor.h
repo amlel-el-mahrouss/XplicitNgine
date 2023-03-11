@@ -26,7 +26,7 @@ namespace Xplicit::Client
 	class LocalActor : public Instance
 	{
 	public:
-		LocalActor(int64_t id);
+		LocalActor();
 		virtual ~LocalActor();
 
 		LocalActor& operator=(const LocalActor&) = default;
@@ -40,26 +40,6 @@ namespace Xplicit::Client
 	private:
 		IAnimatedMeshSceneNode* m_player_model_node;
 		IAnimatedMesh* m_player_model;
-		NetworkInstance* m_network;
-		CameraInstance* m_camera;
-		int64_t m_id;
-
-	};
-
-	class XPLICIT_API LocalActorMoveEvent : public Event
-	{
-	public:
-		LocalActorMoveEvent();
-		virtual ~LocalActorMoveEvent();
-
-		LocalActorMoveEvent& operator=(const LocalActorMoveEvent&) = default;
-		LocalActorMoveEvent(const LocalActorMoveEvent&) = default;
-
-		virtual void operator()() override;
-		const char* name() noexcept;
-
-	private:
-		NetworkPacket m_packet;
 
 	};
 }

@@ -65,7 +65,7 @@ namespace Xplicit
 			NetworkClient cl{};
 			memset(&cl, 0, sizeof(NetworkClient));
 
-			cl.packet.CMD = NETWORK_CMD_INVALID;
+			memset(cl.packet.CMD, NETWORK_CMD_INVALID, XPLICIT_NETWORK_MAX_CMDS);
 
 			m_clients.push_back(cl);
 		}
@@ -126,7 +126,8 @@ namespace Xplicit
 
 #ifdef XPLICIT_WINDOWS
 					::sendto(instance->m_socket, (const char*)&
-						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, sizeof(struct sockaddr_in));
+						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, 
+						(struct sockaddr*)&instance->m_clients[i].addr, sizeof(struct sockaddr_in));
 #else
 #pragma error("DEFINE ME ServerInstance.cpp")
 #endif
@@ -144,16 +145,17 @@ namespace Xplicit
 					int sz = sizeof(struct sockaddr_in);
 
 					::recvfrom(instance->m_socket, (char*)&
-						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, (struct sockaddr*)&instance->m_clients[i].addr, &sz);
+						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, 
+						(struct sockaddr*)&instance->m_clients[i].addr, &sz);
 #else
 #pragma error("DEFINE ME ServerInstance.cpp")
 #endif
 
-					if (instance->m_clients[i].packet.Magic[0] != XPLICIT_NETWORK_MAG_0 || instance->m_clients[i].packet.Magic[1] != XPLICIT_NETWORK_MAG_1 ||
+					if (instance->m_clients[i].packet.Magic[0] != XPLICIT_NETWORK_MAG_0 || 
+						instance->m_clients[i].packet.Magic[1] != XPLICIT_NETWORK_MAG_1 ||
 						instance->m_clients[i].packet.Magic[2] != XPLICIT_NETWORK_MAG_2)
 					{
-						instance->m_clients[i].packet.CMD = NETWORK_CMD_INVALID;
-						instance->m_clients[i].packet.ID = -1;
+						memset(instance->m_clients[i].packet.CMD, NETWORK_CMD_INVALID, XPLICIT_NETWORK_MAX_CMDS);
 					}
 
 					if (sz < 0)

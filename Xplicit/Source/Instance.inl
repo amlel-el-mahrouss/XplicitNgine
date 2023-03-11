@@ -88,11 +88,7 @@ bool Xplicit::InstanceManager::remove(T* ptr)
 
 			// finally remove the object
 			delete obj;
-
-#ifdef XPLICIT_DEBUG
-			XPLICIT_INFO("Dropped Instance from InstanceManager");
-#endif
-
+			
 			return true;
 		}
 	}
@@ -124,10 +120,6 @@ bool Xplicit::InstanceManager::remove(const char* name)
 
 			// finally remove the object
 			delete obj;
-
-#ifdef XPLICIT_DEBUG
-			XPLICIT_INFO("Dropped Instance from InstanceManager");
-#endif
 
 			return true;
 		}

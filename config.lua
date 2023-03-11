@@ -44,6 +44,7 @@ XPLICIT_SERVER_CONFIG = {
         },
     },
     ["_LIBDIR"] = {
+        "C:/Program Files/Mono/lib/mono-2.0-sgen",
     	"Vendor/XplicitIrr/lib/Irrlicht",
     	"bin/Debug/Xplicit",
     },

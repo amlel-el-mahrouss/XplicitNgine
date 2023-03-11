@@ -10,8 +10,8 @@
  * =====================================================================
  */
 
-#include "NetworkInstance.h"
 #include "NetworkServerInstance.h"
+#include "NetworkInstance.h"
 
 #include "MonoInstance.h"
 #include "MonoInterop.h"
@@ -60,10 +60,13 @@ namespace Xplicit
 			{
 				for (size_t i = 0; i < server->size(); i++)
 				{
-					if (server->get(i).packet.CMD == NETWORK_CMD_SCRIPT)
+					for (size_t y = 0; y < XPLICIT_NETWORK_MAX_CMDS; ++y)
 					{
-						auto ret_data = mono_string_new(engine->domain(), server->get(i).packet.Data);
-						return ret_data;
+						if (server->get(i).packet.CMD[y] == NETWORK_CMD_SCRIPT)
+						{
+							auto ret_data = mono_string_new(engine->domain(), server->get(i).packet.Data);
+							return ret_data;
+						}
 					}
 				}
 			}
@@ -73,10 +76,13 @@ namespace Xplicit
 
 				if (cl)
 				{
-					if (cl->get().CMD == NETWORK_CMD_SCRIPT)
+					for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; i++)
 					{
-						auto ret_data = mono_string_new(engine->domain(), cl->get().Data);
-						return ret_data;
+						if (cl->get().CMD[i] == NETWORK_CMD_SCRIPT)
+						{
+							auto ret_data = mono_string_new(engine->domain(), cl->get().Data);
+							return ret_data;
+						}
 					}
 				}
 			}

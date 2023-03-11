@@ -12,13 +12,12 @@
 
 #pragma once
 
-#include <Actor.h>
 #include <Event.h>
 #include <Instance.h>
 #include <Foundation.h>
 #include <MonoInterop.h>
-#include <ApplicationContext.h>
 #include <MonoInstance.h>
+#include <ApplicationContext.h>
 #include <NetworkServerInstance.h>
 
 #ifdef XPLICIT_WINDOWS

@@ -36,7 +36,9 @@ namespace Xplicit {
 	}
 
 	const char* Instance::name() noexcept { return ("Instance"); }
+
 	Instance::INSTANCE_TYPE Instance::type() noexcept { return INSTANCE_LOGIC; }
+
 	void Instance::update() {}
 
 	bool Instance::can_collide() noexcept { return false; }

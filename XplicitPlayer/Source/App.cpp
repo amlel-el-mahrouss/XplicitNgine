@@ -43,7 +43,6 @@ namespace Xplicit::App
 		InstanceManager::get_singleton_ptr()->remove<NetworkInstance>("NetworkInstance");
 		InstanceManager::get_singleton_ptr()->remove<Client::CameraInstance>("CameraInstance");
 		InstanceManager::get_singleton_ptr()->remove<Client::LocalActor>("LocalActor");
-		EventDispatcher::get_singleton_ptr()->remove<Client::LocalActorMoveEvent>("LocalActorMoveEvent");
 	}
 
 	void Application::setup_xml()

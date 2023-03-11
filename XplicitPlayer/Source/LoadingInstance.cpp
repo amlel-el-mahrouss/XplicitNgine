@@ -45,18 +45,19 @@ namespace Xplicit::Client
 
 		m_network->read(packet);
 
-		if (packet.CMD == NETWORK_CMD_ACCEPT)
+		for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; i++)
 		{
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.ID);
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::CameraInstance>();
-			InstanceManager::get_singleton_ptr()->add<Xplicit::UI::InternalHUD>();
+			if (packet.CMD[i] == NETWORK_CMD_ACCEPT)
+			{
+				InstanceManager::get_singleton_ptr()->add<Xplicit::UI::InternalHUD>();
+				InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>();
+				InstanceManager::get_singleton_ptr()->add<Xplicit::Client::CameraInstance>();
 
-			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalActorMoveEvent>();
-
-			m_run = false;
+				m_run = false;
+			}
 		}
 
-		packet.CMD = NETWORK_CMD_BEGIN;
+		packet.CMD[0] = NETWORK_CMD_BEGIN;
 		m_network->send(packet);
 
 		IRR->getVideoDriver()->draw2DImage(m_logo_tex, vector2di(Xplicit::Client::XPLICIT_DIM.Width * 0.02, Xplicit::Client::XPLICIT_DIM.Height * 0.825),
@@ -89,7 +90,7 @@ namespace Xplicit::Client
 		if (m_network->connect(ip))
 		{
 			NetworkPacket spawn{};
-			spawn.CMD = NETWORK_CMD_BEGIN;
+			spawn.CMD[4] = NETWORK_CMD_BEGIN;
 			m_network->send(spawn);
 
 		}

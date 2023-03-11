@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: Actor.h
@@ -13,10 +13,7 @@
 
 #pragma once
 
-#include "NetworkServerInstance.h"
-#include "Foundation.h"
-#include "Instance.h"
-#include "Event.h"
+#include "SDK.h"
 
 namespace Xplicit
 {
@@ -51,7 +48,7 @@ namespace Xplicit
 		{
 		public:
 			ActorReplication()
-				: addr(), cmd(Xplicit::NETWORK_CMD_INVALID), health(100)
+				: addr(), cmd(), health(100)
 			{}
 
 			~ActorReplication() {}
@@ -60,8 +57,8 @@ namespace Xplicit
 			ActorReplication(const ActorReplication&) = default;
 
 		public:
+			NETWORK_CMD cmd[XPLICIT_NETWORK_MAX_CMDS]; // Network Command Array.
 			struct sockaddr_in addr; // Actor's socket address
-			NETWORK_CMD cmd; // Actor's current network command.
 			int64_t health;
 
 		};
@@ -78,19 +75,16 @@ namespace Xplicit
 
 		void health(const int32_t& health) noexcept;
 		const int32_t& health() noexcept; // gets the health of the actor.
-		const int64_t& id() noexcept; // gets it's id, assigned by a system.
 
 		ActorReplication& get() noexcept; // gets the network replication data.
 		ActorPosition& pos() noexcept; // gets its position
 
 		virtual INSTANCE_TYPE type() noexcept override;
 		virtual const char* name() noexcept override;
+		virtual bool should_update() noexcept override;
 
-		// useful setters.
-		void set(const struct sockaddr_in& sockaddr) noexcept;
 		void set(const float& x, const float& y, const float& z) noexcept;
-		void set(const NETWORK_CMD& cmd) noexcept;
-		void set(const int64_t& id) noexcept;
+		void set(const struct sockaddr_in& sockaddr) noexcept;
 
 		virtual void update() override;
 
@@ -103,7 +97,6 @@ namespace Xplicit
 	private:
 		ActorReplication m_replication; /* Actor replication data */
 		ActorPosition m_position; /* Actor's position */
-		int64_t m_actor_id; /* Actor's ID */
 		int32_t m_delay; /* Actor cooldown */
 
 	};

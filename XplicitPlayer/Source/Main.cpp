@@ -24,7 +24,7 @@ static void xplicit_create_opengl()
 	if (!KB) 
 		throw std::bad_alloc();
 
-	Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_OPENGL,
+	Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_DIRECT3D9,
 		Xplicit::Client::XPLICIT_DIM,
 		16U,
 		false,

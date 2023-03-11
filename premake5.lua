@@ -1,5 +1,13 @@
 include('config.lua')
 
+ filter "configurations:Debug"
+      defines { "_DEBUG" }
+      symbols "On"
+
+   filter "configurations:Release"
+      defines { "_NDEBUG" }
+      optimize "On"
+
 workspace(XPLICIT_WORKSPACE)
 
 if (XPLICIT_CONFIG["_CXXDIALECT"] >= 2022) then
@@ -7,7 +15,6 @@ if (XPLICIT_CONFIG["_CXXDIALECT"] >= 2022) then
 else
     cppdialect "c++17"
 end
-
 
 configurations { XPLICIT_CONFIG["_CONFIGS"] }
 project(XPLICIT_PROJ)

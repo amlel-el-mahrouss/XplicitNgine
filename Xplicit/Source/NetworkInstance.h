@@ -93,19 +93,4 @@ namespace Xplicit {
         friend class NetworkEvent;
 
     };
-
-    class XPLICIT_API NetworkEvent : public Event
-    {
-    public:
-        NetworkEvent() {}
-        virtual ~NetworkEvent() {}
-
-        NetworkEvent& operator=(const NetworkEvent&) = default;
-        NetworkEvent(const NetworkEvent&) = default;
-
-        virtual void operator()();
-
-        virtual const char* name() noexcept { return ("NetworkEvent"); }
-
-    };
 }

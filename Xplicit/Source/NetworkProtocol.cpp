@@ -29,10 +29,13 @@ namespace Xplicit
 
     void NetworkClient::reset() noexcept
     {
-        packet.CMD = NETWORK_CMD_INVALID;
-        packet.ID = -1;
-
         stat = NETWORK_STAT_DISCONNECTED;
+
+        for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; i++)
+        {
+            packet.CMD[i] = NETWORK_CMD_INVALID;
+        }
+
         memset(&addr, 0, sizeof(struct sockaddr_in));
     }
 

@@ -22,6 +22,10 @@
 #define XPLICIT_NETWORK_MAG_1 ('N')
 #define XPLICIT_NETWORK_MAG_2 ('P')
 
+#define XPLICIT_NETWORK_MAG_CNT (3)
+
+#define XPLICIT_NETWORK_MAX_CMDS (16U)
+
 namespace Xplicit 
 {
     enum NETWORK_CMD : int 
@@ -41,8 +45,6 @@ namespace Xplicit
         NETWORK_CMD_BACKWARDS,
         NETWORK_CMD_LEFT,
         NETWORK_CMD_RIGHT,
-        // Position Update
-        NETWORK_CMD_POS,
         // Connection Status
         NETWORK_CMD_ACCEPT, // handshake has been accepted.
         NETWORK_CMD_REFUSE,
@@ -64,20 +66,15 @@ namespace Xplicit
     class NetworkPacket
     {
     public:
-        char Magic[3]; /* The Packet magic numbers. */
-
-        /* Command and Actor ID. */
-        NETWORK_CMD CMD; /* The current network command. */
-        int64_t ID; /* NOTE: The server must ignore the ID! */
-
-    public:
+        char Magic[XPLICIT_NETWORK_MAG_CNT]; /* The Packet magic numbers. */
+        NETWORK_CMD CMD[XPLICIT_NETWORK_MAX_CMDS]; /* The current network command. */
+       
         int64_t Health; /* The current actor's health, if sent by an actor */
 
         float X; /* X position */
         float Y; /* Y position */
         float Z; /* Z position */
 
-    public:
         char Data[256]; /* Optional Data array, for C# scripts */
 
     };
@@ -104,4 +101,16 @@ namespace Xplicit
     };
 
     XPLICIT_API bool equals(struct sockaddr_in& lhs, struct sockaddr_in& rhs);
+
 }
+
+// reserved slots
+
+#define XPLICIT_NETWORK_CMD_FORWARD (0)
+#define XPLICIT_NETWORK_CMD_BACKWARD (1)
+#define XPLICIT_NETWORK_CMD_LEFT (2)
+#define XPLICIT_NETWORK_CMD_RIGHT (3)
+#define XPLICIT_NETWORK_CMD_BEGIN (4)
+#define XPLICIT_NETWORK_CMD_STOP (5)
+#define XPLICIT_NETWORK_CMD_ACK (6)
+#define XPLICIT_NETWORK_CMD_WATCHDOG (7)

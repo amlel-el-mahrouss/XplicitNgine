@@ -59,7 +59,7 @@ namespace Xplicit::UI
 	{
 		IRR->getVideoDriver()->draw2DImage(m_error_texture, m_pos);
 
-		if (KB->left_down())
+		if (KB->left_down() || KB->key_down())
 		{
 			m_on_click();
 		}
@@ -118,8 +118,12 @@ namespace Xplicit::UI
 	void InternalHUD::update()
 	{
 		auto packet = m_network->get();
-		if (packet.CMD == NETWORK_CMD_DAMAGE)
-			m_health = packet.Health;
+		
+		for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; ++i)
+		{
+			if (packet.CMD[i] == NETWORK_CMD_DAMAGE)
+				m_health = packet.Health;
+		}
 
 		auto dim = dimension2di(Client::XPLICIT_DIM.Width / 3.5, Client::XPLICIT_DIM.Height * 0.82);
 		auto sz = core::rect<s32>(0, 0, 521, 51);

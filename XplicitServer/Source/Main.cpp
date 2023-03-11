@@ -10,8 +10,8 @@
  * =====================================================================
  */
 
-#include "PlayerJoinLeaveEvent.h"
-#include "ServerWatchdog.h"
+#include "SDK.h"
+#include "Actor.h"
 
 // forward decl everything.
 static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server); // called when the server stops.
@@ -101,9 +101,7 @@ static void xplicit_attach_mono()
 
 static void xplicit_create_common()
 {
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
 }
 
 static void xplicit_load_shell()
@@ -121,6 +119,9 @@ static void xplicit_load_shell()
 
 			while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 			{
+				if (!Xplicit::ApplicationContext::get_singleton().ShouldExit)
+					std::cout << "# ";
+
 				std::cin.getline(cmd_buf, 1024);
 
 				if (strcmp(cmd_buf, "exit") == 0)
@@ -129,7 +130,7 @@ static void xplicit_load_shell()
 					Xplicit::ApplicationContext::get_singleton().ShouldExit = true;
 				}
 
-				if (strncmp(cmd_buf, "help", strlen("help")) == 0)
+				if (strcmp(cmd_buf, "help") == 0)
 				{
 					puts("-------------- HELP --------------");
 					puts("exit: kills the current server.");
@@ -150,7 +151,7 @@ static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server)
 
 	for (size_t i = 0; i < server->size(); i++)
 	{
-		server->get(i).packet.CMD = Xplicit::NETWORK_CMD_STOP;
+		server->get(i).packet.CMD[0] = Xplicit::NETWORK_CMD_STOP;
 	}
 
 	server->send();

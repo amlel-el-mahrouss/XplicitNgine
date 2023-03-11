@@ -82,10 +82,22 @@ namespace Xplicit
 		bool right_down() noexcept { return m_mouse_right.Down; }
 		bool left_down() noexcept { return m_mouse_left.Down; }
 
-		bool key_down(const EKEY_CODE ky) const
+		bool key_down(const EKEY_CODE& ky) const
 		{
 			return m_keys[ky];
 		}
+
+		bool key_down() const
+		{
+			for (u32 i = 0; i < KEY_KEY_CODES_COUNT; ++i)
+			{
+				if (m_keys[i])
+					return true;
+			}
+
+			return false;
+		}
+
 
 		MouseEventTraits& get_pos() noexcept { return m_mouse_pos; }
 
