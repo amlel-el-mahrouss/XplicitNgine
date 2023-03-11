@@ -133,9 +133,9 @@ static void xplicit_load_shell()
 
 				if (strncmp(cmd_buf, "help", strlen("help")) == 0)
 				{
-					puts("-- HELP -- XplicitServer -- HELP --");
-					puts("exit: exits the server..");
-					puts("-- HELP -- XplicitServer -- HELP --");
+					puts("-------------- HELP --------------");
+					puts("exit: kills the current server..");
+					puts("-------------- HELP --------------");
 				}
 
 			}
@@ -205,7 +205,7 @@ int main(int argc, char** argv)
 	{
 #ifndef _NDEBUG
 		std::string msg;
-		msg += "Runtime Error: ";
+		msg += "C++ Exception! ";
 		msg += err.what();
 
 		XPLICIT_CRITICAL(msg);
@@ -213,7 +213,7 @@ int main(int argc, char** argv)
 
 #ifdef XPLICIT_DEBUG
 #ifdef XPLICIT_WINDOWS
-		MessageBoxA(nullptr, msg.c_str(), "FATAL!", MB_OK);
+		MessageBoxA(nullptr, msg.c_str(), "XplicitNgin, Fatal Error!", MB_OK);
 #endif
 #endif
 

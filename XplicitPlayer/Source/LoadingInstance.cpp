@@ -17,9 +17,10 @@
 namespace Xplicit::Client
 {
 	constexpr const int XPLICIT_TIMEOUT_DELAY = 5; // why?, because it takes time to lookup into instances.
+	constexpr const int XPLICIT_TIMEOUT = 1000; // maximum timeout.
 
 	LoadingInstance::LoadingInstance() 
-		: m_connected(false), m_network(nullptr), m_logo_tex(nullptr)
+		: m_connected(false), m_network(nullptr), m_logo_tex(nullptr), m_timeout(0)
 	{
 		XPLICIT_GET_DATA_DIR(data_dir);
 
@@ -57,6 +58,14 @@ namespace Xplicit::Client
 		IRR->getVideoDriver()->draw2DImage(m_logo_tex, vector2di(20, 600),
 			core::rect<s32>(0, 0, 105, 105), 0,
 			video::SColor(255, 255, 255, 255), true);
+
+		++m_timeout;
+
+		if (m_timeout >= XPLICIT_TIMEOUT)
+		{
+			MessageBoxA(nullptr, "Server does not respond! Exiting!", "XplicitNgin", MB_OK);
+			IRR->closeDevice();
+		}
 	}
 
 	void LoadingInstance::connect(const char* ip)

@@ -39,7 +39,6 @@ namespace Xplicit::Client
 	private:
 		irr::video::ITexture* m_moving_tex;
 		irr::video::ITexture* m_typing_tex;
-		irr::video::ITexture* m_health_tex;
 		irr::video::ITexture* m_idle_tex;
 
 	};

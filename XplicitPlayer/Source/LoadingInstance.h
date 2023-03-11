@@ -32,6 +32,7 @@ namespace Xplicit::Client
 	private:
 		irr::video::ITexture* m_logo_tex; /* Texture to show when loading the game.. */
 		NetworkInstance* m_network; /* Network instance */
+		int64_t m_timeout;
 		bool m_connected; /* Are we connected? */
 
 	};
