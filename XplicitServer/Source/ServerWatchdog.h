@@ -34,15 +34,8 @@ namespace Xplicit
 		virtual void operator()() override;
 		virtual const char* name() noexcept override;
 
-	public:
-		operator bool();
-
-	public:
-		void set(bool enable) noexcept;
-
 	private:
 		bool m_watchdog_analyze; // should we analyse packets now?
-		bool m_watchdog_enabled; // is watchdog enabled?
 
 	};
 }

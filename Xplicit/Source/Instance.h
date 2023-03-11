@@ -42,11 +42,9 @@ namespace Xplicit
 		template <typename T>
 		T* get(const char* name);
 
-		void update() noexcept;
-
 	public:
+		void update() noexcept;
 		static InstanceManager* get_singleton_ptr();
-
 
 	private:
 		std::vector<Instance*> m_instances;

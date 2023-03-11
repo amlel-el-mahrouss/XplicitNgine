@@ -24,7 +24,7 @@ static void xplicit_create_opengl()
 	if (!KB) 
 		throw std::bad_alloc();
 
-	dimension2du dim = dimension2du(800, 600);
+	dimension2du dim = dimension2du(1280, 720);
 
 	Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_OPENGL,
 		dim,

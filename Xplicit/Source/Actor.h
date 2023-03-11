@@ -51,7 +51,7 @@ namespace Xplicit
 		{
 		public:
 			ActorReplication()
-				: sockaddr(), cmd(Xplicit::NETWORK_CMD_INVALID), health(100)
+				: addr(), cmd(Xplicit::NETWORK_CMD_INVALID), health(100)
 			{}
 
 			~ActorReplication() {}
@@ -60,7 +60,7 @@ namespace Xplicit
 			ActorReplication(const ActorReplication&) = default;
 
 		public:
-			struct sockaddr_in sockaddr; // Actor's socket address
+			struct sockaddr_in addr; // Actor's socket address
 			NETWORK_CMD cmd; // Actor's current network command.
 			int64_t health;
 

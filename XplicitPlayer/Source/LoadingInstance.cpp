@@ -16,9 +16,18 @@
 
 namespace Xplicit::Client
 {
-	constexpr const int XPLICIT_TIMEOUT_DELAY = 10; // why? because it takes time to lookup into instances.
+	constexpr const int XPLICIT_TIMEOUT_DELAY = 5; // why?, because it takes time to lookup into instances.
 
-	LoadingInstance::LoadingInstance() : m_connected(false), m_network(nullptr), m_timeout(XPLICIT_TIMEOUT_DELAY) {}
+	LoadingInstance::LoadingInstance() 
+		: m_connected(false), m_network(nullptr), m_logo_tex(nullptr)
+	{
+		XPLICIT_GET_DATA_DIR(data_dir);
+
+		std::string health_path = data_dir;
+		health_path += "/engine_logo.png";
+
+		m_logo_tex = IRR->getVideoDriver()->getTexture(health_path.c_str());
+	}
 
 	LoadingInstance::~LoadingInstance() {}
 
@@ -26,34 +35,28 @@ namespace Xplicit::Client
 	{
 		if (m_connected)
 			return;
-		
-		assert(m_network);
 
-		NetworkPacket packet_spawn{};
+		NetworkPacket packet{};
 
-		// set the timeout to zero by default, so we instantly seek for a incoming packet.
-		if (m_timeout < 0)
+		XPLICIT_SLEEP(XPLICIT_TIMEOUT_DELAY);
+
+		m_network->read(packet);
+
+		if (packet.CMD == NETWORK_CMD_ACCEPT)
 		{
-			packet_spawn.CMD = NETWORK_CMD_BEGIN;
-			m_network->send(packet_spawn);
-
-			m_timeout = XPLICIT_TIMEOUT_DELAY;
-		}
-
-		XPLICIT_SLEEP(70);
-		
-		m_network->read(packet_spawn);
-
-		if (packet_spawn.CMD == NETWORK_CMD_ACCEPT)
-		{
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet_spawn.ID);
+			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.ID);
 			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::CameraInstance>();
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalActorMoveEvent>();
 
 			m_connected = true;
 		}
 
-		--m_timeout;
+		packet.CMD = NETWORK_CMD_BEGIN;
+		m_network->send(packet);
+
+		IRR->getVideoDriver()->draw2DImage(m_logo_tex, vector2di(20, 600),
+			core::rect<s32>(0, 0, 105, 105), 0,
+			video::SColor(255, 255, 255, 255), true);
 	}
 
 	void LoadingInstance::connect(const char* ip)
@@ -72,19 +75,16 @@ namespace Xplicit::Client
 			EventDispatcher::get_singleton_ptr()->remove<Xplicit::Client::LocalActorMoveEvent>("LocalActorMoveEvent");
 
 #ifdef XPLICIT_DEBUG
-			XPLICIT_INFO("[CLIENT] Reconnecting to another server");
+			XPLICIT_INFO("[CLIENT] Joining another place!");
 #endif
-
-			m_network->reset();
 		}
 
 		if (m_network->connect(ip))
 		{
-			m_connected = false;
+			NetworkPacket spawn{};
+			spawn.CMD = NETWORK_CMD_BEGIN;
+			m_network->send(spawn);
 
-			NetworkPacket packet_spawn{};
-			packet_spawn.CMD = NETWORK_CMD_BEGIN;
-			m_network->send(packet_spawn);
 		}
 	}
 }

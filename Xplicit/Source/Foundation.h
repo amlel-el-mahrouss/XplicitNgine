@@ -40,17 +40,11 @@ namespace Xplicit
 	{
 	public:
 		/* should allocated on the heap btw, anything on the stack can pop out.. */
-		EngineError(void* caused_by) : std::runtime_error("Engine Error"), m_cause(caused_by) {}
+		EngineError() : std::runtime_error("Engine Error") {}
 		~EngineError() = default; // let the ABI define that.
 
 		EngineError& operator=(const EngineError&) = default;
 		EngineError(const EngineError&) = default;
-
-		template <typename T = void>
-		T* what() { return reinterpret_cast<T*>(m_cause); }
-
-	private:
-		void* m_cause;
 
 	};
 

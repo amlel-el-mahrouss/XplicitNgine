@@ -59,6 +59,8 @@ namespace Xplicit::App
 		if (!XML)
 			throw std::runtime_error("No XML provided..");
 
+		char ip[128];
+
 		// read until EOF.
 		while (XML->read())
 		{
@@ -69,10 +71,11 @@ namespace Xplicit::App
 			{
 				if (std::string(XML->getNodeName()) == "CONNECT")
 				{
-					auto loading = InstanceManager::get_singleton_ptr()->add<Client::LoadingInstance>();
-					assert(loading);
+					if (strlen(XML->getAttributeValue("IP")) > 128)
+						throw EngineError();
 
-					loading->connect(XML->getAttributeValue("IP"));
+					memcpy(ip, XML->getAttributeValue("IP"), strlen(XML->getAttributeValue("IP")));
+					ip[strlen(XML->getAttributeValue("IP"))] = 0;
 
 #ifdef XPLICIT_DEBUG
 					XPLICIT_INFO("Connecting to server: " + std::string(XML->getAttributeValue("IP")));
@@ -83,5 +86,12 @@ namespace Xplicit::App
 			}
 			}
 		}
+
+		auto loader = InstanceManager::get_singleton_ptr()->add<Client::LoadingInstance>();
+		assert(loader);
+
+		XPLICIT_INFO(ip);
+		loader->connect(ip);
 	}
+
 }

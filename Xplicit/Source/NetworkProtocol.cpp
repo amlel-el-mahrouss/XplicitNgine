@@ -14,7 +14,7 @@
 
 namespace Xplicit
 {
-    NetworkClient::NetworkClient() : packet(), addr() {}
+    NetworkClient::NetworkClient() : packet(), addr(), stat(NETWORK_STAT_DISCONNECTED) {}
     NetworkClient::~NetworkClient() {}
     
     bool NetworkClient::operator==(const NetworkClient& cl)
@@ -32,6 +32,12 @@ namespace Xplicit
         packet.CMD = NETWORK_CMD_INVALID;
         packet.ID = -1;
 
+        stat = NETWORK_STAT_DISCONNECTED;
         memset(&addr, 0, sizeof(struct sockaddr_in));
+    }
+
+    bool equals(struct sockaddr_in& lhs, struct sockaddr_in& rhs)
+    {
+        return lhs.sin_addr.S_un.S_addr == rhs.sin_addr.S_un.S_addr;
     }
 }

@@ -30,6 +30,7 @@ namespace Xplicit
 		PlayerJoinLeaveEvent& operator=(const PlayerJoinLeaveEvent&) = default;
 		PlayerJoinLeaveEvent(const PlayerJoinLeaveEvent&) = default;
 
+		int64_t size() noexcept;
 		virtual void operator()() override;
 		virtual const char* name() noexcept override;
 
@@ -38,7 +39,7 @@ namespace Xplicit
 		bool on_join() noexcept;
 
 	private:
-		int64_t m_id_counter;
+		int64_t m_actor_counter;
 
 	};
 }

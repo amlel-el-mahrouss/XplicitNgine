@@ -21,16 +21,10 @@ namespace Xplicit
 	Actor::Actor(const bool human)
 		: m_replication(), m_position(0, 0, 0), m_delay(0), m_actor_id(-1)
 	{
-#ifndef _NDEBUG
-		XPLICIT_INFO("Actor::Actor");
-#endif
 	}
 
 	Actor::~Actor()
 	{
-#ifndef _NDEBUG
-		XPLICIT_INFO("Actor::~Actor");
-#endif
 	}
 
 	Actor::INSTANCE_PHYSICS Actor::physics() noexcept { return PHYSICS_FAST; }
@@ -42,7 +36,26 @@ namespace Xplicit
 	void Actor::update() 
 	{
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance");
-		if (!server) return;
+		
+		if (!server)
+			throw EngineError();
+
+		if (this->get().cmd == NETWORK_CMD_DAMAGE)
+		{
+			for (size_t i = 0; i < server->size(); i++)
+			{
+				if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.addr.sin_addr.S_un.S_addr)
+				{
+					server->get(i).packet.CMD = NETWORK_CMD_DAMAGE;
+					server->get(i).packet.ID = this->m_actor_id;
+					server->get(i).packet.Health = this->health();
+
+					server->send();
+
+					return;
+				}
+			}
+		}
 
 		if (this->get().cmd == NETWORK_CMD_DEAD)
 		{
@@ -50,7 +63,7 @@ namespace Xplicit
 			{
 				for (size_t i = 0; i < server->size(); i++)
 				{
-					if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.sockaddr.sin_addr.S_un.S_addr)
+					if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.addr.sin_addr.S_un.S_addr)
 					{
 						this->set(NETWORK_CMD_SPAWN);
 						this->m_delay = 0;
@@ -70,7 +83,7 @@ namespace Xplicit
 		{
 			for (size_t i = 0; i < server->size(); i++)
 			{
-				if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.sockaddr.sin_addr.S_un.S_addr)
+				if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.addr.sin_addr.S_un.S_addr)
 				{
 					this->set(NETWORK_CMD_DEAD);
 					this->m_delay = XPLICIT_ACTOR_COOLDOWN;
@@ -92,7 +105,7 @@ namespace Xplicit
 
 			for (size_t i = 0; i < server->size(); i++)
 			{
-				if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.sockaddr.sin_addr.S_un.S_addr)
+				if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.addr.sin_addr.S_un.S_addr)
 				{
 					server->get(i).packet.CMD = NETWORK_CMD_POS;
 					server->get(i).packet.ID = this->m_actor_id;
@@ -118,12 +131,6 @@ namespace Xplicit
 
 	bool Actor::can_collide() noexcept { return true; }
 
-	void Actor::set(int64_t id) noexcept
-	{
-		if (id < 0) return;
-		m_actor_id = id;
-	}
-
 	const char* Actor::name() noexcept { return "Actor"; }
 	Actor::INSTANCE_TYPE Actor::type() noexcept { return INSTANCE_ACTOR; }
 
@@ -134,8 +141,14 @@ namespace Xplicit
 
 	// Actor's Setters
 
+	void Actor::set(int64_t id) noexcept
+	{
+		if (id < 0) return;
+		m_actor_id = id;
+	}
+
 	void Actor::set(NETWORK_CMD cmd) noexcept { m_replication.cmd = cmd; }
-	void Actor::set(struct sockaddr_in sockaddr) noexcept { m_replication.sockaddr = sockaddr; }
+	void Actor::set(struct sockaddr_in sockaddr) noexcept { m_replication.addr = sockaddr; }
 
 	void Actor::set(float x, float y, float z)  noexcept
 	{
@@ -146,7 +159,8 @@ namespace Xplicit
 
 	void Actor::reset() noexcept
 	{
-		this->get().sockaddr.sin_addr.S_un.S_addr = 0;
+		memset(&this->get().addr, 0, sizeof(struct sockaddr_in));
+
 		this->set(0.f, 0.f, 0.f);
 		this->get().health = 0;
 

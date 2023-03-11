@@ -42,6 +42,10 @@ namespace Xplicit::Client
 
 		m_typing_tex = IRR->getVideoDriver()->getTexture(typing_path.c_str());
 
+		std::string health_path = data_dir;
+		health_path += "/health_bar.png";
+
+		m_health_tex = IRR->getVideoDriver()->getTexture(health_path.c_str());
 	}
 
 	CameraInstance::~CameraInstance()
@@ -83,6 +87,10 @@ namespace Xplicit::Client
 				core::rect<s32>(0, 0, 38, 38), 0,
 				video::SColor(255, 255, 255, 255), true);
 		}
+
+		IRR->getVideoDriver()->draw2DImage(m_health_tex, vector2di(0, 0),
+			core::rect<s32>(0, 0, 521, 51), 0,
+			video::SColor(255, 255, 255, 255), true);
 
 		if (KB->is_key_down(irr::KEY_ESCAPE))
 		{

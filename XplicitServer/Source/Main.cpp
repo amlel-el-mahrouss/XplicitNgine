@@ -120,22 +120,24 @@ static void xplicit_load_shell()
 
 			while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 			{
-				std::cout << "# ";
+				if (!Xplicit::ApplicationContext::get_singleton().ShouldExit)
+					std::cout << "# ";
 
 				std::cin.getline(cmd_buf, 1024);
 
 				if (strcmp(cmd_buf, "exit") == 0)
 				{
 					xplicit_send_stop_packet(Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance"));
-
 					Xplicit::ApplicationContext::get_singleton().ShouldExit = true;
 				}
 
-				if (strncmp(cmd_buf, "print", strlen("print")) == 0)
+				if (strncmp(cmd_buf, "help", strlen("help")) == 0)
 				{
-					std::cin.getline(cmd_buf, 1024);
-					XPLICIT_INFO(cmd_buf);
+					puts("-- HELP -- XplicitServer -- HELP --");
+					puts("exit: exits the server..");
+					puts("-- HELP -- XplicitServer -- HELP --");
 				}
+
 			}
 		}
 	);
@@ -179,12 +181,13 @@ int main(int argc, char** argv)
 		if (!addr)
 			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
 
+		xplicit_create_common();
+		xplicit_attach_mono();
+		xplicit_load_cfg();
+
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkServerEvent>(server);
 
-		xplicit_attach_mono();
-		xplicit_load_cfg();
-		xplicit_create_common();
 		xplicit_load_shell();
 
 		while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
@@ -208,9 +211,12 @@ int main(int argc, char** argv)
 		XPLICIT_CRITICAL(msg);
 #endif
 
+#ifdef XPLICIT_DEBUG
 #ifdef XPLICIT_WINDOWS
 		MessageBoxA(nullptr, msg.c_str(), "FATAL!", MB_OK);
 #endif
+#endif
+
 		return -1;
 	}
 }

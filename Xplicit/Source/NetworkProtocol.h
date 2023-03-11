@@ -16,7 +16,7 @@
 
 #ifndef XPLICIT_NETWORK_PORT
 #define XPLICIT_NETWORK_PORT (60000)
-#endif // !XPLICIT_NETWORK_PORT
+#endif // ifndef XPLICIT_NETWORK_PORT
 
 #define XPLICIT_NETWORK_MAG_0 ('X')
 #define XPLICIT_NETWORK_MAG_1 ('N')
@@ -29,12 +29,12 @@ namespace Xplicit
         // Network Start/End messages.
         NETWORK_CMD_BEGIN = 9, // start network, handshake
         NETWORK_CMD_STOP, // abort connection
-        // PvP
+        // Player versus player
         NETWORK_CMD_DEAD,
         NETWORK_CMD_DAMAGE,
         NETWORK_CMD_SPAWN,
         NETWORK_CMD_ERROR,
-        // Script message
+        // Script Messaging Protocol (SMP)
         NETWORK_CMD_SCRIPT,
         // Position Update
         NETWORK_CMD_POS,
@@ -48,6 +48,7 @@ namespace Xplicit
         NETWORK_CMD_INVALID = 0xFFFFFFF,
     };
 
+    // for the Watchdog protocol
     enum NETWORK_STAT : int
     {
         NETWORK_STAT_CONNECTED,
@@ -58,19 +59,21 @@ namespace Xplicit
     class NetworkPacket
     {
     public:
-        char MAG[3]; /* The Packet magic numbers. */
+        char Magic[3]; /* The Packet magic numbers. */
 
         /* Command and Actor ID. */
         NETWORK_CMD CMD; /* The current network command. */
         int64_t ID; /* NOTE: The server must ignore the ID! */
 
     public:
+        int64_t Health; /* The current actor's health, if sent by an actor */
+
         float X; /* X position */
         float Y; /* Y position */
         float Z; /* Z position */
 
     public:
-        char Data[256]; /* Optional Data array */
+        char Data[256]; /* Optional Data array, for C# scripts */
 
     };
 
@@ -95,4 +98,5 @@ namespace Xplicit
 
     };
 
+    XPLICIT_API bool equals(struct sockaddr_in& lhs, struct sockaddr_in& rhs);
 }

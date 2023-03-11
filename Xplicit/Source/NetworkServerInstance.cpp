@@ -120,9 +120,9 @@ namespace Xplicit
 			{
 				for (size_t i = 0; i < instance->m_clients.size(); i++)
 				{
-					instance->m_clients[i].packet.MAG[0] = XPLICIT_NETWORK_MAG_0;
-					instance->m_clients[i].packet.MAG[1] = XPLICIT_NETWORK_MAG_1;
-					instance->m_clients[i].packet.MAG[2] = XPLICIT_NETWORK_MAG_2;
+					instance->m_clients[i].packet.Magic[0] = XPLICIT_NETWORK_MAG_0;
+					instance->m_clients[i].packet.Magic[1] = XPLICIT_NETWORK_MAG_1;
+					instance->m_clients[i].packet.Magic[2] = XPLICIT_NETWORK_MAG_2;
 
 #ifdef XPLICIT_WINDOWS
 					::sendto(instance->m_socket, (const char*)&
@@ -149,8 +149,8 @@ namespace Xplicit
 #pragma error("DEFINE ME ServerInstance.cpp")
 #endif
 
-					if (instance->m_clients[i].packet.MAG[0] != XPLICIT_NETWORK_MAG_0 || instance->m_clients[i].packet.MAG[1] != XPLICIT_NETWORK_MAG_1 ||
-						instance->m_clients[i].packet.MAG[2] != XPLICIT_NETWORK_MAG_2)
+					if (instance->m_clients[i].packet.Magic[0] != XPLICIT_NETWORK_MAG_0 || instance->m_clients[i].packet.Magic[1] != XPLICIT_NETWORK_MAG_1 ||
+						instance->m_clients[i].packet.Magic[2] != XPLICIT_NETWORK_MAG_2)
 					{
 						instance->m_clients[i].packet.CMD = NETWORK_CMD_INVALID;
 						instance->m_clients[i].packet.ID = -1;

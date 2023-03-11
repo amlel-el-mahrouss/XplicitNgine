@@ -36,8 +36,20 @@ namespace Xplicit
 		++counter;
 	}
 
-	PlayerJoinLeaveEvent::PlayerJoinLeaveEvent() : m_id_counter(0) {}
-	PlayerJoinLeaveEvent::~PlayerJoinLeaveEvent() {}
+	PlayerJoinLeaveEvent::PlayerJoinLeaveEvent() 
+		: m_actor_counter(0) 
+	{
+
+	}
+
+	PlayerJoinLeaveEvent::~PlayerJoinLeaveEvent() 
+	{
+	}
+
+	int64_t PlayerJoinLeaveEvent::size() noexcept
+	{
+		return m_actor_counter;
+	}
 
 	void PlayerJoinLeaveEvent::operator()()
 	{
@@ -60,29 +72,24 @@ namespace Xplicit
 		{
 			if (server->get(i).packet.CMD == NETWORK_CMD_BEGIN)
 			{
+				if (m_actor_counter > MAX_CONNECTIONS)
+					return false;
+
 				auto actors = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
 
+				// if the actor already exists, don't accept the connection!
 				for (size_t y = 0; y < actors.size(); y++)
 				{
-					if (actors[y]->get().sockaddr.sin_addr.S_un.S_addr == server->get(i).addr.sin_addr.S_un.S_addr)
+					if (equals(actors[y]->get().addr, server->get(i).addr))
 						return false;
-
-					if (actors[y]->get().sockaddr.sin_addr.S_un.S_addr == 0)
-					{
-						xplicit_join_event(server->get(i), actors[y], server, m_id_counter);
-
-						XPLICIT_INFO("[ACTOR] Actor.Update");
-
-						return true;
-					}
 				}
 
 				auto actor = InstanceManager::get_singleton_ptr()->add<Actor>();
 
 				if (!actor)
-					throw std::runtime_error("OutOfMemory: Could not allocate further actors!");
+					return false;
 
-				xplicit_join_event(server->get(i), actor, server, m_id_counter);
+				xplicit_join_event(server->get(i), actor, server, m_actor_counter);
 
 				XPLICIT_INFO("[ACTOR] Actor.New");
 
@@ -96,6 +103,7 @@ namespace Xplicit
 	bool PlayerJoinLeaveEvent::on_leave() noexcept
 	{
 		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
+		auto env = EventDispatcher::get_singleton_ptr()->get<NetworkServerEvent>("NetworkServerEvent");
 
 		if (!server) 
 			return false;
@@ -108,17 +116,14 @@ namespace Xplicit
 
 				for (size_t y = 0; y < actors.size(); y++)
 				{
-					if (actors[y]->get().sockaddr.sin_addr.S_un.S_addr == server->get(i).addr.sin_addr.S_un.S_addr)
+					if (equals(actors[y]->get().addr, server->get(i).addr))
 					{
-						actors[y]->reset();
+						XPLICIT_INFO("[ACTOR] Actor.Delete");
+
 						server->get(i).reset();
+						delete actors[y];
 
-						// decrement the entity counter
-						--m_id_counter;
-
-#ifndef _NDEBUG
-						XPLICIT_INFO("[ACTOR] Actor.Remove");
-#endif
+						--m_actor_counter;
 
 						return true;
 					}

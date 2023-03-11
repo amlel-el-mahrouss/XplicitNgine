@@ -15,16 +15,13 @@
 namespace Xplicit
 {
 	ServerWatchdogEvent::ServerWatchdogEvent() 
-		: Event(), m_watchdog_analyze(false), m_watchdog_enabled(false) 
+		: Event(), m_watchdog_analyze(false)
 	{}
 
 	ServerWatchdogEvent::~ServerWatchdogEvent() {}
 
 	void ServerWatchdogEvent::operator()() 
 	{
-		if (!this->m_watchdog_enabled)
-			return;
-
 		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
 
 		if (server)
@@ -42,24 +39,25 @@ namespace Xplicit
 			{
 				for (size_t i = 0; i < server->size(); i++)
 				{
-					if (server->get(i).packet.CMD != NETWORK_CMD_ACK)
+					if (server->get(i).packet.CMD == NETWORK_CMD_INVALID)
 					{
 						server->get(i).stat = NETWORK_STAT_DISCONNECTED;
 					}
+					else if (server->get(i).packet.CMD == NETWORK_CMD_BEGIN)
+					{
+						server->get(i).stat = NETWORK_STAT_CONNECTING;
+					}
+					else
+					{
+						server->get(i).stat = NETWORK_STAT_CONNECTED;
+
+					}
 				}
 
-				this->m_watchdog_enabled = false;
 				this->m_watchdog_analyze = true;
 			}
 		}
 	}
 
 	const char* ServerWatchdogEvent::name() noexcept { return ("ServerWatchdogEvent"); }
-
-	ServerWatchdogEvent::operator bool() { return m_watchdog_enabled; }
-
-	void ServerWatchdogEvent::set(bool enable) noexcept
-	{
-		m_watchdog_enabled = enable;
-	}
 }
