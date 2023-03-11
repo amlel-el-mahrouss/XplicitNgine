@@ -1,0 +1,1 @@
+Rename the .asset to .obj!

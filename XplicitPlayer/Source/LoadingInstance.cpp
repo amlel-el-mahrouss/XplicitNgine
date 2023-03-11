@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: LoadingSreenInstance.cpp
@@ -13,6 +13,8 @@
 #include "LoadingInstance.h"
 #include "CameraInstance.h"
 #include "LocalActor.h"
+#include "App.h"
+#include "XUI.h"
 
 namespace Xplicit::Client
 {
@@ -20,12 +22,12 @@ namespace Xplicit::Client
 	constexpr const int XPLICIT_TIMEOUT = 1000; // maximum timeout.
 
 	LoadingInstance::LoadingInstance() 
-		: m_connected(false), m_network(nullptr), m_logo_tex(nullptr), m_timeout(0)
+		: m_run(true), m_network(nullptr), m_logo_tex(nullptr), m_timeout(XPLICIT_TIMEOUT)
 	{
 		XPLICIT_GET_DATA_DIR(data_dir);
 
 		std::string health_path = data_dir;
-		health_path += "/engine_logo.png";
+		health_path += "\\Textures\\engine_logo.png";
 
 		m_logo_tex = IRR->getVideoDriver()->getTexture(health_path.c_str());
 	}
@@ -34,7 +36,7 @@ namespace Xplicit::Client
 
 	void LoadingInstance::update()
 	{
-		if (m_connected)
+		if (!m_run)
 			return;
 
 		NetworkPacket packet{};
@@ -49,22 +51,26 @@ namespace Xplicit::Client
 			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::CameraInstance>();
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalActorMoveEvent>();
 
-			m_connected = true;
+			m_run = false;
 		}
 
 		packet.CMD = NETWORK_CMD_BEGIN;
 		m_network->send(packet);
 
-		IRR->getVideoDriver()->draw2DImage(m_logo_tex, vector2di(20, 600),
+		IRR->getVideoDriver()->draw2DImage(m_logo_tex, vector2di(Xplicit::Client::XPLICIT_DIM.Width * 0.02, Xplicit::Client::XPLICIT_DIM.Height * 0.825),
 			core::rect<s32>(0, 0, 105, 105), 0,
 			video::SColor(255, 255, 255, 255), true);
 
-		++m_timeout;
+		--m_timeout;
 
-		if (m_timeout >= XPLICIT_TIMEOUT)
+		// peek after the ++timeout
+		if (m_timeout < 0)
 		{
-			MessageBoxA(nullptr, "Server does not respond! Exiting!", "XplicitNgin", MB_OK);
-			IRR->closeDevice();
+			InstanceManager::get_singleton_ptr()->add<UI::InternalPopup>([]()-> void {
+				IRR->closeDevice();
+			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), UI::POPUP_TYPE::NetworkError);
+
+			m_run = false; // sprious reponse
 		}
 	}
 
@@ -77,16 +83,6 @@ namespace Xplicit::Client
 			m_network = InstanceManager::get_singleton_ptr()->add<NetworkInstance>();
 			assert(m_network);
 		}
-		else
-		{
-			InstanceManager::get_singleton_ptr()->remove<Xplicit::Client::LocalActor>("LocalActor");
-			InstanceManager::get_singleton_ptr()->remove<Xplicit::Client::CameraInstance>("CameraInstance");
-			EventDispatcher::get_singleton_ptr()->remove<Xplicit::Client::LocalActorMoveEvent>("LocalActorMoveEvent");
-
-#ifdef XPLICIT_DEBUG
-			XPLICIT_INFO("[CLIENT] Joining another place!");
-#endif
-		}
 
 		if (m_network->connect(ip))
 		{
@@ -95,5 +91,13 @@ namespace Xplicit::Client
 			m_network->send(spawn);
 
 		}
+	}
+
+	void LoadingInstance::reset() noexcept
+	{
+		InstanceManager::get_singleton_ptr()->add<UI::InternalPopup>([]()-> void {
+			IRR->closeDevice();
+			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), UI::POPUP_TYPE::NetworkError);
+
 	}
 }

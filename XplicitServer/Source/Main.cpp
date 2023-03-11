@@ -120,9 +120,6 @@ static void xplicit_load_shell()
 
 			while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 			{
-				if (!Xplicit::ApplicationContext::get_singleton().ShouldExit)
-					std::cout << "# ";
-
 				std::cin.getline(cmd_buf, 1024);
 
 				if (strcmp(cmd_buf, "exit") == 0)
@@ -134,7 +131,7 @@ static void xplicit_load_shell()
 				if (strncmp(cmd_buf, "help", strlen("help")) == 0)
 				{
 					puts("-------------- HELP --------------");
-					puts("exit: kills the current server..");
+					puts("exit: kills the current server.");
 					puts("-------------- HELP --------------");
 				}
 

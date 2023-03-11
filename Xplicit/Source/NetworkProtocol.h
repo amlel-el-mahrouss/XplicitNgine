@@ -39,10 +39,10 @@ namespace Xplicit
         // Position Update
         NETWORK_CMD_POS,
         // Connection Status
-        NETWORK_CMD_ACCEPT,
+        NETWORK_CMD_ACCEPT, // handshake has been accepted.
         NETWORK_CMD_REFUSE,
         NETWORK_CMD_WATCHDOG,
-        NETWORK_CMD_ACK,
+        NETWORK_CMD_ACK, // acknowledge
         // Kick
         NETWORK_CMD_KICK,
         NETWORK_CMD_INVALID = 0xFFFFFFF,

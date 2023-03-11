@@ -28,17 +28,17 @@ namespace Xplicit::Client
 			throw EngineError();
 
 		std::string idle_path = data_dir;
-		idle_path += "/idle.png";
+		idle_path += "\\Textures\\idle.png";
 
 		m_idle_tex = IRR->getVideoDriver()->getTexture(idle_path.c_str());
 
 		std::string moving_path = data_dir;
-		moving_path += "/moving.png";
+		moving_path += "\\Textures\\moving.png";
 
 		m_moving_tex = IRR->getVideoDriver()->getTexture(moving_path.c_str());
 
 		std::string typing_path = data_dir;
-		typing_path += "/typing.png";
+		typing_path += "\\Textures\\typing.png";
 
 		m_typing_tex = IRR->getVideoDriver()->getTexture(typing_path.c_str());
 	}
@@ -64,26 +64,28 @@ namespace Xplicit::Client
 
 	void CameraInstance::update()
 	{
-		if (KB->is_key_down(irr::KEY_KEY_W))
+		auto pos = KB->get_pos();
+
+		if (KB->key_down(irr::KEY_KEY_W))
 		{
-			IRR->getVideoDriver()->draw2DImage(m_moving_tex, IRR->getCursorControl()->getPosition(),
+			IRR->getVideoDriver()->draw2DImage(m_moving_tex, vector2di(pos.X, pos.Y),
 				core::rect<s32>(0, 0, 38, 38), 0,
 				video::SColor(255, 255, 255, 255), true);
 		}
-		else if (KB->is_key_down(irr::KEY_KEY_T))
+		else if (KB->key_down(irr::KEY_KEY_T))
 		{
-			IRR->getVideoDriver()->draw2DImage(m_typing_tex, IRR->getCursorControl()->getPosition(),
+			IRR->getVideoDriver()->draw2DImage(m_typing_tex, vector2di(pos.X, pos.Y),
 				core::rect<s32>(0, 0, 38, 38), 0,
 				video::SColor(255, 255, 255, 255), true);
 		}
 		else
 		{
-			IRR->getVideoDriver()->draw2DImage(m_idle_tex, IRR->getCursorControl()->getPosition(),
+			IRR->getVideoDriver()->draw2DImage(m_idle_tex, vector2di(pos.X, pos.Y),
 				core::rect<s32>(0, 0, 38, 38), 0,
 				video::SColor(255, 255, 255, 255), true);
 		}
 
-		if (KB->is_key_down(irr::KEY_ESCAPE))
+		if (KB->key_down(irr::KEY_ESCAPE))
 		{
 			auto net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 

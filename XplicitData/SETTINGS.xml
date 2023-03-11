@@ -1,0 +1,6 @@
+<!-- XplicitNgin Settings -->
+
+<Window>
+	<Dim Width="800" Height="600"/>
+	<MouseSpeed Value="1.0"/>
+</Window>

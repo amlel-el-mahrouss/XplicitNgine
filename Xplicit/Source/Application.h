@@ -16,7 +16,7 @@
 
 namespace Xplicit
 {
-	class XPLICIT_API InputReceiver : public irr::IEventReceiver
+	class XPLICIT_API InputReceiver final : public irr::IEventReceiver
 	{
 	public:
 		virtual bool OnEvent(const SEvent& event)
@@ -24,16 +24,51 @@ namespace Xplicit
 			if (event.EventType == irr::EET_KEY_INPUT_EVENT)
 				m_keys[event.KeyInput.Key] = event.KeyInput.PressedDown;
 
+			if (event.EventType == irr::EET_MOUSE_INPUT_EVENT)
+			{
+				switch (event.MouseInput.Event)
+				{
+				case EMIE_LMOUSE_PRESSED_DOWN:
+					m_mouse_left.Down = true;
+					break;
+
+				case EMIE_LMOUSE_LEFT_UP:
+					m_mouse_left.Down = false;
+					break;
+
+				case EMIE_RMOUSE_PRESSED_DOWN:
+					m_mouse_right.Down = true;
+					break;
+
+				case EMIE_RMOUSE_LEFT_UP:
+					m_mouse_right.Down = false;
+					break;
+
+				case EMIE_MOUSE_MOVED:
+					m_mouse_pos.X = event.MouseInput.X;
+					m_mouse_pos.Y = event.MouseInput.Y;
+					break;
+
+				default:
+					// We won't use the wheel
+					break;
+				}
+			}
+
 			return false;
 		}
 
-		virtual bool is_key_down(const EKEY_CODE keyCode) const
+	private:
+		struct MouseEventTraits
 		{
-			return m_keys[keyCode];
-		}
+			float X;
+			float Y;
+			bool Down;
+		};
 
 	public:
 		InputReceiver()
+			: m_mouse_left(), m_mouse_right()
 		{
 			for (u32 i = 0; i < KEY_KEY_CODES_COUNT; ++i)
 				m_keys[i] = false;
@@ -44,8 +79,22 @@ namespace Xplicit
 		InputReceiver& operator=(const InputReceiver&) = default;
 		InputReceiver(const InputReceiver&) = default;
 
+		bool right_down() noexcept { return m_mouse_right.Down; }
+		bool left_down() noexcept { return m_mouse_left.Down; }
+
+		bool key_down(const EKEY_CODE ky) const
+		{
+			return m_keys[ky];
+		}
+
+		MouseEventTraits& get_pos() noexcept { return m_mouse_pos; }
+
 	private:
 		bool m_keys[KEY_KEY_CODES_COUNT];
+
+		MouseEventTraits m_mouse_right;
+		MouseEventTraits m_mouse_left;
+		MouseEventTraits m_mouse_pos;
 
 	};
 

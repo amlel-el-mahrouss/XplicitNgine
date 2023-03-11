@@ -69,10 +69,11 @@ namespace Xplicit
 		{
 			INSTANCE_ACTOR, // Engine Actor
 			INSTANCE_LOGIC, // Generic Logic Instance
-			INSTANCE_CAMERA, // Camera
-			INSTANCE_SCRIPT, // C# script
+			INSTANCE_CAMERA, // Camera instance
+			INSTANCE_SCRIPT, // C#/Lua script instance
 			INSTANCE_RENDER, // Renderable instance.
-			INSTANCE_NETWORK,
+			INSTANCE_NETWORK, // Network instance
+			INSTANCE_GUI, // GUI instance
 			INSTANCE_COUNT
 		};
 

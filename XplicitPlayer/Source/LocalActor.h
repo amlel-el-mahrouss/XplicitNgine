@@ -38,8 +38,12 @@ namespace Xplicit::Client
 		virtual void update() override;
 
 	private:
+		IAnimatedMeshSceneNode* m_player_model_node;
+		IAnimatedMesh* m_player_model;
 		NetworkInstance* m_network;
-		CameraInstance* m_cam;
+		CameraInstance* m_camera;
+		float m_zdirection;
+		float m_direction;
 		int64_t m_id;
 		u32 m_then;
 
