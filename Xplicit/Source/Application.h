@@ -27,7 +27,7 @@ namespace Xplicit
 			return false;
 		}
 
-		virtual bool is_key_down(EKEY_CODE keyCode) const
+		virtual bool is_key_down(const EKEY_CODE keyCode) const
 		{
 			return m_keys[keyCode];
 		}

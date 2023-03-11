@@ -141,16 +141,16 @@ namespace Xplicit
 
 	// Actor's Setters
 
-	void Actor::set(int64_t id) noexcept
+	void Actor::set(const int64_t& id) noexcept
 	{
 		if (id < 0) return;
 		m_actor_id = id;
 	}
 
-	void Actor::set(NETWORK_CMD cmd) noexcept { m_replication.cmd = cmd; }
-	void Actor::set(struct sockaddr_in sockaddr) noexcept { m_replication.addr = sockaddr; }
+	void Actor::set(const NETWORK_CMD& cmd) noexcept { m_replication.cmd = cmd; }
+	void Actor::set(const struct sockaddr_in& sockaddr) noexcept { m_replication.addr = sockaddr; }
 
-	void Actor::set(float x, float y, float z)  noexcept
+	void Actor::set(const float& x, const float& y, const float& z)  noexcept
 	{
 		m_position.X = x;
 		m_position.X = y;

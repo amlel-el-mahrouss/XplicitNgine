@@ -95,7 +95,7 @@ namespace Xplicit
 
     class HTTPError : public std::runtime_error {
     public:
-        HTTPError(const uint16_t what) : std::runtime_error("HTTP Error!") {}
+        HTTPError(const uint16_t what) : std::runtime_error("HTTP Error") {}
         ~HTTPError() = default; // let the ABI define that.
 
         HTTPError& operator=(const HTTPError&) = default;

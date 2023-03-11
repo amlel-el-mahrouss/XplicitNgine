@@ -87,10 +87,10 @@ namespace Xplicit
 		virtual const char* name() noexcept override;
 
 		// useful setters.
-		void set(struct sockaddr_in sockaddr) noexcept;
-		void set(float x, float y, float z) noexcept;
-		void set(NETWORK_CMD cmd) noexcept;
-		void set(int64_t id) noexcept;
+		void set(const struct sockaddr_in& sockaddr) noexcept;
+		void set(const float& x, const float& y, const float& z) noexcept;
+		void set(const NETWORK_CMD& cmd) noexcept;
+		void set(const int64_t& id) noexcept;
 
 		virtual void update() override;
 
