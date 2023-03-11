@@ -49,6 +49,8 @@ namespace Xplicit::Client
 		{
 			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.ID);
 			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::CameraInstance>();
+			InstanceManager::get_singleton_ptr()->add<Xplicit::UI::InternalHUD>();
+
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalActorMoveEvent>();
 
 			m_run = false;

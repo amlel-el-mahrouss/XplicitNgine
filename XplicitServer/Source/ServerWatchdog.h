@@ -34,8 +34,11 @@ namespace Xplicit
 		virtual void operator()() override;
 		virtual const char* name() noexcept override;
 
+	public:
+		void watchdog() noexcept;
+
 	private:
-		bool m_watchdog_analyze; // should we analyse packets now?
+		int16_t m_watchdog_delay;
 
 	};
 }

@@ -12,7 +12,8 @@
 
 #pragma once
 
-#include <Application.h>
+#include <NetworkInstance.h>
+#include <ApplicationContext.h>
 #include <Instance.h>
 
 #ifdef XPLICIT_WINDOWS
@@ -50,6 +51,29 @@ namespace Xplicit::UI
 		std::function<void()> m_on_click;
 		ITexture* m_error_texture;
 		vector2di m_pos;
+
+	};
+
+	class InternalHUD final : public Instance
+	{
+	public:
+		InternalHUD();
+		virtual ~InternalHUD();
+
+		InternalHUD& operator=(const InternalHUD&) = delete;
+		InternalHUD(const InternalHUD&) = delete;
+
+		virtual const char* name() noexcept override { return "InternalHUD"; }
+		virtual INSTANCE_TYPE type() noexcept override { return INSTANCE_GUI; }
+
+		virtual void update() override;
+
+	private:
+		NetworkInstance* m_network;
+		ITexture* m_full_heatlh;
+		ITexture* m_mid_heatlh;
+		ITexture* m_no_heatlh;
+		int64_t m_health;
 
 	};
 }

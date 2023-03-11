@@ -107,4 +107,18 @@ namespace Xplicit
 		int32_t m_delay; /* Actor cooldown */
 
 	};
+
+	class XPLICIT_API ActorEvent final : public Event
+	{
+	public:
+		ActorEvent() {}
+		virtual ~ActorEvent() {}
+
+		ActorEvent& operator=(const ActorEvent&) = default;
+		ActorEvent(const ActorEvent&) = default;
+
+		virtual const char* name() noexcept override;
+		virtual void operator()() override;
+
+	};
 }

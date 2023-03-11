@@ -70,7 +70,6 @@ namespace Xplicit
 
 		for (size_t i = 0; i < server->size(); i++)
 		{
-
 			if (server->get(i).packet.CMD == NETWORK_CMD_BEGIN)
 			{
 				if (m_actor_counter > MAX_CONNECTIONS)
@@ -104,14 +103,14 @@ namespace Xplicit
 	bool PlayerJoinLeaveEvent::on_leave() noexcept
 	{
 		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
-		auto env = EventDispatcher::get_singleton_ptr()->get<NetworkServerEvent>("NetworkServerEvent");
 
 		if (!server) 
 			return false;
 
 		for (size_t i = 0; i < server->size(); i++)
 		{
-			if (server->get(i).packet.CMD == NETWORK_CMD_STOP)
+			if (server->get(i).packet.CMD == NETWORK_CMD_STOP ||
+				server->get(i).packet.CMD == NETWORK_CMD_KICK)
 			{
 				auto actors = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
 

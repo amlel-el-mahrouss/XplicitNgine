@@ -13,7 +13,7 @@
 #pragma once
 
 #include "Instance.h"
-#include "Application.h"
+#include "ApplicationContext.h"
 #include "CameraInstance.h"
 #include "NetworkInstance.h"
 
@@ -42,10 +42,7 @@ namespace Xplicit::Client
 		IAnimatedMesh* m_player_model;
 		NetworkInstance* m_network;
 		CameraInstance* m_camera;
-		float m_zdirection;
-		float m_direction;
 		int64_t m_id;
-		u32 m_then;
 
 	};
 
@@ -62,7 +59,6 @@ namespace Xplicit::Client
 		const char* name() noexcept;
 
 	private:
-		irr::core::vector3df m_last_pos;
 		NetworkPacket m_packet;
 
 	};

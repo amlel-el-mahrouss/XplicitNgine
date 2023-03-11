@@ -36,9 +36,7 @@ namespace Xplicit
 	void Actor::update() 
 	{
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance");
-		
-		if (!server)
-			throw EngineError();
+		assert(server);
 
 		if (this->get().cmd == NETWORK_CMD_DAMAGE)
 		{
@@ -98,26 +96,40 @@ namespace Xplicit
 			}
 		}
 		
-		if (this->get().cmd == NETWORK_CMD_POS)
+		for (size_t i = 0; i < server->size(); i++)
 		{
-			// just do something as a simple as that
-			// rely on the physics engine for collision detection.
-
-			for (size_t i = 0; i < server->size(); i++)
+			if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.addr.sin_addr.S_un.S_addr)
 			{
-				if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.addr.sin_addr.S_un.S_addr)
+				server->get(i).packet.CMD = NETWORK_CMD_POS;
+				server->get(i).packet.ID = this->m_actor_id;
+
+				switch (this->get().cmd)
 				{
-					server->get(i).packet.CMD = NETWORK_CMD_POS;
-					server->get(i).packet.ID = this->m_actor_id;
-
-					server->get(i).packet.X = m_position.X;
-					server->get(i).packet.Y = m_position.Y;
-					server->get(i).packet.Z = m_position.Y;
-
-					server->send();
-
-					return;
+				case NETWORK_CMD_FORWARD:
+				{
+					server->get(i).packet.Z = 10.f;
+					break;
 				}
+				case NETWORK_CMD_BACKWARDS:
+				{
+					server->get(i).packet.Z = -10.f;
+					break;
+				}
+				case NETWORK_CMD_LEFT:
+				{
+					server->get(i).packet.X = -7.f;
+					break;
+				}
+				case NETWORK_CMD_RIGHT:
+				{
+					server->get(i).packet.X = 7.f;
+					break;
+				}
+				}
+
+				server->send();
+
+				return;
 			}
 		}
 	}
@@ -165,5 +177,37 @@ namespace Xplicit
 		this->get().health = 0;
 
 		m_actor_id = -1;
+	}
+
+	const char* ActorEvent::name() noexcept { return ("ActorEvent"); }
+
+	void ActorEvent::operator()()
+	{
+		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
+		auto actors = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
+
+		if (!server)
+			return;
+
+		if (actors.empty())
+			return;
+
+		for (size_t i = 0; i < actors.size(); i++)
+		{
+			if (!actors[i] || !actors[i]->can_collide() || !actors[i]->has_physics() || actors[i]->id() < 0)
+				continue;
+
+			for (size_t y = 0; y < server->size(); y++)
+			{
+				if (equals(server->get(y).addr, actors[i]->get().addr))
+				{
+					if (actors[i]->get().cmd == NETWORK_CMD_DEAD)
+						continue;
+
+					actors[i]->set(server->get(y).packet.CMD);
+					actors[i]->set(server->get(y).packet.X, server->get(y).packet.Y, server->get(y).packet.Z);
+				}
+			}
+		}
 	}
 }

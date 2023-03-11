@@ -13,7 +13,7 @@
 #pragma once
 
 #include "Instance.h"
-#include "Application.h"
+#include "ApplicationContext.h"
 #include "NetworkInstance.h"
 
 namespace Xplicit::Client

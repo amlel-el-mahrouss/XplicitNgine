@@ -84,22 +84,6 @@ namespace Xplicit::Client
 				core::rect<s32>(0, 0, 38, 38), 0,
 				video::SColor(255, 255, 255, 255), true);
 		}
-
-		if (KB->key_down(irr::KEY_ESCAPE))
-		{
-			auto net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
-
-			if (net)
-			{
-				// send a stop command.
-				NetworkPacket cmd = {  };
-				cmd.CMD = NETWORK_CMD_STOP; // client is shutting down.
-
-				net->send(cmd);
-			}
-
-			IRR->closeDevice();
-		}
 	}
 
 	irr::scene::ICameraSceneNode* CameraInstance::get() noexcept { return m_camera; }

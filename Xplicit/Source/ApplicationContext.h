@@ -4,7 +4,7 @@
  *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
- *			File: Application.h
+ *			File: ApplicationContext.h
  *			Purpose: Application Context and helpers.
  *
  * =====================================================================

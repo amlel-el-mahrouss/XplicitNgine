@@ -101,8 +101,9 @@ static void xplicit_attach_mono()
 
 static void xplicit_create_common()
 {
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
+	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
+	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
 }
 
 static void xplicit_load_shell()
@@ -110,7 +111,7 @@ static void xplicit_load_shell()
 #ifdef XPLICIT_WINDOWS
 	// change window title to 'Xplicit Server'
 	HWND wnd = GetConsoleWindow();
-	SetWindowTextA(wnd, "Xplicit Server");
+	SetWindowTextA(wnd, "Xplicit Dedicated server");
 #endif
 
 	std::thread shell(

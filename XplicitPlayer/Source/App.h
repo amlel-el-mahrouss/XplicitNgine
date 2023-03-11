@@ -15,7 +15,7 @@
 #include <Event.h>
 #include <Instance.h>
 #include <Foundation.h>
-#include <Application.h>
+#include <ApplicationContext.h>
 
 /* Client instances */
 #include "LocalActor.h"

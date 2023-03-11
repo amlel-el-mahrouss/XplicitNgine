@@ -17,18 +17,18 @@ namespace Xplicit {
 	{
 		for (size_t i = 0; i < m_instances.size(); i++)
 		{
+			assert(m_instances[i]);
+
 			// either delete or invalidate the instance.
-			if (m_instances[i])
-			{
-				if (m_instances[i]->should_update())
-					m_instances[i]->update();
-			}
+			if (m_instances[i]->should_update())
+				m_instances[i]->update();
 		}
 	}
 
 	InstanceManager* InstanceManager::get_singleton_ptr()
 	{
 		static InstanceManager* ptr;
+
 		if (!ptr)
 			ptr = new InstanceManager();
 

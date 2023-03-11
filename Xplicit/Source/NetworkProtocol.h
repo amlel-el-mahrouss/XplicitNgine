@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: Protocol.h
@@ -36,6 +36,11 @@ namespace Xplicit
         NETWORK_CMD_ERROR,
         // Script Messaging Protocol (SMP)
         NETWORK_CMD_SCRIPT,
+        // Forward, Backwards, Right, Left
+        NETWORK_CMD_FORWARD,
+        NETWORK_CMD_BACKWARDS,
+        NETWORK_CMD_LEFT,
+        NETWORK_CMD_RIGHT,
         // Position Update
         NETWORK_CMD_POS,
         // Connection Status

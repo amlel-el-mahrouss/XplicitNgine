@@ -18,7 +18,7 @@
 namespace Xplicit::Client
 {
 	LocalActor::LocalActor(int64_t id)
-		: Instance(), m_then(0), m_camera(nullptr), m_id(id), m_player_model(nullptr),
+		: Instance(), m_camera(nullptr), m_id(id), m_player_model(nullptr),
 		m_player_model_node(nullptr)
 	{
 		m_camera = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");
@@ -43,8 +43,6 @@ namespace Xplicit::Client
 		assert(m_player_model);
 		assert(m_player_model_node);
 
-		m_then = IRR->getTimer()->getTime();
-
 #ifdef XPLICIT_DEBUG
 		XPLICIT_INFO("LocalActor::LocalActor");
 #endif
@@ -67,67 +65,31 @@ namespace Xplicit::Client
 		if (!m_camera)
 			m_camera = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");
 
-		const u32 now = IRR->getTimer()->getTime();
-		const f32 delta = (f32)(now - m_then) / 1000.f; // Time in seconds
-
-		m_then = now;
-
-		if (KB->key_down(KEY_KEY_W))
-		{
-			if (m_camera)
-			{
-				auto pos = m_player_model_node->getPosition();
-				pos.Z += XPLICIT_SPEED * delta;
-
-				m_player_model_node->setPosition(pos);
-			}
-		}
-		else if (KB->key_down(KEY_KEY_S))
-		{
-			if (m_camera)
-			{
-				auto pos = m_camera->get()->getPosition();
-				pos.Z -= XPLICIT_SPEED * delta;
-
-				m_player_model_node->setPosition(pos);
-			}
-		}
-		else if (KB->key_down(KEY_KEY_D))
-		{
-			if (m_camera)
-			{
-				auto pos = m_player_model_node->getPosition();
-				pos.X += XPLICIT_SPEED * delta;
-
-				m_player_model_node->setPosition(pos);
-			}
-		}
-		else if (KB->key_down(KEY_KEY_A))
-		{
-			if (m_camera)
-			{
-				auto pos = m_player_model_node->getPosition();
-				pos.X -= XPLICIT_SPEED * delta;
-
-				m_player_model_node->setPosition(pos);
-			}
-		}
-
 		if (m_network)
 		{
 			auto packet = m_network->get();
 
-			if (packet.CMD == NETWORK_CMD_STOP)
+			switch (packet.CMD)
+			{
+			case NETWORK_CMD_POS:
+			{
+				auto vec3d_pos = vector3df(packet.X, packet.Y, packet.Z);
+				m_player_model_node->setPosition(vec3d_pos);
+
+				break;
+			}
+
+			case NETWORK_CMD_STOP:
 			{
 				if (!InstanceManager::get_singleton_ptr()->get<UI::InternalPopup>("NetworkPopup"))
 				{
 					InstanceManager::get_singleton_ptr()->add<UI::InternalPopup>([]()-> void {
 						IRR->closeDevice();
-					}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), UI::POPUP_TYPE::Shutdown);
+						}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), UI::POPUP_TYPE::Shutdown);
 				}
+				break;
 			}
-
-			if (packet.CMD == NETWORK_CMD_KICK)
+			case NETWORK_CMD_KICK:
 			{
 				if (!InstanceManager::get_singleton_ptr()->get<UI::InternalPopup>("NetworkPopup"))
 				{
@@ -136,10 +98,27 @@ namespace Xplicit::Client
 						}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), UI::POPUP_TYPE::Kicked);
 				}
 			}
+			case NETWORK_CMD_WATCHDOG:
+			{
+				packet.CMD = NETWORK_CMD_ACK;
+				m_network->send(packet);
+			}
+			}
+
+			if (KB->key_down(irr::KEY_ESCAPE))
+			{
+				// send a stop command.
+				NetworkPacket cmd = {  };
+				cmd.CMD = NETWORK_CMD_STOP; // client is shutting down.
+
+				m_network->send(cmd);
+
+				IRR->closeDevice();
+			}
 		}
 	}
 
-	LocalActorMoveEvent::LocalActorMoveEvent() : m_last_pos(0, 0, 0), m_packet() {}
+	LocalActorMoveEvent::LocalActorMoveEvent() : m_packet() {}
 
 	LocalActorMoveEvent::~LocalActorMoveEvent() {}
 
@@ -151,19 +130,20 @@ namespace Xplicit::Client
 		if (!net) return;
 
 		auto cam = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");
-		if (cam->get()->getPosition() == m_last_pos) return;
 
-		auto pos = cam->get()->getPosition();
-		if (pos == m_last_pos) return;
+		if (KB->key_down(KEY_KEY_W))
+			m_packet.CMD = NETWORK_CMD_FORWARD;
 
-		m_packet.CMD = NETWORK_CMD_POS;
+		if (KB->key_down(KEY_KEY_S))
+			m_packet.CMD = NETWORK_CMD_BACKWARDS;
 
-		m_packet.X = pos.X;
-		m_packet.Y = pos.Y;
-		m_packet.Z = pos.Z;
+		if (KB->key_down(KEY_KEY_A))
+			m_packet.CMD = NETWORK_CMD_LEFT;
+
+		if (KB->key_down(KEY_KEY_D))
+			m_packet.CMD = NETWORK_CMD_RIGHT;
 
 		net->send(m_packet);
 
-		m_last_pos = pos;
 	}
 }

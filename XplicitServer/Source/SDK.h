@@ -17,7 +17,7 @@
 #include <Instance.h>
 #include <Foundation.h>
 #include <MonoInterop.h>
-#include <Application.h>
+#include <ApplicationContext.h>
 #include <MonoInstance.h>
 #include <NetworkServerInstance.h>
 
