@@ -70,6 +70,7 @@ namespace Xplicit
 
 		for (size_t i = 0; i < server->size(); i++)
 		{
+
 			if (server->get(i).packet.CMD == NETWORK_CMD_BEGIN)
 			{
 				if (m_actor_counter > MAX_CONNECTIONS)
@@ -121,7 +122,7 @@ namespace Xplicit
 						XPLICIT_INFO("[ACTOR] Actor.Delete");
 
 						server->get(i).reset();
-						delete actors[y];
+						InstanceManager::get_singleton_ptr()->remove<Actor>(actors[y]);
 
 						--m_actor_counter;
 

@@ -70,6 +70,35 @@ std::vector<T*> Xplicit::InstanceManager::get_all(const char* name)
 }
 
 template <typename T>
+bool Xplicit::InstanceManager::remove(T* ptr)
+{
+	if (!ptr)
+		return false;
+
+	for (size_t it = 0; it < m_instances.size(); ++it)
+	{
+		if (m_instances[it] == ptr)
+		{
+			auto obj = m_instances[it];
+
+			auto element = std::find(m_instances.cbegin(), m_instances.cend(), m_instances[it]);
+
+			if (element != m_instances.cend())
+				m_instances.erase(element);
+
+			// finally remove the object
+			delete obj;
+
+#ifdef XPLICIT_DEBUG
+			XPLICIT_INFO("Dropped Instance from InstanceManager");
+#endif
+
+			return true;
+		}
+	}
+}
+
+template <typename T>
 bool Xplicit::InstanceManager::remove(const char* name)
 {
 	if (!name)
@@ -78,7 +107,7 @@ bool Xplicit::InstanceManager::remove(const char* name)
 	if (*name == 0)
 		return false;
 
-	for (auto it = 0; it < m_instances.size(); ++it)
+	for (size_t it = 0; it < m_instances.size(); ++it)
 	{
 #ifdef XPLICIT_USE_AVX
 		if (m_instances[it] && avx_strcmp(name, m_instances[it]->name()))
@@ -96,7 +125,7 @@ bool Xplicit::InstanceManager::remove(const char* name)
 			// finally remove the object
 			delete obj;
 
-#ifndef _NDEBUG
+#ifdef XPLICIT_DEBUG
 			XPLICIT_INFO("Dropped Instance from InstanceManager");
 #endif
 

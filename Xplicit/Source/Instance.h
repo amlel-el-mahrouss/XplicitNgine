@@ -37,6 +37,9 @@ namespace Xplicit
 		T* add(Args&&... args);
 
 		template <typename T>
+		bool remove(T* ptr);
+
+		template <typename T>
 		bool remove(const char* name);
 
 		template <typename T>
