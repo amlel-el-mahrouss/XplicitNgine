@@ -5,29 +5,29 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: LoadingSreenInstance.cpp
- *			Purpose: Client Loading Screen
+ *			Purpose: Client Loading Logic
  *
  * =====================================================================
  */
 
-#include "LoadingScreenInstance.h"
+#include "LoadingInstance.h"
 #include "CameraInstance.h"
 #include "LocalActor.h"
 
 namespace Xplicit::Client
 {
-	constexpr const int XPLICIT_TIMEOUT_DELAY = 10; // why?, because it takes time to lookup into instances.
+	constexpr const int XPLICIT_TIMEOUT_DELAY = 10; // why? because it takes time to lookup into instances.
 
-	LoadingScreenInstance::LoadingScreenInstance() : m_connected(false), m_net(nullptr), m_timeout(XPLICIT_TIMEOUT_DELAY) {}
+	LoadingInstance::LoadingInstance() : m_connected(false), m_network(nullptr), m_timeout(XPLICIT_TIMEOUT_DELAY) {}
 
-	LoadingScreenInstance::~LoadingScreenInstance() {}
+	LoadingInstance::~LoadingInstance() {}
 
-	void LoadingScreenInstance::update()
+	void LoadingInstance::update()
 	{
 		if (m_connected)
 			return;
 		
-		assert(m_net);
+		assert(m_network);
 
 		NetworkPacket packet_spawn{};
 
@@ -35,14 +35,14 @@ namespace Xplicit::Client
 		if (m_timeout < 0)
 		{
 			packet_spawn.CMD = NETWORK_CMD_BEGIN;
-			m_net->send(packet_spawn);
+			m_network->send(packet_spawn);
 
 			m_timeout = XPLICIT_TIMEOUT_DELAY;
 		}
 
 		XPLICIT_SLEEP(70);
 		
-		m_net->read(packet_spawn);
+		m_network->read(packet_spawn);
 
 		if (packet_spawn.CMD == NETWORK_CMD_ACCEPT)
 		{
@@ -56,14 +56,14 @@ namespace Xplicit::Client
 		--m_timeout;
 	}
 
-	void LoadingScreenInstance::connect(const char* ip)
+	void LoadingInstance::connect(const char* ip)
 	{
-		m_net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
+		m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
-		if (!m_net)
+		if (!m_network)
 		{
-			m_net = InstanceManager::get_singleton_ptr()->add<NetworkInstance>();
-			assert(m_net);
+			m_network = InstanceManager::get_singleton_ptr()->add<NetworkInstance>();
+			assert(m_network);
 		}
 		else
 		{
@@ -75,16 +75,16 @@ namespace Xplicit::Client
 			XPLICIT_INFO("[CLIENT] Reconnecting to another server");
 #endif
 
-			m_net->reset();
+			m_network->reset();
 		}
 
-		if (m_net->connect(ip))
+		if (m_network->connect(ip))
 		{
 			m_connected = false;
 
 			NetworkPacket packet_spawn{};
 			packet_spawn.CMD = NETWORK_CMD_BEGIN;
-			m_net->send(packet_spawn);
+			m_network->send(packet_spawn);
 		}
 	}
 }

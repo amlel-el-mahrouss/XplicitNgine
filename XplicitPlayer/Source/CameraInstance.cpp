@@ -59,6 +59,10 @@ namespace Xplicit::Client
 			m_idle_tex->drop();
 	}
 
+
+	CameraInstance::INSTANCE_TYPE CameraInstance::type() noexcept { return INSTANCE_CAMERA; }
+	const char* CameraInstance::name() noexcept { return ("CameraInstance"); }
+
 	void CameraInstance::update()
 	{
 		if (KB->is_key_down(irr::KEY_KEY_W))

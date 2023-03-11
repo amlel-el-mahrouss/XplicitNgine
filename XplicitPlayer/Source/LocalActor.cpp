@@ -18,7 +18,7 @@ namespace Xplicit::Client
 		: Instance(), m_then(0), m_cam(nullptr), m_id(id)
 	{
 		m_cam = InstanceManager::get_singleton_ptr()->get<CameraInstance>("CameraInstance");
-		m_net = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
+		m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
 		m_then = IRR->getTimer()->getTime();
 
@@ -114,9 +114,9 @@ namespace Xplicit::Client
 			}
 		}
 
-		if (m_net)
+		if (m_network)
 		{
-			auto packet = m_net->get();
+			auto packet = m_network->get();
 
 			if (packet.CMD == NETWORK_CMD_STOP)
 			{

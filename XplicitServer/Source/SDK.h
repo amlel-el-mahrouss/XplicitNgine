@@ -19,7 +19,7 @@
 #include <MonoInterop.h>
 #include <Application.h>
 #include <MonoInstance.h>
-#include <ServerInstance.h>
+#include <NetworkServerInstance.h>
 
 #ifdef XPLICIT_WINDOWS
 extern "C"

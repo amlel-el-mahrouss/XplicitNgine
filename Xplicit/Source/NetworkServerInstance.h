@@ -4,8 +4,8 @@
  *				XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: ServerInstance.h
- *			Purpose: UDP Networking API
+ *			File: NetworkServerInstance.h
+ *			Purpose: UDP Server
  *
  * =====================================================================
  */

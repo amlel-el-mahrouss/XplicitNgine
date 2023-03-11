@@ -32,13 +32,13 @@ namespace Xplicit::Client
 		LocalActor& operator=(const LocalActor&) = default;
 		LocalActor(const LocalActor&) = default;
 
-		virtual INSTANCE_TYPE type() noexcept override { return CAMERA; }
+		virtual INSTANCE_TYPE type() noexcept override { return INSTANCE_ACTOR; }
 		virtual const char* name() noexcept override { return ("LocalActor"); }
 
 		virtual void update() override;
 
 	private:
-		NetworkInstance* m_net;
+		NetworkInstance* m_network;
 		CameraInstance* m_cam;
 		int64_t m_id;
 		u32 m_then;

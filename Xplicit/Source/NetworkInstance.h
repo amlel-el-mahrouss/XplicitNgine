@@ -12,10 +12,11 @@
 
 #pragma once
 
-#include "Event.h"
-#include "Protocol.h"
-#include "Instance.h"
 #include "Foundation.h"
+
+#include "Event.h"
+#include "Instance.h"
+#include "NetworkProtocol.h"
 
 #ifdef XPLICIT_WINDOWS
 #define XPLICIT_NET_ASSERT(EXPR) if (!(EXPR)) { MessageBoxA(nullptr, #EXPR, "C++ Network Exception", 0); std::terminate(); }
@@ -73,7 +74,7 @@ namespace Xplicit {
         NetworkInstance(const NetworkInstance& ctx) = default;
 
         virtual const char* name() noexcept override { return ("NetworkInstance"); }
-        virtual INSTANCE_TYPE type() noexcept override { return NETWORK; }
+        virtual INSTANCE_TYPE type() noexcept override { return INSTANCE_NETWORK; }
 
         virtual void update() override;
 

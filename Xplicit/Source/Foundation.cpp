@@ -12,11 +12,11 @@
 
 #include "Foundation.h"
 
-static FILE* stdlog{ nullptr };
+static FILE* g_stdlog{ nullptr };
 
-XPLICIT_API FILE* get_logger(void) 
+XPLICIT_API FILE* xplicit_get_logger(void) 
 {
-	return stdlog;
+	return g_stdlog;
 }
 
 size_t fstrlen(const char* buffer) 
@@ -30,32 +30,31 @@ size_t fstrlen(const char* buffer)
 	return index;
 }
 
-time_t get_epoch() 
+time_t xplicit_get_epoch() 
 {
 	static time_t curtime{};
 	curtime = time(&curtime);
-	// do not check anything here, it is source of race conditions.
 	
 	return curtime;
 }
 
-void log(const char* msg) 
+void xplicit_log(const char* msg) 
 {
-#ifndef NDEBUG
+#ifdef XPLICIT_DEBUG
 	char buf[sizeof(time_t)];
-	snprintf(buf, sizeof(time_t), "%llu", get_epoch());
-	fprintf(stdlog, "[%s - LOG] %s", buf, msg);
-#endif // !NDEBUG
+	snprintf(buf, sizeof(time_t), "%llu", xplicit_get_epoch());
+	fprintf(g_stdlog, "[%s - LOG] %s", buf, msg);
+#endif // ifdef XPLICIT_DEBUG
 }
 
 char dbg_filename[256];
 
-bool open_logger() 
+bool xplicit_open_logger() 
 {
 #ifndef NDEBUG
-	snprintf(dbg_filename, 256, "%llu_xplicit.log", get_epoch());
+	snprintf(dbg_filename, 256, "%llu_xplicit.log", xplicit_get_epoch());
 
-	if (fopen_s(&stdlog, dbg_filename, "w+") != EXIT_SUCCESS) 
+	if (fopen_s(&g_stdlog, dbg_filename, "w+") != EXIT_SUCCESS) 
 	{
 		assert(false);
 		exit(EXIT_FAILURE);

@@ -10,7 +10,7 @@
  * =====================================================================
  */
 
-#include "LoadingScreenInstance.h"
+#include "LoadingInstance.h"
 #include "App.h"
 
 namespace Xplicit::App
@@ -69,7 +69,9 @@ namespace Xplicit::App
 			{
 				if (std::string(XML->getNodeName()) == "CONNECT")
 				{
-					auto loading = InstanceManager::get_singleton_ptr()->add<Client::LoadingScreenInstance>();
+					auto loading = InstanceManager::get_singleton_ptr()->add<Client::LoadingInstance>();
+					assert(loading);
+
 					loading->connect(XML->getAttributeValue("IP"));
 
 #ifdef XPLICIT_DEBUG

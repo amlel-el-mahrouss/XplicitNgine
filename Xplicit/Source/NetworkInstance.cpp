@@ -52,7 +52,7 @@ namespace Xplicit
 		this->reset();
 
 #ifndef _NDEBUG
-		XPLICIT_INFO("~NetworkInstance, Epoch: " + std::to_string(get_epoch()));
+		XPLICIT_INFO("~NetworkInstance, Epoch: " + std::to_string(xplicit_get_epoch()));
 #endif
 	}
 
@@ -87,7 +87,9 @@ namespace Xplicit
 #pragma error("DEFINE ME NetworkInstance.cpp")
 #endif
 
+#ifdef XPLICIT_DEBUG
 		XPLICIT_INFO("[NetworkInstance] Connected!");
+#endif
 
 		return true;
 	}
@@ -131,14 +133,18 @@ namespace Xplicit
 			if (res == SOCKET_ERROR)
 			{
 				int err = WSAGetLastError();
+#ifdef XPLICIT_DEBUG
 				XPLICIT_INFO("recvfrom failed with code: " + std::to_string(err));
+#endif
 
 				switch (err)
 				{
 				case WSAEWOULDBLOCK:
 				{
+#ifdef XPLICIT_DEBUG
 					XPLICIT_INFO("Unblocking socket...");
-					
+#endif
+
 #ifdef XPLICIT_WINDOWS
 					struct timeval timeout = { .tv_sec = 0, .tv_usec = 200 };
 
@@ -160,8 +166,6 @@ namespace Xplicit
 
 		}
 
-		XPLICIT_INFO(std::to_string(packet.CMD));
-		XPLICIT_INFO("Something got read!");
 		return packet.MAG[0] == XPLICIT_NETWORK_MAG_0 && packet.MAG[1] == XPLICIT_NETWORK_MAG_1 &&
 				packet.MAG[2] == XPLICIT_NETWORK_MAG_2;
 	}

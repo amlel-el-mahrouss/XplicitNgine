@@ -11,7 +11,7 @@
  */
 
 #include "NetworkInstance.h"
-#include "ServerInstance.h"
+#include "NetworkServerInstance.h"
 
 #include "MonoInstance.h"
 #include "MonoInterop.h"
@@ -185,7 +185,7 @@ namespace Xplicit
 
 	const char* MonoEngineInstance::name() noexcept { return ("MonoEngineInstance"); }
 
-	MonoEngineInstance::INSTANCE_TYPE MonoEngineInstance::type() noexcept { return LOGIC; }
+	MonoEngineInstance::INSTANCE_TYPE MonoEngineInstance::type() noexcept { return INSTANCE_LOGIC; }
 
 	void MonoEngineInstance::update() {}
 
@@ -326,7 +326,7 @@ namespace Xplicit
 
 	MonoScriptInstance::INSTANCE_TYPE MonoScriptInstance::type() noexcept
 	{
-		return SCRIPT;
+		return INSTANCE_SCRIPT;
 	}
 
 	const char* MonoScriptInstance::name() noexcept

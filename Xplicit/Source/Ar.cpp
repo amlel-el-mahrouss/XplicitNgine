@@ -81,8 +81,8 @@ ar_update_epoch(struct ar_context* ctx) {
 struct ar_context*
 ar_new(const char* path, const char* res) {
     ar_file_t* fp = NULL;
-    log("Assert: fopen_s...");
-    log("Begin of record...");
+    xplicit_log("Assert: fopen_s...");
+    xplicit_log("Begin of record...");
 
     assert(fopen_s(&fp, path, res) == 0);
 
@@ -115,7 +115,7 @@ ar_new(const char* path, const char* res) {
         struct ar_context* ctx = (struct ar_context*)malloc(sizeof(struct ar_context));
         if (!ctx) {
             fclose(fp);
-            log("Warning! could not allocate context, probably out of memory blocks...\n");
+            xplicit_log("Warning! could not allocate context, probably out of memory blocks...\n");
 
             return NULL;
         }
@@ -132,7 +132,7 @@ ar_new(const char* path, const char* res) {
             free(ctx);
             fclose(fp);
 
-            log("Warning! Bad magic on archive, closing file pointer.");
+            xplicit_log("Warning! Bad magic on archive, closing file pointer.");
 
             return NULL;
         } else {

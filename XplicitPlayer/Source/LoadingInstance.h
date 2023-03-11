@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: LoadingSreenInstance.h
- *			Purpose: Client Loading Screen
+ *			Purpose: Client Loading Logic
  *
  * =====================================================================
  */
@@ -17,22 +17,22 @@
 
 namespace Xplicit::Client
 {
-	class LoadingScreenInstance : public Instance
+	class LoadingInstance : public Instance
 	{
 	public:
-		LoadingScreenInstance();
-		virtual ~LoadingScreenInstance();
+		LoadingInstance();
+		virtual ~LoadingInstance();
 
-		LoadingScreenInstance& operator=(const LoadingScreenInstance&) = default;
-		LoadingScreenInstance(const LoadingScreenInstance&) = default;
+		LoadingInstance& operator=(const LoadingInstance&) = default;
+		LoadingInstance(const LoadingInstance&) = default;
 
 		virtual void update() override;
 		void connect(const char* ip);
 
 	private:
-		NetworkInstance* m_net;
-		int64_t m_timeout;
-		bool m_connected;
+		NetworkInstance* m_network; /* Network instance */
+		int64_t m_timeout; /* Network timeout */
+		bool m_connected; /* Are we connected? */
 
 	};
 }

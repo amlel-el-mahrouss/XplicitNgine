@@ -1,11 +1,11 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *				XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: Http.h
- *			Purpose: HTTP support.
+ *			Purpose: HTTP client
  *
  * =====================================================================
  */
@@ -32,7 +32,7 @@ namespace Xplicit
 
     public:
         static MIMEFactory::mime get(char* name) {
-            if (!name) return { .t_name = "Any File", .t_mime = "*/*" };
+            if (!name) return { .t_name = "Any", .t_mime = "*/*" };
             std::string extension = strchr(name, '.');
 
             if (!strcmp(extension.c_str(), ".png"))

@@ -66,19 +66,18 @@ namespace Xplicit
 
 		enum INSTANCE_TYPE : uint8_t 
 		{
-			ACTOR,
-			LOGIC, // Generic Logic Instance
-			CAMERA,
-			SCRIPT,
-			RENDER, // Renderable instance.
-			NETWORK,
-			INSTANCE, // classic instance, unchanged by the child class.
-			TYPE_COUNT
+			INSTANCE_ACTOR, // Engine Actor
+			INSTANCE_LOGIC, // Generic Logic Instance
+			INSTANCE_CAMERA, // Camera
+			INSTANCE_SCRIPT, // C# script
+			INSTANCE_RENDER, // Renderable instance.
+			INSTANCE_NETWORK,
+			INSTANCE_COUNT
 		};
 
+		virtual void update();
 		virtual const char* name() noexcept;
 		virtual INSTANCE_TYPE type() noexcept;
-		virtual void update();
 
 		virtual bool can_collide() noexcept;
 		virtual bool has_physics() noexcept;

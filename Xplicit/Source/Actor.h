@@ -13,7 +13,7 @@
 
 #pragma once
 
-#include "ServerInstance.h"
+#include "NetworkServerInstance.h"
 #include "Foundation.h"
 #include "Instance.h"
 #include "Event.h"
@@ -23,9 +23,11 @@ namespace Xplicit
 	class XPLICIT_API Actor final : public Instance
 	{
 	public:
-		// an actor position structure.
-		// used to describe where it is.
-		class ActorPosition final
+		/*
+		*	Replicated position structure
+		*/
+
+		class XPLICIT_API ActorPosition final
 		{
 		public:
 			ActorPosition(float x, float y, float z)
@@ -45,7 +47,7 @@ namespace Xplicit
 		};
 
 		// a delegate which tells who this actor belongs to.
-		class ActorReplication final
+		class XPLICIT_API ActorReplication final
 		{
 		public:
 			ActorReplication()
@@ -99,24 +101,10 @@ namespace Xplicit
 		virtual bool has_physics() noexcept override;
 
 	private:
-		ActorReplication m_replication;
-		ActorPosition m_pos;
-		int64_t m_actor_id;
-		int32_t m_delay;
-
-	};
-
-	class XPLICIT_API ActorEvent final : public Event
-	{
-	public:
-		ActorEvent() {}
-		virtual ~ActorEvent() {}
-
-		ActorEvent& operator=(const ActorEvent&) = default;
-		ActorEvent(const ActorEvent&) = default;
-
-		virtual const char* name() noexcept override;
-		virtual void operator()() override;
+		ActorReplication m_replication; /* Actor replication data */
+		ActorPosition m_position; /* Actor's position */
+		int64_t m_actor_id; /* Actor's ID */
+		int32_t m_delay; /* Actor cooldown */
 
 	};
 }

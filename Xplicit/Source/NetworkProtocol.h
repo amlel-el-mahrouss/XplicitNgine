@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: Protocol.h
- *			Purpose: Game Network Protocol
+ *			Purpose: Lightwieght Game Network Protocol
  *
  * =====================================================================
  */

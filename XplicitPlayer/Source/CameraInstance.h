@@ -27,8 +27,8 @@ namespace Xplicit::Client
 		CameraInstance& operator=(const CameraInstance&) = default;
 		CameraInstance(const CameraInstance&) = default;
 
-		virtual INSTANCE_TYPE type() noexcept override { return CAMERA; }
-		virtual const char* name() noexcept override { return ("CameraInstance"); }
+		virtual INSTANCE_TYPE type() noexcept override;
+		virtual const char* name() noexcept override;
 
 		virtual void update() override;
 		irr::scene::ICameraSceneNode* get() noexcept;

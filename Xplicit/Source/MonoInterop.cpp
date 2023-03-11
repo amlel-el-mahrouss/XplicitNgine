@@ -73,7 +73,7 @@ namespace Xplicit
 
 	MonoClassInstance::INSTANCE_TYPE MonoClassInstance::type() noexcept
 	{
-		return SCRIPT;
+		return INSTANCE_SCRIPT;
 	}
 
 	const char* MonoClassInstance::name() noexcept

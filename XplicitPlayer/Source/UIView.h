@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			XplicitNgin C++ Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: UI.h

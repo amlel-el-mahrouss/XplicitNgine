@@ -25,7 +25,7 @@ struct ar_header;
 typedef enum {
     AR_FLAG_EXEC, // one of the files, is a PE+ executable.
     AR_FLAG_ZLIB, // one of the files, is a zlib archive.
-    AR_FLAG_PASSWORD, // one of the files has a password.
+    AR_FLAG_PASSWORD, // this archive has a password.
 } AR_FLAGS;
 
 PACKED_STRUCT(struct ar_extension_table {
@@ -50,7 +50,7 @@ PACKED_STRUCT(struct ar_header {
 #define AR_HDR_SZ (sizeof(struct ar_header))
 
 typedef enum {
-    AR_COMPRESSION_TYPE_NETCOMP, // Network compressed.
+    AR_COMPRESSION_TYPE_ZLIB, // Network compressed.
     AR_COMPRESSION_TYPE_COUNT,
 } AR_COMPRESSION_TYPE;
 
@@ -106,7 +106,7 @@ namespace Xplicit
 #ifndef _NDEBUG
             std::string message;
             message += "Class ArchiveManager, Epoch: ";
-            message += std::to_string(get_epoch());
+            message += std::to_string(xplicit_get_epoch());
 
             XPLICIT_INFO(message);
 #endif
@@ -120,7 +120,7 @@ namespace Xplicit
 #ifndef _NDEBUG
             std::string message;
             message += "~ArchiveManager, Epoch: ";
-            message += std::to_string(get_epoch());
+            message += std::to_string(xplicit_get_epoch());
 
             XPLICIT_INFO(message);
 #endif

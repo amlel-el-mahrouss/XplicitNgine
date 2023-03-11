@@ -4,14 +4,12 @@
  *				XplicitNgin C++ Game Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: ServerInstance.cpp
- *			Purpose: UDP Networking API
- *
+ *			File: NetworkServerInstance.cpp
+ *			Purpose: UDP Server
  * =====================================================================
  */
 
-#include "ServerInstance.h"
-#include "Actor.h"
+#include "NetworkServerInstance.h"
 
 namespace Xplicit
 {
@@ -32,7 +30,7 @@ namespace Xplicit
 #ifndef _NDEBUG
 		std::string message;
 		message += "Class NetworkServerInstance, Epoch: ";
-		message += std::to_string(get_epoch());
+		message += std::to_string(xplicit_get_epoch());
 
 		XPLICIT_INFO(message);
 #endif
@@ -78,7 +76,7 @@ namespace Xplicit
 
 	const char* NetworkServerInstance::name() noexcept { return ("NetworkServerInstance"); }
 
-	NetworkServerInstance::INSTANCE_TYPE NetworkServerInstance::type() noexcept { return NETWORK; }
+	NetworkServerInstance::INSTANCE_TYPE NetworkServerInstance::type() noexcept { return INSTANCE_NETWORK; }
 
 	void NetworkServerInstance::update() {}
 
@@ -88,7 +86,7 @@ namespace Xplicit
 #ifndef _NDEBUG
 		std::string message;
 		message += "Class NetworkServerInstance::~NetworkServerInstance(), Epoch: ";
-		message += std::to_string(get_epoch());
+		message += std::to_string(xplicit_get_epoch());
 
 		XPLICIT_INFO(message);
 #endif
@@ -106,7 +104,11 @@ namespace Xplicit
 	const char* NetworkServerInstance::dns() noexcept { return m_dns.c_str(); }
 
 	// mark the packet queue (m_clients) to be sent over the network.
-	void NetworkServerInstance::send() noexcept { m_send = true; }
+	void NetworkServerInstance::send() noexcept 
+	{
+		if (!m_send)
+			m_send = true; 
+	}
 
 	// we need a way to tell which client is who.
 	void NetworkServerTraits::recv(NetworkServerEvent* env, NetworkServerInstance* instance)
@@ -171,7 +173,7 @@ namespace Xplicit
 #ifndef _NDEBUG
 		std::string message;
 		message += "Class NetworkServerInstance, Epoch: ";
-		message += std::to_string(get_epoch());
+		message += std::to_string(xplicit_get_epoch());
 
 		XPLICIT_INFO(message);
 #endif

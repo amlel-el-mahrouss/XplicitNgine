@@ -1,11 +1,11 @@
 /*
  * =====================================================================
  *
- *			XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: Http.h
- *			Purpose: HTTP support.
+ *			Purpose: HTTP client
  *
  * =====================================================================
  */

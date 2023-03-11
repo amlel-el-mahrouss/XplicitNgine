@@ -1,11 +1,11 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: Irr.cpp
- *			Purpose: Application Source Unit
+ *			Purpose: Application Context and helpers.
  *
  * =====================================================================
  */

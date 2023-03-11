@@ -103,7 +103,6 @@ static void xplicit_create_common()
 {
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
 }
 
 static void xplicit_load_shell()
@@ -203,7 +202,7 @@ int main(int argc, char** argv)
 	{
 #ifndef _NDEBUG
 		std::string msg;
-		msg += "C++ Runtime Error: ";
+		msg += "Runtime Error: ";
 		msg += err.what();
 
 		XPLICIT_CRITICAL(msg);
@@ -212,21 +211,6 @@ int main(int argc, char** argv)
 #ifdef XPLICIT_WINDOWS
 		MessageBoxA(nullptr, msg.c_str(), "FATAL!", MB_OK);
 #endif
-		return -1;
-	}
-	catch (Xplicit::NetworkError err)
-	{
-#ifndef _NDEBUG
-		std::string msg;
-		msg += "A network Error occured, application will now quit..";
-
-		XPLICIT_CRITICAL(msg);
-#endif
-
-#ifdef XPLICIT_WINDOWS
-		MessageBoxA(nullptr, msg.c_str(), "FATAL!", MB_OK);
-#endif
-
 		return -1;
 	}
 }

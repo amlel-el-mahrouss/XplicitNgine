@@ -10,7 +10,7 @@
  * =====================================================================
  */
 
-#include "Protocol.h"
+#include "NetworkProtocol.h"
 
 namespace Xplicit
 {

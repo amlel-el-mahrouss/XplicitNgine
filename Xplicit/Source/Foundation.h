@@ -22,11 +22,11 @@
 
 XPLICIT_API size_t fstrlen(const char* str);
 
-XPLICIT_API void log(const char* str);
+XPLICIT_API void xplicit_log(const char* str);
 
-XPLICIT_API time_t get_epoch();
-XPLICIT_API FILE* get_logger();
-XPLICIT_API bool open_logger();
+XPLICIT_API time_t xplicit_get_epoch();
+XPLICIT_API FILE* xplicit_get_logger();
+XPLICIT_API bool xplicit_open_logger();
 
 #ifdef _MSC_VER
 #define PACKED_STRUCT( decl ) __pragma( pack(push, 1) ) decl; __pragma( pack(pop))

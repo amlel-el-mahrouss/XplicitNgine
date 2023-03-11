@@ -10,7 +10,6 @@
  * =====================================================================
  */
 
-#include "ServerInstance.h"
 #include "MonoInstance.h"
 #include "Actor.h"
 #include "Event.h"
@@ -19,12 +18,8 @@ namespace Xplicit
 {
 	constexpr const int32_t XPLICIT_ACTOR_COOLDOWN = 1000;
 
-	/*
-		Actor Instance methods.
-	*/
-
 	Actor::Actor(const bool human)
-		: m_replication(), m_pos(0, 0, 0), m_delay(0), m_actor_id(-1)
+		: m_replication(), m_position(0, 0, 0), m_delay(0), m_actor_id(-1)
 	{
 #ifndef _NDEBUG
 		XPLICIT_INFO("Actor::Actor");
@@ -47,29 +42,25 @@ namespace Xplicit
 	void Actor::update() 
 	{
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance");
-
-		if (!server)
-			return;
+		if (!server) return;
 
 		if (this->get().cmd == NETWORK_CMD_DEAD)
 		{
-			if (this->m_delay > 0)
+			if (this->m_delay < 0)
 			{
-				--this->m_delay;
-			}
-			else if (this->m_delay < 1)
-			{
-				this->set(NETWORK_CMD_SPAWN);
-				this->m_delay = 0;
-
 				for (size_t i = 0; i < server->size(); i++)
 				{
 					if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.sockaddr.sin_addr.S_un.S_addr)
 					{
+						this->set(NETWORK_CMD_SPAWN);
+						this->m_delay = 0;
+
 						server->get(i).packet.CMD = NETWORK_CMD_SPAWN;
 						server->get(i).packet.ID = this->m_actor_id;
 
-						break;
+						server->send();
+
+						return;
 					}
 				}
 			}
@@ -77,17 +68,19 @@ namespace Xplicit
 
 		if (this->health() < 1)
 		{
-			this->set(NETWORK_CMD_DEAD);
-			this->m_delay = XPLICIT_ACTOR_COOLDOWN;
-
 			for (size_t i = 0; i < server->size(); i++)
 			{
 				if (server->get(i).addr.sin_addr.S_un.S_addr == this->m_replication.sockaddr.sin_addr.S_un.S_addr)
 				{
+					this->set(NETWORK_CMD_DEAD);
+					this->m_delay = XPLICIT_ACTOR_COOLDOWN;
+
 					server->get(i).packet.CMD = NETWORK_CMD_DEAD;
 					server->get(i).packet.ID = this->m_actor_id;
 
-					break;
+					server->send();
+
+					return;
 				}
 			}
 		}
@@ -104,13 +97,13 @@ namespace Xplicit
 					server->get(i).packet.CMD = NETWORK_CMD_POS;
 					server->get(i).packet.ID = this->m_actor_id;
 
-					server->get(i).packet.X = m_pos.X;
-					server->get(i).packet.Y = m_pos.Y;
-					server->get(i).packet.Z = m_pos.Y;
+					server->get(i).packet.X = m_position.X;
+					server->get(i).packet.Y = m_position.Y;
+					server->get(i).packet.Z = m_position.Y;
 
-					XPLICIT_INFO("Position");
+					server->send();
 
-					break;
+					return;
 				}
 			}
 		}
@@ -132,11 +125,11 @@ namespace Xplicit
 	}
 
 	const char* Actor::name() noexcept { return "Actor"; }
-	Actor::INSTANCE_TYPE Actor::type() noexcept { return ACTOR; }
+	Actor::INSTANCE_TYPE Actor::type() noexcept { return INSTANCE_ACTOR; }
 
 	// Actor's Getters
 
-	Actor::ActorPosition& Actor::pos() noexcept { return m_pos; }
+	Actor::ActorPosition& Actor::pos() noexcept { return m_position; }
 	Actor::ActorReplication& Actor::get() noexcept { return m_replication; }
 
 	// Actor's Setters
@@ -146,9 +139,9 @@ namespace Xplicit
 
 	void Actor::set(float x, float y, float z)  noexcept
 	{
-		m_pos.X = x;
-		m_pos.X = y;
-		m_pos.X = z;
+		m_position.X = x;
+		m_position.X = y;
+		m_position.X = z;
 	}
 
 	void Actor::reset() noexcept
@@ -158,23 +151,5 @@ namespace Xplicit
 		this->get().health = 0;
 
 		m_actor_id = -1;
-	}
-
-	const char* ActorEvent::name() noexcept { return ("ActorEvent"); }
-
-	void ActorEvent::operator()()
-	{
-		auto actors = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
-		
-		if (actors.empty())
-			return;
-
-		for (size_t i = 0; i < actors.size(); i++)
-		{
-			if (!actors[i] || !actors[i]->can_collide() || !actors[i]->has_physics() || actors[i]->id() < 0)
-				continue;
-
-
-		}
 	}
 }

@@ -1,11 +1,11 @@
 /*
  * =====================================================================
  *
- *			XplicitNgin C++ Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: Crc32.h
- *			Purpose: CRC32 checksum
+ *			Purpose: CRC32
  *
  * =====================================================================
  */
