@@ -48,7 +48,7 @@ namespace Xplicit
 		{
 		public:
 			ActorReplication()
-				: addr(), cmd(), health(100)
+				: addr(), cmd(), health(100), id(0)
 			{}
 
 			~ActorReplication() {}
@@ -60,6 +60,7 @@ namespace Xplicit
 			NETWORK_CMD cmd[XPLICIT_NETWORK_MAX_CMDS]; // Network Command Array.
 			PrivateAddressData addr; // Actor's socket address
 			int64_t health;
+			int32_t id;
 
 		};
 

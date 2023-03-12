@@ -17,8 +17,8 @@
 
 namespace Xplicit::Client
 {
-	LocalActor::LocalActor()
-		: Instance(), m_model(nullptr), m_node(nullptr)
+	LocalActor::LocalActor(int64_t id)
+		: Instance(), m_model(nullptr), m_node(nullptr), m_id(id), m_packet()
 	{
 
 		XPLICIT_GET_DATA_DIR(data_dir);
@@ -34,8 +34,9 @@ namespace Xplicit::Client
 			m_node->setMaterialFlag(EMF_LIGHTING, false);
 		}
 
-		XPLICIT_INFO(mesh_path);
+		m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
+		assert(m_network);
 		assert(m_model);
 		assert(m_node);
 
@@ -57,7 +58,16 @@ namespace Xplicit::Client
 
 	void LocalActor::update()
 	{
+		if (!m_network)
+			return;
+
 		// TODO: move the actor.
+		m_network->read(m_packet);
+		
+		if (m_packet.ID != m_id)
+			return;
+
+
 	}
 
 	IAnimatedMeshSceneNode* LocalActor::operator->() const 

@@ -15,11 +15,11 @@
 #include "Foundation.h"
 
 #ifndef XPLICIT_NETWORK_PORT
-#define XPLICIT_NETWORK_PORT (60000)
+#define XPLICIT_NETWORK_PORT (59543)
 #endif // ifndef XPLICIT_NETWORK_PORT
 
 #define XPLICIT_NETWORK_MAG_0 ('X')
-#define XPLICIT_NETWORK_MAG_1 ('N')
+#define XPLICIT_NETWORK_MAG_1 ('G')
 #define XPLICIT_NETWORK_MAG_2 ('P')
 
 #define XPLICIT_NETWORK_MAG_COUNT (3U)
@@ -74,7 +74,9 @@ namespace Xplicit
     public:
         char Magic[XPLICIT_NETWORK_MAG_COUNT]; /* magic numbers. */
         NETWORK_CMD CMD[XPLICIT_NETWORK_MAX_CMDS]; /* The current network command. */
+
         int64_t Health; /* The current actor's health, if sent by an actor */
+        int32_t ID; /* Clientside: the local actor targeted (for position commands only) */
 
         float X; /* X position */
         float Y; /* Y position */

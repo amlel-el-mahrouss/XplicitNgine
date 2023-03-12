@@ -90,14 +90,20 @@ bool Xplicit::InstanceManager::remove(T* ptr)
 			auto element = std::find(m_instances.cbegin(), m_instances.cend(), m_instances[it]);
 
 			if (element != m_instances.cend())
+			{
 				m_instances.erase(element);
 
-			// finally remove the object
-			delete obj;
-			
-			return true;
+				// finally remove the object
+				delete obj;
+
+				return true;
+			}
+
+			break;
 		}
 	}
+
+	return false;
 }
 
 template <typename T>
@@ -122,12 +128,16 @@ bool Xplicit::InstanceManager::remove(const char* name)
 			auto element = std::find(m_instances.cbegin(), m_instances.cend(), m_instances[it]);
 
 			if (element != m_instances.cend())
+			{
 				m_instances.erase(element);
 
-			// finally remove the object
-			delete obj;
+				// finally remove the object
+				delete obj;
 
-			return true;
+				return true;
+			}
+
+			break;
 		}
 	}
 

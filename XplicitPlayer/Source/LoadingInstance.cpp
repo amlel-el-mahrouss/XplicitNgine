@@ -47,7 +47,8 @@ namespace Xplicit::Client
 		if (packet.CMD[XPLICIT_NETWORK_CMD_ACCEPT] == NETWORK_CMD_ACCEPT)
 		{
 			InstanceManager::get_singleton_ptr()->add<Xplicit::XUI::HUD>();
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>();
+
+			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.ID);
 			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalInstance>();
 
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalMoveEvent>();

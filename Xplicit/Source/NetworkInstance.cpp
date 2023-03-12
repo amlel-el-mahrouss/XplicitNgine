@@ -21,6 +21,8 @@ namespace Xplicit
 		u_long ul = 1;
 		ioctlsocket(sock, FIONBIO, &ul);
 
+		ul = 1;
+		ioctlsocket(sock, FIOASYNC, &ul);
 #else
 #pragma error("DEFINE ME NetworkInstance.cpp")
 #endif

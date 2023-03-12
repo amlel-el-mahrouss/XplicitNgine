@@ -42,6 +42,7 @@ namespace Xplicit
 #define XPLICIT_SET_POS_CMD(_CMD, COORD, VEL, IDX)\
 				server->get(i).packet.CMD[IDX] = _CMD;\
 				server->get(i).packet.COORD = this->pos().COORD = VEL;\
+				server->get(i).packet.ID = this->get().id;
 
 
 
@@ -76,6 +77,8 @@ namespace Xplicit
 					}
 
 				}
+
+				break;
 			}
 		}
 

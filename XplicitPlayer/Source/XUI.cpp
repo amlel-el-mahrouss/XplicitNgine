@@ -125,7 +125,7 @@ namespace Xplicit::XUI
 				m_health = packet.Health;
 		}
 
-		auto dim = dimension2di(Client::XPLICIT_DIM.Width / 3.5, Client::XPLICIT_DIM.Height * 0.82);
+		auto dim = dimension2di(10, 10);
 		auto sz = core::rect<s32>(0, 0, 146, 22);
 
 		if (m_health > 50)

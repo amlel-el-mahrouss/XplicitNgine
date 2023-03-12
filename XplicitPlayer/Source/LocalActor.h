@@ -25,7 +25,10 @@ namespace Xplicit::Client
 	class LocalActor : public Instance
 	{
 	public:
-		LocalActor();
+		LocalActor() = delete;
+
+	public:
+		LocalActor(int64_t id);
 		virtual ~LocalActor();
 
 		LocalActor& operator=(const LocalActor&) = default;
@@ -40,7 +43,10 @@ namespace Xplicit::Client
 
 	private:
 		IAnimatedMeshSceneNode* m_node;
+		NetworkInstance* m_network;
+		NetworkPacket m_packet;
 		IAnimatedMesh* m_model;
+		int64_t m_id;
 
 	};
 

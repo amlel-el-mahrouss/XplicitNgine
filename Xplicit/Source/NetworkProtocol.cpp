@@ -31,6 +31,8 @@ namespace Xplicit
     {
         stat = NETWORK_STAT_DISCONNECTED;
 
+        packet.ID = -1;
+
         for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; i++)
         {
             packet.CMD[i] = NETWORK_CMD_INVALID;

@@ -66,7 +66,6 @@ namespace Xplicit::Client
 			m_idle_tex->drop();
 	}
 
-
 	LocalInstance::INSTANCE_TYPE LocalInstance::type() noexcept { return INSTANCE_CAMERA; }
 	const char* LocalInstance::name() noexcept { return ("LocalInstance"); }
 
@@ -96,7 +95,7 @@ namespace Xplicit::Client
 				video::SColor(255, 255, 255, 255), true);
 		}
 
-		if (KB->key_down(irr::KEY_ESCAPE))
+		if (KB->key_down(irr::KEY_CONTROL) || KB->key_down(KEY_KEY_L))
 		{
 			// send a stop command.
 			NetworkPacket cmd = {  };

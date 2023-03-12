@@ -75,6 +75,9 @@ namespace Xplicit
 				server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_ACCEPT] = NETWORK_CMD_ACCEPT;
 				server->get(i).stat = NETWORK_STAT_CONNECTED;
 
+				server->get(i).packet.ID = m_actor_counter;
+				actor->get().id = m_actor_counter;
+
 				++m_actor_counter;
 
 				return true;
