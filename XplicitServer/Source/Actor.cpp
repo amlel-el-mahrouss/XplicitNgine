@@ -16,7 +16,7 @@ namespace Xplicit
 {
 	constexpr const int32_t XPLICIT_ACTOR_COOLDOWN = 100;
 
-	Actor::Actor(const bool human)
+	Actor::Actor()
 		: m_replication(), m_position(0, 0, 0), m_delay(0)
 	{
 
@@ -27,19 +27,17 @@ namespace Xplicit
 
 	}
 
-	Actor::INSTANCE_PHYSICS Actor::physics() noexcept { return PHYSICS_FAST; }
+	Actor::INSTANCE_PHYSICS Actor::physics() noexcept { return PHYSICS_NONE; }
 
 	bool Actor::has_physics() noexcept { return false; }
 
-	void Actor::update() 
+	void Actor::update()
 	{
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance");
+		XPLICIT_ASSERT(server);
 
-		if (!server)
-			throw EngineError();
-
-// little helper
-// CMD = network command, COORD = either X, Y or Z.
+		// little helper
+		// CMD = network command, COORD = either X, Y or Z.
 #define XPLICIT_SET_POS_CMD(_CMD, COORD, VEL, IDX)\
 				server->get(i).packet.CMD[IDX] = _CMD;\
 				server->get(i).packet.COORD = this->pos().COORD = VEL;\
@@ -84,7 +82,7 @@ namespace Xplicit
 		}
 
 		server->send();
-	
+
 #undef XPLICIT_SET_POS_CMD
 
 	}
@@ -113,9 +111,9 @@ namespace Xplicit
 
 	void Actor::reset() noexcept
 	{
-		memset(&this->get().addr, 0, sizeof(PrivateAddressData));
-		memset(&this->get().cmd, 0, XPLICIT_NETWORK_MAX_CMDS);
-		
+		memset(&this->m_replication.addr, 0, sizeof(PrivateAddressData));
+		memset(&this->m_replication.cmd, 0, XPLICIT_NETWORK_MAX_CMDS);
+
 		this->set(0.f, 0.f, 0.f);
 		this->get().health = 0;
 	}

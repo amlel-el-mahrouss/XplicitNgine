@@ -66,8 +66,6 @@ namespace Xplicit::Client
 		
 		if (m_packet.ID != m_id)
 			return;
-
-
 	}
 
 	IAnimatedMeshSceneNode* LocalActor::operator->() const 

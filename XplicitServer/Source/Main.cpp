@@ -13,11 +13,10 @@
 #include "SDK.h"
 
 #include "Actor.h"
-#include "PlayerEvent.h"
 #include "ServerWatchdog.h"
+#include "PlayerJoinLeaveEvent.h"
 
 static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server); // called when the server stops.
-static void xplicit_create_common(); // create common events/instances.
 static void xplicit_attach_mono(); // attach mono plugins
 static void xplicit_load_shell(); // loads a shell..
 static void xplicit_load_cfg(); // load from MANIFEST.xml
@@ -56,7 +55,7 @@ static void xplicit_load_cfg()
 				{
 					auto dllPath = XML->getAttributeValue("VFS");
 					if (!dllPath)
-						throw std::runtime_error("Plugin: No plugin provided!");
+						throw std::runtime_error("Plugin: Can't find the plugin");
 
 					std::string str_dll_path = data_dir;
 
@@ -75,7 +74,7 @@ static void xplicit_load_cfg()
 				}
 				catch (...)
 				{
-					XPLICIT_INFO("Bad DLL, skiping..");
+					XPLICIT_INFO("Skipping bad DLL..");
 				}
 			}
 
@@ -90,23 +89,13 @@ static void xplicit_attach_mono()
 	XPLICIT_GET_DATA_DIR(data_dir);
 
 	if (*data_dir == 0)
-		throw std::runtime_error("getenv: XPLICIT_DATA_DIR doesn't exist!");
+		throw std::runtime_error("getenv: XPLICIT_DATA_DIR doesn't exist! Make sure to define it!");
 
 	std::string path = data_dir;
-	path += "\\Lib\\Xplicit.dll";
+	path += "\\Lib\\Xplicit.dll"; // The Game API dll.
 
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoEngineInstance>();
-
-	// adds Xplicit.dll, to the list
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(path.c_str(), false);
-}
-
-static void xplicit_create_common()
-{
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinEvent>();
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerLeaveEvent>();
 }
 
 static void xplicit_load_shell()
@@ -129,7 +118,7 @@ static void xplicit_load_shell()
 
 				std::cin.getline(cmd_buf, 1024);
 
-				if (strcmp(cmd_buf, "exit") == 0)
+				if (strcmp(cmd_buf, "stop") == 0)
 				{
 					xplicit_send_stop_packet(Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance"));
 					Xplicit::ApplicationContext::get_singleton().ShouldExit = true;
@@ -138,7 +127,7 @@ static void xplicit_load_shell()
 				if (strcmp(cmd_buf, "help") == 0)
 				{
 					puts("-------------- HELP --------------");
-					puts("exit: kills the current server.");
+					puts("exit: Kills the server.");
 					puts("-------------- HELP --------------");
 				}
 
@@ -162,9 +151,9 @@ static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server)
 	server->send();
 
 	auto env = Xplicit::EventDispatcher::get_singleton_ptr()->get<Xplicit::NetworkServerEvent>("NetworkServerEvent");
+	XPLICIT_ASSERT(env);
 
-	if (env)
-		env->update();
+	env->update();
 }
 
 // our main entrypoint.
@@ -185,19 +174,22 @@ int main(int argc, char** argv)
 		if (!addr)
 			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
 
-		xplicit_create_common();
-		xplicit_attach_mono();
-		xplicit_load_cfg();
-
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkServerEvent>(server);
+
+		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
+		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
+		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
+
+		xplicit_attach_mono();
+		xplicit_load_cfg();
 
 		xplicit_load_shell();
 
 		while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{
-			Xplicit::InstanceManager::get_singleton_ptr()->update();
 			Xplicit::EventDispatcher::get_singleton_ptr()->update();
+			Xplicit::InstanceManager::get_singleton_ptr()->update();
 
 			if (Xplicit::ApplicationContext::get_singleton().ShouldExit)
 				break;
@@ -217,7 +209,7 @@ int main(int argc, char** argv)
 
 #ifdef XPLICIT_DEBUG
 #ifdef XPLICIT_WINDOWS
-		MessageBoxA(nullptr, msg.c_str(), "XplicitNgin, Fatal Error!", MB_OK);
+		MessageBoxA(nullptr, msg.c_str(), "XplicitNgin", MB_OK);
 #endif
 #endif
 

@@ -90,6 +90,7 @@ namespace Xplicit
 		{
 			PHYSICS_FAST, // Fast physics calculation
 			PHYSICS_COMPLEX, // Complex physics calculation
+			PHYSICS_NONE,
 			PHYSICS_COUNT,
 		};
 

@@ -42,7 +42,7 @@ INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLi
 	catch (std::runtime_error err)
 	{
 #ifdef XPLICIT_WINDOWS
-		MessageBoxA(nullptr, err.what(), "XplicitNgin, Error!", MB_OK);
+		MessageBoxA(nullptr, err.what(), "XplicitNgin", MB_OK);
 #endif
 
 		return -1;

@@ -14,7 +14,7 @@
 
 #include "ApplicationContext.h"
 #include "NetworkInstance.h"
-#include "LocalInstance.h"
+#include "Local.h"
 
 // FIXME: rework them when we will roll our own renderer.
 namespace Xplicit::Client

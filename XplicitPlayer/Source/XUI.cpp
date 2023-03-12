@@ -15,7 +15,7 @@
 
 namespace Xplicit::XUI
 {
-	Popup::Popup(std::function<void()> on_click, const vector2di pos, const POPUP_TYPE shutdown_type) noexcept
+	ErrorMessage::ErrorMessage(std::function<void()> on_click, const vector2di pos, const ERROR_TYPE shutdown_type) noexcept
 		: m_on_click(on_click), m_pos(pos)
 	{
 		assert(on_click);
@@ -25,16 +25,16 @@ namespace Xplicit::XUI
 
 		switch (shutdown_type)
 		{
-		case POPUP_TYPE::Generic:
+		case ERROR_TYPE::Generic:
 			path += "\\Textures\\internal_error.png";
 			break;
-		case POPUP_TYPE::Kicked:
+		case ERROR_TYPE::Kicked:
 			path += "\\Textures\\network_kicked.png";
 			break;
-		case POPUP_TYPE::NetworkError:
+		case ERROR_TYPE::NetworkError:
 			path += "\\Textures\\network_error.png";
 			break;
-		case POPUP_TYPE::Shutdown:
+		case ERROR_TYPE::Shutdown:
 			path += "\\Textures\\network_shutdown.png";
 
 			break;
@@ -49,13 +49,13 @@ namespace Xplicit::XUI
 			throw EngineError();
 	}
 
-	Popup::~Popup()
+	ErrorMessage::~ErrorMessage()
 	{
 		if (m_error_texture)
 			m_error_texture->drop();
 	}
 
-	void Popup::update()
+	void ErrorMessage::update()
 	{
 		IRR->getVideoDriver()->draw2DImage(m_error_texture, m_pos);
 
@@ -66,14 +66,14 @@ namespace Xplicit::XUI
 	}
 
 
-	const char* Popup::name() noexcept
+	const char* ErrorMessage::name() noexcept
 	{
 		return "NetworkPopup";
 	}
 
-	Popup::INSTANCE_TYPE Popup::type() noexcept
+	ErrorMessage::INSTANCE_TYPE ErrorMessage::type() noexcept
 	{
-		return Popup::INSTANCE_GUI;
+		return ErrorMessage::INSTANCE_GUI;
 	}
 	
 	HUD::HUD()

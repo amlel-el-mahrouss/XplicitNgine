@@ -13,17 +13,18 @@
 #pragma once
 
 #include "Foundation.h"
+#include "ApplicationContext.h"
 
 #ifndef XPLICIT_NETWORK_PORT
-#define XPLICIT_NETWORK_PORT (60001)
+#define XPLICIT_NETWORK_PORT (30002)
 #endif // ifndef XPLICIT_NETWORK_PORT
 
 #define XPLICIT_NETWORK_MAG_0 ('X')
-#define XPLICIT_NETWORK_MAG_1 ('P')
-#define XPLICIT_NETWORK_MAG_2 ('X')
+#define XPLICIT_NETWORK_MAG_1 ('G')
+#define XPLICIT_NETWORK_MAG_2 ('P')
 
 #define XPLICIT_NETWORK_MAG_COUNT (3U)
-#define XPLICIT_NETWORK_MAX_CMDS (32U)
+#define XPLICIT_NETWORK_MAX_CMDS (16U)
 
 namespace Xplicit 
 {
@@ -39,7 +40,7 @@ namespace Xplicit
     enum NETWORK_CMD : int16_t
     {
         // Network Start/End messages.
-        NETWORK_CMD_BEGIN, // start network, handshake
+        NETWORK_CMD_BEGIN = 15, // start network, handshake
         NETWORK_CMD_STOP, // abort connection
         // Player versus player
         NETWORK_CMD_DEAD,
@@ -86,28 +87,49 @@ namespace Xplicit
 
     };
 
-    class XPLICIT_API NetworkClient final
+    class XPLICIT_API NetworkPeer final
     {
     public:
-        PrivateAddressData addr; /* the current socket address. */
-        NetworkPacket packet; /* the current packet. */
-        NETWORK_STAT stat; /* current network status */
+        class XPLICIT_API UniqueAddress final
+        {
+        public:
+            UniqueAddress()
+                : uuid(UUIDFactory::version<4>()), name("Peer")
+            {}
+
+            ~UniqueAddress() = default;
+
+            UniqueAddress& operator=(const UniqueAddress&) = default;
+            UniqueAddress(const UniqueAddress&) = default;
+
+            uuids::uuid uuid;
+            std::string name;
+
+        };
 
     public:
-        NetworkClient();
-        ~NetworkClient();
+        UniqueAddress unique_addr; /* unique network address of this peer */
+        PrivateAddressData addr; /* current socket address. */
+        NetworkPacket packet; /* current packet. */
+        NETWORK_STAT stat; /* current network status */
+        int64_t id; /* peer id */
 
-        NetworkClient& operator=(const NetworkClient&) = default;
-        NetworkClient(const NetworkClient&) = default;
+    public:
+        NetworkPeer();
+        ~NetworkPeer();
 
-        bool operator==(const NetworkClient& cl);
-        bool operator!=(const NetworkClient& cl);
+        NetworkPeer& operator=(const NetworkPeer&) = default;
+        NetworkPeer(const NetworkPeer&) = default;
 
+        bool operator==(const NetworkPeer& cl);
+        bool operator!=(const NetworkPeer& cl);
+
+    public:
         void reset() noexcept;
 
     };
 
-    XPLICIT_API bool equals(struct sockaddr_in& lhs, struct sockaddr_in& rhs);
+    XPLICIT_API bool equals(PrivateAddressData& lhs, PrivateAddressData& rhs);
 }
 
 // reserved slots

@@ -23,8 +23,8 @@ struct ar_extension_table;
 struct ar_header;
 
 typedef enum {
-    AR_FLAG_EXEC, // one of the files, is a PE+ executable.
-    AR_FLAG_ZLIB, // one of the files, is a zlib archive.
+    AR_FLAG_EXEC, // one of the files is a PE+ executable.
+    AR_FLAG_ZLIB, // one of the files is a zlib archive.
     AR_FLAG_PASSWORD, // this archive has a password.
 } AR_FLAGS;
 

@@ -221,8 +221,8 @@ namespace Xplicit
 		if (!assembly_file) return nullptr;
 		if (*assembly_file == 0) return nullptr;
 
-		size_t sz = 0;
 
+		size_t sz = 0;
 		// open our assembly file
 		char* bytes = xplicit_read_assembly(assembly_file, &sz);
 

@@ -18,7 +18,6 @@ namespace Xplicit
 #ifdef XPLICIT_WINDOWS
 		u_long ul = 1;
 		ioctlsocket(sock, FIONBIO, &ul);
-
 #else
 #pragma error("DEFINE ME ServerInstance.cpp")
 #endif
@@ -62,24 +61,15 @@ namespace Xplicit
 		// So we don't have to allocate them.
 		for (size_t i = 0; i < MAX_CONNECTIONS; i++)
 		{
-			NetworkClient cl{};
-			
-			for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; i++)
-			{
-				cl.packet.CMD[i] = NETWORK_CMD_INVALID;
-			}
-
-			cl.packet.Health = -1;
-			cl.packet.ID = -1;
-
+			NetworkPeer cl{};
 			cl.stat = NETWORK_STAT_DISCONNECTED;
 
-			m_clients.push_back(cl);
+			m_clients.push_back(std::move(cl));
 		}
 	}
 
 	size_t NetworkServerInstance::size() noexcept { return m_clients.size(); }
-	NetworkClient& NetworkServerInstance::get(size_t idx) noexcept { return m_clients[idx]; }
+	NetworkPeer& NetworkServerInstance::get(size_t idx) noexcept { return m_clients[idx]; }
 
 	const char* NetworkServerInstance::name() noexcept { return ("NetworkServerInstance"); }
 
@@ -158,20 +148,19 @@ namespace Xplicit
 #pragma error("DEFINE ME ServerInstance.cpp")
 #endif
 
-					if (instance->m_clients[i].packet.Magic[0] != XPLICIT_NETWORK_MAG_0 || 
+					if (sz < 0)
+						return;
+
+					if (instance->m_clients[i].packet.Magic[0] != XPLICIT_NETWORK_MAG_0 ||
 						instance->m_clients[i].packet.Magic[1] != XPLICIT_NETWORK_MAG_1 ||
 						instance->m_clients[i].packet.Magic[2] != XPLICIT_NETWORK_MAG_2)
 					{
-						for (size_t y = 0; y < XPLICIT_NETWORK_MAX_CMDS; y++)
+						for (size_t cmd_index = 0; cmd_index < XPLICIT_NETWORK_MAX_CMDS; cmd_index++)
 						{
-							instance->m_clients[i].packet.CMD[y] = NETWORK_CMD_INVALID;
-
-
+							instance->m_clients[i].packet.CMD[cmd_index] = NETWORK_CMD_INVALID;
 						}
 					}
 
-					if (sz < 0)
-						return;
 				}
 			}
 		}

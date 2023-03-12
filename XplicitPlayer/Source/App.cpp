@@ -38,12 +38,7 @@ namespace Xplicit::App
 
 	Application::~Application()
 	{
-		if (!InstanceManager::get_singleton_ptr())
-			return;
 
-		InstanceManager::get_singleton_ptr()->remove<NetworkInstance>("NetworkInstance");
-		InstanceManager::get_singleton_ptr()->remove<Client::LocalInstance>("LocalInstance");
-		InstanceManager::get_singleton_ptr()->remove<Client::LocalActor>("LocalActor");
 	}
 
 	void Application::setup_paths()
@@ -88,9 +83,8 @@ namespace Xplicit::App
 		}
 
 		auto loader = InstanceManager::get_singleton_ptr()->add<Client::LoadingInstance>();
-		assert(loader);
+		XPLICIT_ASSERT(loader);
 
-		XPLICIT_INFO(ip);
 		loader->connect(ip);
 	}
 

@@ -22,7 +22,7 @@
 
 namespace Xplicit::XUI
 {
-	enum class POPUP_TYPE
+	enum class ERROR_TYPE
 	{
 		Generic,
 		NetworkError,
@@ -30,17 +30,17 @@ namespace Xplicit::XUI
 		Kicked,
 	};
 
-	class Popup final : public Instance
+	class ErrorMessage final : public Instance
 	{
 	public:
-		Popup() = delete;
+		ErrorMessage() = delete;
 
 	public:
-		Popup(std::function<void()> on_click, const vector2di pos = vector2di(0, 0), const POPUP_TYPE shutdown_type = POPUP_TYPE::NetworkError) noexcept;
-		virtual ~Popup();
+		ErrorMessage(std::function<void()> on_click, const vector2di pos = vector2di(0, 0), const ERROR_TYPE shutdown_type = ERROR_TYPE::NetworkError) noexcept;
+		virtual ~ErrorMessage();
 
-		Popup& operator=(const Popup&) = delete;
-		Popup(const Popup&) = delete;
+		ErrorMessage& operator=(const ErrorMessage&) = delete;
+		ErrorMessage(const ErrorMessage&) = delete;
 
 		virtual void update() override;
 

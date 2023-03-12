@@ -17,9 +17,9 @@
 #include <Foundation.h>
 #include <ApplicationContext.h>
 
+#include "Local.h"
 #include "LocalActor.h"
 #include "DriverD3D11.h"
-#include "LocalInstance.h"
 #include "LoadingInstance.h"
 
 #define XPLICIT_DEFAULT_WIDTH (1280)

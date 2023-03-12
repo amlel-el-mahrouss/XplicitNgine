@@ -41,10 +41,10 @@ namespace Xplicit
 
 	public:
 		size_t size() noexcept;
-		NetworkClient& get(size_t idx) noexcept;
+		NetworkPeer& get(size_t idx) noexcept;
 
 	private:
-		std::vector<NetworkClient> m_clients;
+		std::vector<NetworkPeer> m_clients;
 		std::string m_dns;
 		Socket m_socket;
 		bool m_send;

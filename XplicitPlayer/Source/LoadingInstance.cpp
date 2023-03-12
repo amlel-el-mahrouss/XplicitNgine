@@ -11,16 +11,15 @@
  */
 
 #include "LoadingInstance.h"
-#include "LocalInstance.h"
 #include "LocalActor.h"
+#include "Local.h"
 #include "App.h"
 #include "XUI.h"
 
 namespace Xplicit::Client
 {
-	constexpr const int XPLICIT_TIMEOUT_DELAY = 5; // why?, because it takes time to lookup into instances.
-	constexpr const int XPLICIT_TIMEOUT = 1000; // maximum timeout.
-	constexpr const int XPLICIT_MAX_RESETS = 5000; // maximum RST.
+	constexpr const int XPLICIT_TIMEOUT = 2000; // connection timeout
+	constexpr const int XPLICIT_MAX_RESETS = 2000; // maximum RST timeout
 
 	LoadingInstance::LoadingInstance() 
 		: m_run(true), m_network(nullptr), m_logo_tex(nullptr), m_timeout(XPLICIT_TIMEOUT)
@@ -37,19 +36,26 @@ namespace Xplicit::Client
 
 	void LoadingInstance::update()
 	{
+		NetworkPacket packet{};
+	
+		m_network->read(packet);
+
+		if (packet.CMD[XPLICIT_NETWORK_CMD_STOP] == NETWORK_CMD_STOP)
+		{
+			if (!InstanceManager::get_singleton_ptr()->get<XUI::ErrorMessage>("ErrorMessage"))
+				InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
+					IRR->closeDevice();
+				}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::Shutdown);
+		}
+
 		if (!m_run)
 			return;
-
-		NetworkPacket packet{};
-
-		m_network->read(packet);
 
 		if (packet.CMD[XPLICIT_NETWORK_CMD_ACCEPT] == NETWORK_CMD_ACCEPT)
 		{
 			InstanceManager::get_singleton_ptr()->add<Xplicit::XUI::HUD>();
-
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.ID);
 			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalInstance>();
+			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.ID);
 
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalMoveEvent>();
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalResetEvent>();
@@ -60,14 +66,17 @@ namespace Xplicit::Client
 		
 		if (packet.CMD[XPLICIT_NETWORK_CMD_KICK] == NETWORK_CMD_KICK)
 		{
-			InstanceManager::get_singleton_ptr()->add<XUI::Popup>([]()-> void {
+			InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
 				IRR->closeDevice();
-				}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::POPUP_TYPE::Kicked);
+				}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::Kicked);
 
 			m_run = false;
 
 			return;
 		}
+
+		packet.CMD[XPLICIT_NETWORK_CMD_BEGIN] = NETWORK_CMD_BEGIN;
+		packet.CMD[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
 
 		m_network->send(packet);
 
@@ -80,9 +89,9 @@ namespace Xplicit::Client
 		// peek after the ++timeout
 		if (m_timeout < 0)
 		{
-			InstanceManager::get_singleton_ptr()->add<XUI::Popup>([]()-> void {
+			InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
 				IRR->closeDevice();
-			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::POPUP_TYPE::NetworkError);
+			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::NetworkError);
 
 			m_run = false; // sprious reponse
 		}
@@ -106,15 +115,14 @@ namespace Xplicit::Client
 			spawn.CMD[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
 		
 			m_network->send(spawn);
-
 		}
 	}
 
 	void LoadingInstance::reset() noexcept
 	{
-		InstanceManager::get_singleton_ptr()->add<XUI::Popup>([]()-> void {
+		InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
 			IRR->closeDevice();
-			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::POPUP_TYPE::NetworkError);
+			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::NetworkError);
 
 	}
 
@@ -140,11 +148,11 @@ namespace Xplicit::Client
 
 			if (m_num_resets > XPLICIT_MAX_RESETS)
 			{
-				if (!InstanceManager::get_singleton_ptr()->get<XUI::Popup>("Popup"))
+				if (!InstanceManager::get_singleton_ptr()->get<XUI::ErrorMessage>("ErrorMessage"))
 				{
-					InstanceManager::get_singleton_ptr()->add<XUI::Popup>([]()-> void {
+					InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
 						IRR->closeDevice();
-					}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::POPUP_TYPE::NetworkError);
+					}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::NetworkError);
 
 				}
 			}

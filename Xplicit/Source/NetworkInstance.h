@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: NetworkInstance.h
@@ -12,16 +12,22 @@
 
 #pragma once
 
-#include "Foundation.h"
-
-#include "Event.h"
-#include "Instance.h"
 #include "NetworkProtocol.h"
+#include "Instance.h"
+#include "Event.h"
 
 #ifdef XPLICIT_WINDOWS
+#ifdef XPLICIT_DEBUG
 #define XPLICIT_NET_ASSERT(EXPR) if (!(EXPR)) { MessageBoxA(nullptr, #EXPR, "C++ Network Exception", 0); std::terminate(); }
 #else
+#define XPLICIT_NET_ASSERT(EXPR) 
+#endif
+#else
+#ifdef XPLICIT_DEBUG
 #define XPLICIT_NET_ASSERT(EXPR) if (!(EXPR)) { std::string err = #EXPR; err += "C++ Network Exception"; XPLICIT_CRITICAL(err); std::terminate(); }
+#else
+#define XPLICIT_NET_ASSERT(EXPR) 
+#endif
 #endif
 
 

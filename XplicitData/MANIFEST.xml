@@ -4,4 +4,3 @@
 <!-- Copy this directory and add it to the path, as XPLICIT_DATA_DIR -->
 
 <CONNECT IP="10.211.55.9"/>
-<PLUGIN VFS="XplicitLuaPlugin.dll"/>

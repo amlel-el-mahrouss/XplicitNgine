@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: NetworkInstance.cpp
@@ -20,9 +20,6 @@ namespace Xplicit
 #ifdef XPLICIT_WINDOWS
 		u_long ul = 1;
 		ioctlsocket(sock, FIONBIO, &ul);
-
-		ul = 1;
-		ioctlsocket(sock, FIOASYNC, &ul);
 #else
 #pragma error("DEFINE ME NetworkInstance.cpp")
 #endif
@@ -30,7 +27,7 @@ namespace Xplicit
 
 	// NetworkInstance Constructor
 	NetworkInstance::NetworkInstance()
-		: Instance(), m_packet(), m_addr()
+		: Instance(), m_packet(), m_addr(), m_reset(false)
 	{
 #ifdef XPLICIT_WINDOWS
 		m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);

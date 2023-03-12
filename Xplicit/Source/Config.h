@@ -67,3 +67,5 @@ using namespace scene;
 #else
 #define XPLICIT_RELEASE (2)
 #endif
+
+#define XPLICIT_ASSERT(BOOL) assert(BOOL)

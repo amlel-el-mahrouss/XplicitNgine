@@ -11,7 +11,6 @@
  */
 
 #include "ServerWatchdog.h"
-#include "Actor.h"
 
 namespace Xplicit
 {
@@ -33,7 +32,7 @@ namespace Xplicit
 		{
 			if (this->m_watchdog > 0)
 			{
-				if (m_watchdog >= XPLICIT_WATCHDOG_DELAY)
+				if (m_watchdog == XPLICIT_WATCHDOG_DELAY)
 				{
 					for (size_t i = 0; i < server->size(); i++)
 					{
@@ -54,7 +53,7 @@ namespace Xplicit
 						continue;
 
 					if (server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK)
-						server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_KICK] = NETWORK_CMD_KICK;
+						server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_STOP] = NETWORK_CMD_KICK;
 				}
 
 				this->m_watchdog = XPLICIT_WATCHDOG_DELAY;

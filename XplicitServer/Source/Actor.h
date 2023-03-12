@@ -60,12 +60,12 @@ namespace Xplicit
 			NETWORK_CMD cmd[XPLICIT_NETWORK_MAX_CMDS]; // Network Command Array.
 			PrivateAddressData addr; // Actor's socket address
 			int64_t health;
-			int32_t id;
+			int64_t id;
 
 		};
 
 	public:
-		explicit Actor(const bool human = true);
+		Actor();
 		virtual ~Actor();
 
 		Actor& operator=(const Actor&) = default;
