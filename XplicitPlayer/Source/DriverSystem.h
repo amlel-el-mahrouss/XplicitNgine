@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: DriverSystem.h

@@ -78,17 +78,19 @@ namespace Xplicit {
 
         virtual void update() override;
 
-        void reset() noexcept;
+        bool reset() noexcept;
         bool connect(const char* ip);
         bool send(NetworkPacket& cmd);
         bool read(NetworkPacket& packet);
 
         NetworkPacket& get() noexcept;
+        bool is_reset() noexcept;
 
     private:
-        SOCKET m_socket;
+        PrivateAddressData m_addr;
         NetworkPacket m_packet;
-        struct sockaddr_in m_inaddr; // socket descriptor.
+        Socket m_socket;
+        bool m_reset;
 
         friend class NetworkEvent;
 

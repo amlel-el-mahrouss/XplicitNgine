@@ -11,9 +11,11 @@
  */
 
 #include "SDK.h"
-#include "Actor.h"
 
-// forward decl everything.
+#include "Actor.h"
+#include "ServerWatchdog.h"
+#include "PlayerJoinLeaveEvent.h"
+
 static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server); // called when the server stops.
 static void xplicit_create_common(); // create common events/instances.
 static void xplicit_attach_mono(); // attach mono plugins
@@ -101,6 +103,8 @@ static void xplicit_attach_mono()
 
 static void xplicit_create_common()
 {
+	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
+	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
 }
 

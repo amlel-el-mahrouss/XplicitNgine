@@ -22,12 +22,20 @@
 #define XPLICIT_NETWORK_MAG_1 ('N')
 #define XPLICIT_NETWORK_MAG_2 ('P')
 
-#define XPLICIT_NETWORK_MAG_CNT (3)
-
-#define XPLICIT_NETWORK_MAX_CMDS (16U)
+#define XPLICIT_NETWORK_MAG_COUNT (3U)
+#define XPLICIT_NETWORK_MAX_CMDS (32U)
 
 namespace Xplicit 
 {
+
+#ifdef XPLICIT_WINDOWS
+    using PrivateAddressData = SOCKADDR_IN;
+    using Socket = SOCKET;
+#else
+    typedef struct sockaddr_in PrivateAddressData;
+    using Socket = socket;
+#endif
+
     enum NETWORK_CMD : int 
     {
         // Network Start/End messages.
@@ -38,8 +46,6 @@ namespace Xplicit
         NETWORK_CMD_DAMAGE,
         NETWORK_CMD_SPAWN,
         NETWORK_CMD_ERROR,
-        // Script Messaging Protocol (SMP)
-        NETWORK_CMD_SCRIPT,
         // Forward, Backwards, Right, Left
         NETWORK_CMD_FORWARD,
         NETWORK_CMD_BACKWARDS,
@@ -66,23 +72,21 @@ namespace Xplicit
     class NetworkPacket
     {
     public:
-        char Magic[XPLICIT_NETWORK_MAG_CNT]; /* The Packet magic numbers. */
+        char Magic[XPLICIT_NETWORK_MAG_COUNT]; /* magic numbers. */
         NETWORK_CMD CMD[XPLICIT_NETWORK_MAX_CMDS]; /* The current network command. */
-       
         int64_t Health; /* The current actor's health, if sent by an actor */
 
         float X; /* X position */
         float Y; /* Y position */
         float Z; /* Z position */
 
-        char Data[256]; /* Optional Data array, for C# scripts */
 
     };
 
     class XPLICIT_API NetworkClient final
     {
     public:
-        struct sockaddr_in addr; /* the current socket address. */
+        PrivateAddressData addr; /* the current socket address. */
         NetworkPacket packet; /* the current packet. */
         NETWORK_STAT stat; /* used by the watchdog to prevent unused actor to be unuseable. */
 
@@ -101,7 +105,6 @@ namespace Xplicit
     };
 
     XPLICIT_API bool equals(struct sockaddr_in& lhs, struct sockaddr_in& rhs);
-
 }
 
 // reserved slots
@@ -114,3 +117,7 @@ namespace Xplicit
 #define XPLICIT_NETWORK_CMD_STOP (5)
 #define XPLICIT_NETWORK_CMD_ACK (6)
 #define XPLICIT_NETWORK_CMD_WATCHDOG (7)
+#define XPLICIT_NETWORK_CMD_KICK (8)
+#define XPLICIT_NETWORK_CMD_ACCEPT (9)
+
+#define XPLICIT_LAST_RESERVED_CMD XPLICIT_NETWORK_CMD_ACCEPT

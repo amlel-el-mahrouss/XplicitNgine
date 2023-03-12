@@ -17,33 +17,10 @@
 // that's it
 //
 
-static void xplicit_create_opengl()
-{
-	Xplicit::ApplicationContext::get_singleton().set(new Xplicit::InputReceiver());
-	
-	if (!KB) 
-		throw std::bad_alloc();
-
-	Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_DIRECT3D9,
-		Xplicit::Client::XPLICIT_DIM,
-		16U,
-		false,
-		false,
-		false,
-		KB));
-
-	HMENU menuHandle = GetSystemMenu((HWND)IRR->getVideoDriver()->getExposedVideoData().OpenGLWin32.HWnd, FALSE);
-	EnableMenuItem(menuHandle, SC_CLOSE, MF_GRAYED);
-
-	IRR->setWindowCaption(Xplicit::App::XPLICIT_APP_NAME);
-}
-
 INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
 	try
 	{
-		xplicit_create_opengl();
-
 		Xplicit::App::Application* app = new Xplicit::App::Application();
 
 		while (IRR->run() && Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())

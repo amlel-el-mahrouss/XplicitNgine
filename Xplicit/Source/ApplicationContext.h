@@ -98,7 +98,6 @@ namespace Xplicit
 			return false;
 		}
 
-
 		MouseEventTraits& get_pos() noexcept { return m_mouse_pos; }
 
 	private:

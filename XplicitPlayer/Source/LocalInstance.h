@@ -4,7 +4,7 @@
  *			XplicitNgin C++ Engine
  *			Copyright XPX, all rights reserved.
  *
- *			File: CameraInstance.h
+ *			File: LocalInstance.h
  *			Purpose: Camera Controller
  *
  * =====================================================================
@@ -18,14 +18,14 @@
 
 namespace Xplicit::Client
 {
-	class CameraInstance : public Instance
+	class LocalInstance : public Instance
 	{
 	public:
-		CameraInstance();
-		virtual ~CameraInstance();
+		LocalInstance();
+		virtual ~LocalInstance();
 
-		CameraInstance& operator=(const CameraInstance&) = default;
-		CameraInstance(const CameraInstance&) = default;
+		LocalInstance& operator=(const LocalInstance&) = default;
+		LocalInstance(const LocalInstance&) = default;
 
 		virtual INSTANCE_TYPE type() noexcept override;
 		virtual const char* name() noexcept override;
@@ -35,11 +35,29 @@ namespace Xplicit::Client
 
 	private:
 		irr::scene::ICameraSceneNode* m_camera;
+		NetworkInstance* m_network;
 
 	private:
 		irr::video::ITexture* m_moving_tex;
 		irr::video::ITexture* m_typing_tex;
 		irr::video::ITexture* m_idle_tex;
+
+	};
+
+	class LocalWatchdogEvent : public Event
+	{
+	public:
+		LocalWatchdogEvent();
+		~LocalWatchdogEvent();
+
+		LocalWatchdogEvent& operator=(const LocalWatchdogEvent&) = default;
+		LocalWatchdogEvent(const LocalWatchdogEvent&) = default;
+
+		virtual const char* name() noexcept override { return ("LocalWatchdogEvent"); }
+		virtual void operator()() override;
+
+	private:
+		NetworkInstance* m_network;
 
 	};
 }

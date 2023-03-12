@@ -13,9 +13,9 @@
 #include "XUI.h"
 #include "App.h"
 
-namespace Xplicit::UI
+namespace Xplicit::XUI
 {
-	InternalPopup::InternalPopup(std::function<void()> on_click, const vector2di pos, const POPUP_TYPE shutdown_type) noexcept
+	Popup::Popup(std::function<void()> on_click, const vector2di pos, const POPUP_TYPE shutdown_type) noexcept
 		: m_on_click(on_click), m_pos(pos)
 	{
 		assert(on_click);
@@ -49,34 +49,34 @@ namespace Xplicit::UI
 			throw EngineError();
 	}
 
-	InternalPopup::~InternalPopup()
+	Popup::~Popup()
 	{
 		if (m_error_texture)
 			m_error_texture->drop();
 	}
 
-	void InternalPopup::update()
+	void Popup::update()
 	{
 		IRR->getVideoDriver()->draw2DImage(m_error_texture, m_pos);
 
-		if (KB->left_down() || KB->key_down())
+		if (KB->key_down(KEY_ESCAPE))
 		{
 			m_on_click();
 		}
 	}
 
 
-	const char* InternalPopup::name() noexcept
+	const char* Popup::name() noexcept
 	{
 		return "NetworkPopup";
 	}
 
-	InternalPopup::INSTANCE_TYPE InternalPopup::type() noexcept
+	Popup::INSTANCE_TYPE Popup::type() noexcept
 	{
-		return InternalPopup::INSTANCE_GUI;
+		return Popup::INSTANCE_GUI;
 	}
 	
-	InternalHUD::InternalHUD()
+	HUD::HUD()
 	{
 		XPLICIT_GET_DATA_DIR(dat);
 
@@ -103,7 +103,7 @@ namespace Xplicit::UI
 			throw EngineError();
 	}
 
-	InternalHUD::~InternalHUD()
+	HUD::~HUD()
 	{
 		if (m_no_heatlh)
 			m_no_heatlh->drop();
@@ -115,18 +115,18 @@ namespace Xplicit::UI
 			m_full_heatlh->drop();
 	}
 
-	void InternalHUD::update()
+	void HUD::update()
 	{
 		auto packet = m_network->get();
 		
-		for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; ++i)
+		for (size_t i = XPLICIT_LAST_RESERVED_CMD; i < XPLICIT_NETWORK_MAX_CMDS; ++i)
 		{
 			if (packet.CMD[i] == NETWORK_CMD_DAMAGE)
 				m_health = packet.Health;
 		}
 
 		auto dim = dimension2di(Client::XPLICIT_DIM.Width / 3.5, Client::XPLICIT_DIM.Height * 0.82);
-		auto sz = core::rect<s32>(0, 0, 521, 51);
+		auto sz = core::rect<s32>(0, 0, 146, 22);
 
 		if (m_health > 50)
 		{

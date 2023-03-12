@@ -322,6 +322,7 @@ namespace Xplicit
 		return path.string() + program_name;
 	}
 
+#ifdef XPLICIT_WINDOWS
 	static inline bool init_winsock(WSADATA* dat) 
 	{
 		int result = WSAStartup(MAKEWORD(2, 2), dat);
@@ -331,7 +332,9 @@ namespace Xplicit
 
 		return true;
 	}
+#endif
 
+#ifdef XPLICIT_WINDOWS
 	static inline void open_terminal(FILE* fp = stdout)
 	{
 #ifdef XPLICIT_WINDOWS
@@ -339,6 +342,7 @@ namespace Xplicit
 		(void)freopen("CONOUT$", "w", fp);
 #endif //!XPLICIT_WINDOWS
 	}
+#endif
 
 	class GUI
 	{

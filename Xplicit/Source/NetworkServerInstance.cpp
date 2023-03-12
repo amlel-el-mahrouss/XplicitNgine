@@ -139,7 +139,7 @@ namespace Xplicit
 			{
 				int sz = sizeof(struct sockaddr_in);
 
-				for (size_t i = 0; i < instance->m_clients.size(); i++)
+				for (size_t i = 0; i < instance->m_clients.size(); ++i)
 				{
 #ifdef XPLICIT_WINDOWS
 					int sz = sizeof(struct sockaddr_in);
@@ -155,12 +155,14 @@ namespace Xplicit
 						instance->m_clients[i].packet.Magic[1] != XPLICIT_NETWORK_MAG_1 ||
 						instance->m_clients[i].packet.Magic[2] != XPLICIT_NETWORK_MAG_2)
 					{
-						memset(instance->m_clients[i].packet.CMD, NETWORK_CMD_INVALID, XPLICIT_NETWORK_MAX_CMDS);
+						for (size_t y = 0; y < XPLICIT_NETWORK_MAX_CMDS; y++)
+						{
+							instance->m_clients[i].packet.CMD[y] = NETWORK_CMD_INVALID;
+						}
 					}
 
 					if (sz < 0)
 						return;
-
 				}
 			}
 		}

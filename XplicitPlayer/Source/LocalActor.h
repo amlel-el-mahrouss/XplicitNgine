@@ -12,10 +12,9 @@
 
 #pragma once
 
-#include "Instance.h"
 #include "ApplicationContext.h"
-#include "CameraInstance.h"
 #include "NetworkInstance.h"
+#include "LocalInstance.h"
 
 // FIXME: rework them when we will roll our own renderer.
 namespace Xplicit::Client
@@ -35,11 +34,31 @@ namespace Xplicit::Client
 		virtual INSTANCE_TYPE type() noexcept override { return INSTANCE_ACTOR; }
 		virtual const char* name() noexcept override { return ("LocalActor"); }
 
+		IAnimatedMeshSceneNode* operator->() const;
 		virtual void update() override;
 
+
 	private:
-		IAnimatedMeshSceneNode* m_player_model_node;
-		IAnimatedMesh* m_player_model;
+		IAnimatedMeshSceneNode* m_node;
+		IAnimatedMesh* m_model;
+
+	};
+
+	class XPLICIT_API LocalMoveEvent : public Event
+	{
+	public:
+		LocalMoveEvent();
+		virtual ~LocalMoveEvent();
+
+		LocalMoveEvent& operator=(const LocalMoveEvent&) = default;
+		LocalMoveEvent(const LocalMoveEvent&) = default;
+
+		virtual void operator()() override;
+		const char* name() noexcept;
+
+	private:
+		NetworkInstance* m_network;
+		NetworkPacket m_packet;
 
 	};
 }

@@ -17,19 +17,21 @@
 #include <Foundation.h>
 #include <ApplicationContext.h>
 
-/* Client instances */
 #include "LocalActor.h"
-#include "CameraInstance.h"
+#include "LocalInstance.h"
+#include "LoadingInstance.h"
+
+#define XPLICIT_DEFAULT_WIDTH (1280)
+#define XPLICIT_DEFAULT_HEIGHT (720)
 
 namespace Xplicit::Client
 {
-	// default diemsion for an xplicit client app.
-	static inline dimension2du XPLICIT_DIM = dimension2du(1280, 720);
+	static inline dimension2du XPLICIT_DIM = dimension2du(XPLICIT_DEFAULT_WIDTH, XPLICIT_DEFAULT_HEIGHT);
 }
 
 namespace Xplicit::App
 {
-	constexpr const wchar_t* XPLICIT_APP_NAME = L"Xplicit";
+	constexpr const wchar_t* XPLICIT_APP_NAME = L"XplicitNgin";
 
 	class Application final
 	{
@@ -45,8 +47,8 @@ namespace Xplicit::App
 		public:
 			struct Traits
 			{
-				int window_width{ 800 };
-				int window_height{ 600 };
+				int window_width{ XPLICIT_DEFAULT_WIDTH };
+				int window_height{ XPLICIT_DEFAULT_HEIGHT };
 				float mouse_sensitivity{ 1.0f };
 			};
 
@@ -67,12 +69,14 @@ namespace Xplicit::App
 		};
 
 	private:
-		void setup_xml();
-		void setup_manifest();
+		void setup_paths();
+		void read_manifest();
+		void setup();
 
 	private:
+		std::unique_ptr<Settings> m_settings;
+		std::string m_data_path;
 		WSADATA m_wsa;
-		char m_data_path[4096];
 
 	};
 }

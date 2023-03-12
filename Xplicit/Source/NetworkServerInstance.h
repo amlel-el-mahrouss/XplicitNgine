@@ -46,7 +46,7 @@ namespace Xplicit
 	private:
 		std::vector<NetworkClient> m_clients;
 		std::string m_dns;
-		SOCKET m_socket;
+		Socket m_socket;
 		bool m_send;
 
 	private:

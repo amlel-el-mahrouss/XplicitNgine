@@ -21,13 +21,16 @@
 
 namespace Xplicit
 {
-	static void xplicit_register_events()
+	XPLICIT_API MonoString* xplicit_read_packet()
 	{
-		mono_add_internal_call("Xplicit.RuntimeService::RegisterEvent", xplicit_register_event);
-		mono_add_internal_call("Xplicit.RuntimeService::RegisterClass", xplicit_register_class);
 
-		mono_add_internal_call("Xplicit.NetworkService::Read", xplicit_read_packet);
-		mono_add_internal_call("Xplicit.NetworkService::Write", xplicit_write_packet);
+		return nullptr;
+	}
+
+	XPLICIT_API void xplicit_write_packet(char* data, int64_t sz)
+	{
+		(void)data;
+		(void)sz;
 	}
 
 	XPLICIT_API bool xplicit_register_class(MonoString* namespase, MonoString* klass)
@@ -47,64 +50,20 @@ namespace Xplicit
 		return false;
 	}
 
-	XPLICIT_API MonoString* xplicit_read_packet()
+	static void xplicit_register_events()
 	{
-		auto engine = InstanceManager::get_singleton_ptr()->get<MonoEngineInstance>("MonoEngineInstance");
-		
-		
-		if (engine)
-		{
-			auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
+		mono_add_internal_call("Xplicit.RuntimeService::RegisterEvent", xplicit_register_event);
+		mono_add_internal_call("Xplicit.RuntimeService::RegisterClass", xplicit_register_class);
 
-			if (server)
-			{
-				for (size_t i = 0; i < server->size(); i++)
-				{
-					for (size_t y = 0; y < XPLICIT_NETWORK_MAX_CMDS; ++y)
-					{
-						if (server->get(i).packet.CMD[y] == NETWORK_CMD_SCRIPT)
-						{
-							auto ret_data = mono_string_new(engine->domain(), server->get(i).packet.Data);
-							return ret_data;
-						}
-					}
-				}
-			}
-			else
-			{
-				auto cl = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
-
-				if (cl)
-				{
-					for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; i++)
-					{
-						if (cl->get().CMD[i] == NETWORK_CMD_SCRIPT)
-						{
-							auto ret_data = mono_string_new(engine->domain(), cl->get().Data);
-							return ret_data;
-						}
-					}
-				}
-			}
-
-			auto null_ = mono_string_new(engine->domain(), "(null)");
-			return null_;
-		}
-
-		return nullptr;
-	}
-
-	XPLICIT_API void xplicit_write_packet(char* data, int64_t sz)
-	{
-		(void)data;
-		(void)sz;
+		mono_add_internal_call("Xplicit.NetworkService::Read", xplicit_read_packet);
+		mono_add_internal_call("Xplicit.NetworkService::Write", xplicit_write_packet);
 	}
 
 	static std::string mono_to_cxx(MonoString* str)
 	{
 		// string check
 		if (mono_string_length(str) < 1)
-			return "";
+			return ("");
 
 		auto chars = mono_string_chars(str);
 

@@ -20,7 +20,7 @@
 #include "DriverD3D11.h"
 #endif
 
-namespace Xplicit::UI
+namespace Xplicit::XUI
 {
 	enum class POPUP_TYPE
 	{
@@ -30,17 +30,17 @@ namespace Xplicit::UI
 		Kicked,
 	};
 
-	class InternalPopup final : public Instance
+	class Popup final : public Instance
 	{
 	public:
-		InternalPopup() = delete;
+		Popup() = delete;
 
 	public:
-		InternalPopup(std::function<void()> on_click, const vector2di pos = vector2di(0, 0), const POPUP_TYPE shutdown_type = POPUP_TYPE::NetworkError) noexcept;
-		virtual ~InternalPopup();
+		Popup(std::function<void()> on_click, const vector2di pos = vector2di(0, 0), const POPUP_TYPE shutdown_type = POPUP_TYPE::NetworkError) noexcept;
+		virtual ~Popup();
 
-		InternalPopup& operator=(const InternalPopup&) = delete;
-		InternalPopup(const InternalPopup&) = delete;
+		Popup& operator=(const Popup&) = delete;
+		Popup(const Popup&) = delete;
 
 		virtual void update() override;
 
@@ -54,26 +54,28 @@ namespace Xplicit::UI
 
 	};
 
-	class InternalHUD final : public Instance
+	class HUD final : public Instance
 	{
 	public:
-		InternalHUD();
-		virtual ~InternalHUD();
+		HUD();
+		virtual ~HUD();
 
-		InternalHUD& operator=(const InternalHUD&) = delete;
-		InternalHUD(const InternalHUD&) = delete;
+		HUD& operator=(const HUD&) = delete;
+		HUD(const HUD&) = delete;
 
-		virtual const char* name() noexcept override { return "InternalHUD"; }
+		virtual const char* name() noexcept override { return "HUD"; }
 		virtual INSTANCE_TYPE type() noexcept override { return INSTANCE_GUI; }
 
 		virtual void update() override;
 
 	private:
 		NetworkInstance* m_network;
+		int64_t m_health;
+
+	private:
 		ITexture* m_full_heatlh;
 		ITexture* m_mid_heatlh;
 		ITexture* m_no_heatlh;
-		int64_t m_health;
 
 	};
 }

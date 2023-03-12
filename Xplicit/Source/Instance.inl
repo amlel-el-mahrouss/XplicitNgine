@@ -26,6 +26,12 @@ T* Xplicit::InstanceManager::add(Args&&... args)
 template <typename T>
 T* Xplicit::InstanceManager::get(const char* name)
 {
+	if (!name)
+		return nullptr;
+
+	if (*name == 0)
+		return nullptr;
+
 	for (size_t i = 0; i < m_instances.size(); ++i)
 	{
 		if (!m_instances[i])

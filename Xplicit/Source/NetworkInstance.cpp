@@ -28,7 +28,7 @@ namespace Xplicit
 
 	// NetworkInstance Constructor
 	NetworkInstance::NetworkInstance()
-		: Instance(), m_packet(), m_inaddr()
+		: Instance(), m_packet(), m_addr()
 	{
 #ifdef XPLICIT_WINDOWS
 		m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -49,19 +49,18 @@ namespace Xplicit
 
 	NetworkInstance::~NetworkInstance()
 	{
-		this->reset();
+		if (reset())
+			closesocket(m_socket);
 
 #ifndef _NDEBUG
 		XPLICIT_INFO("~NetworkInstance, Epoch: " + std::to_string(xplicit_get_epoch()));
 #endif
 	}
 
-	void NetworkInstance::reset() noexcept
+	bool NetworkInstance::reset() noexcept
 	{
 #ifdef XPLICIT_WINDOWS
-		// Shutdown and close socket if shutdown failed.
-		if (shutdown(m_socket, SD_BOTH) == SOCKET_ERROR)
-			closesocket(m_socket);
+		return shutdown(m_socket, SD_BOTH) != SOCKET_ERROR;
 #else
 #pragma error("DEFINE ME NetworkInstance.cpp")
 #endif
@@ -73,13 +72,13 @@ namespace Xplicit
 			return false;
 
 #ifdef XPLICIT_WINDOWS
-		memset(&m_inaddr, 0, sizeof(SOCKADDR_IN));
+		memset(&m_addr, 0, sizeof(SOCKADDR_IN));
 
-		m_inaddr.sin_family = AF_INET;
-		inet_pton(AF_INET, ip, &m_inaddr.sin_addr);
-		m_inaddr.sin_port = htons(XPLICIT_NETWORK_PORT);
+		m_addr.sin_family = AF_INET;
+		inet_pton(AF_INET, ip, &m_addr.sin_addr);
+		m_addr.sin_port = htons(XPLICIT_NETWORK_PORT);
 
-		int result = ::connect(m_socket, reinterpret_cast<SOCKADDR*>(&m_inaddr), sizeof(m_inaddr));
+		int result = ::connect(m_socket, reinterpret_cast<SOCKADDR*>(&m_addr), sizeof(m_addr));
 
 		if (result == SOCKET_ERROR)
 			throw NetworkError(NETERR_INTERNAL_ERROR);
@@ -102,7 +101,7 @@ namespace Xplicit
 
 #ifdef XPLICIT_WINDOWS
 		int res = ::sendto(m_socket, (const char*)&packet, sizeof(NetworkPacket), 0, 
-			reinterpret_cast<SOCKADDR*>(&m_inaddr), sizeof(m_inaddr));
+			reinterpret_cast<SOCKADDR*>(&m_addr), sizeof(m_addr));
 
 		if (res == SOCKET_ERROR)
 			throw NetworkError(NETERR_INTERNAL_ERROR);
@@ -120,11 +119,13 @@ namespace Xplicit
 
 	bool NetworkInstance::read(NetworkPacket& packet)
 	{
+		m_reset = false; // we gotta clear this one, we don't know if RST was sent.
+
 		int length{ sizeof(struct sockaddr_in) };
 
 #ifdef XPLICIT_WINDOWS
 		int res = ::recvfrom(m_socket, (char*)&packet, sizeof(NetworkPacket), 0,
-			(struct sockaddr*)&m_inaddr, &length);
+			(struct sockaddr*)&m_addr, &length);
 #else
 #pragma error("DEFINE ME NetworkInstance.cpp")
 #endif
@@ -160,6 +161,14 @@ namespace Xplicit
 #endif
 					break;
 				}
+				case WSAECONNRESET:
+				{
+#ifdef XPLICIT_DEBUG
+					XPLICIT_INFO("Connection has been reset by peer..");
+#endif				
+					m_reset = true;
+					break;
+				}
 				}
 
 				return false;
@@ -171,7 +180,7 @@ namespace Xplicit
 				packet.Magic[2] == XPLICIT_NETWORK_MAG_2;
 	}
 
+	bool NetworkInstance::is_reset() noexcept { return m_reset; }
 
 	NetworkPacket& NetworkInstance::get() noexcept { return m_packet; }
-
 }

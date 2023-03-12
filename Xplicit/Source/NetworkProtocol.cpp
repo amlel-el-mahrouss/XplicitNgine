@@ -35,8 +35,6 @@ namespace Xplicit
         {
             packet.CMD[i] = NETWORK_CMD_INVALID;
         }
-
-        memset(&addr, 0, sizeof(struct sockaddr_in));
     }
 
     bool equals(struct sockaddr_in& lhs, struct sockaddr_in& rhs)

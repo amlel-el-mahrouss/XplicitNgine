@@ -58,7 +58,7 @@ namespace Xplicit
 
 		public:
 			NETWORK_CMD cmd[XPLICIT_NETWORK_MAX_CMDS]; // Network Command Array.
-			struct sockaddr_in addr; // Actor's socket address
+			PrivateAddressData addr; // Actor's socket address
 			int64_t health;
 
 		};

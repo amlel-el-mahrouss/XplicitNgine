@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: DriverD3D11.cpp

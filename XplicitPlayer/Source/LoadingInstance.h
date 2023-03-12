@@ -40,4 +40,22 @@ namespace Xplicit::Client
 		bool m_run; /* Should we seek for a connection? */
 
 	};
+
+	class XPLICIT_API LocalResetEvent : public Event
+	{
+	public:
+		LocalResetEvent();
+		virtual ~LocalResetEvent();
+
+		LocalResetEvent& operator=(const LocalResetEvent&) = default;
+		LocalResetEvent(const LocalResetEvent&) = default;
+
+		virtual void operator()() override;
+		const char* name() noexcept;
+
+	private:
+		NetworkInstance* m_network;
+		int32_t m_num_resets;
+
+	};
 }

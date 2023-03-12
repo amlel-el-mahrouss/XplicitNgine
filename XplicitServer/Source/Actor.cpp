@@ -19,6 +19,7 @@ namespace Xplicit
 	Actor::Actor(const bool human)
 		: m_replication(), m_position(0, 0, 0), m_delay(0)
 	{
+
 	}
 
 	Actor::~Actor()
