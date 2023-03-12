@@ -1,54 +1,39 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
- *			File: PlayerJoinLeaveEvent.cpp
- *			Purpose: Player Join and Leave logic
+ *			File: PlayerEvent.cpp
+ *			Purpose: Player Events
  *
  * =====================================================================
  */
 
-#include "PlayerJoinLeaveEvent.h"
+#include "PlayerEvent.h"
 #include "Actor.h"
 
 namespace Xplicit
 {
-	PlayerJoinLeaveEvent::PlayerJoinLeaveEvent() 
-		: m_actor_counter(0) 
+	std::unique_ptr<PlayerManager>& PlayerManager::get_singleton_ptr() noexcept
 	{
-
+		static std::unique_ptr<PlayerManager> manager = std::unique_ptr<PlayerManager>(new PlayerManager());
+		return manager;
 	}
 
-	PlayerJoinLeaveEvent::~PlayerJoinLeaveEvent() 
-	{
-	}
+	const int64_t& PlayerManager::size() noexcept { return m_players; }
 
-	int64_t PlayerJoinLeaveEvent::size() noexcept
+	void PlayerJoinEvent::operator()()
 	{
-		return m_actor_counter;
-	}
-
-	void PlayerJoinLeaveEvent::operator()()
-	{
-		// the main logic for the join and leave event.
-		// here we simply handle player logic.
-
-		this->on_leave();
-		this->on_join();
-	}
-
-	bool PlayerJoinLeaveEvent::on_join() noexcept
-	{
-		if (m_actor_counter > MAX_CONNECTIONS)
-			return false;
+		if (PlayerManager::get_singleton_ptr()->size() > MAX_CONNECTIONS)
+			return;
 
 		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
-		auto actors = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
 
-		if (!server) 
-			return false;
+		if (!server)
+			return;
+
+		auto actors = InstanceManager::get_singleton_ptr()->get_all<Actor>("Actor");
 
 		for (size_t i = 0; i < server->size(); i++)
 		{
@@ -59,7 +44,7 @@ namespace Xplicit
 					server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_KICK] = NETWORK_CMD_KICK;
 					server->get(i).stat = NETWORK_STAT_DISCONNECTED;
 
-					return false;
+					return;
 				}
 			}
 
@@ -68,31 +53,31 @@ namespace Xplicit
 				auto actor = InstanceManager::get_singleton_ptr()->add<Actor>();
 
 				if (!actor)
-					return false;
+					throw EngineError();
 
 				actor->set(server->get(i).addr);
 
 				server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_ACCEPT] = NETWORK_CMD_ACCEPT;
 				server->get(i).stat = NETWORK_STAT_CONNECTED;
+				server->get(i).packet.ID = PlayerManager::get_singleton_ptr()->size();
 
-				server->get(i).packet.ID = m_actor_counter;
-				actor->get().id = m_actor_counter;
+				actor->get().id = server->get(i).packet.ID;
 
-				++m_actor_counter;
+				XPLICIT_INFO("Ngin");
 
-				return true;
+				++*PlayerManager::get_singleton_ptr();
 			}
 		}
-
-		return false;
 	}
 
-	bool PlayerJoinLeaveEvent::on_leave() noexcept
+	const char* PlayerJoinEvent::name() noexcept { return ("PlayerJoinEvent"); }
+
+	void PlayerLeaveEvent::operator()()
 	{
 		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
 
-		if (!server) 
-			return false;
+		if (!server)
+			return;
 
 		for (size_t i = 0; i < server->size(); i++)
 		{
@@ -106,18 +91,19 @@ namespace Xplicit
 					if (equals(actors[y]->get().addr, server->get(i).addr))
 					{
 						server->get(i).reset();
+
 						InstanceManager::get_singleton_ptr()->remove<Actor>(actors[y]);
+						--*PlayerManager::get_singleton_ptr();
 
-						--m_actor_counter;
+						XPLICIT_INFO("Xplicit");
 
-						return true;
+						break;
 					}
 				}
 			}
 		}
-
-		return false;
 	}
 
-	const char* PlayerJoinLeaveEvent::name() noexcept { return ("PlayerJoinLeaveEvent"); }
+	const char* PlayerLeaveEvent::name() noexcept { return ("PlayerLeaveEvent"); }
+
 }

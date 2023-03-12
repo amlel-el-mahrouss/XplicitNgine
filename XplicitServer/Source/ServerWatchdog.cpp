@@ -15,7 +15,7 @@
 
 namespace Xplicit
 {
-	static int16_t XPLICIT_WATCHDOG_DELAY = 1000;
+	static int16_t XPLICIT_WATCHDOG_DELAY = 5000;
 
 	ServerWatchdogEvent::ServerWatchdogEvent() 
 		: Event(), m_watchdog(0)
@@ -36,6 +36,9 @@ namespace Xplicit
 				{
 					for (size_t i = 0; i < server->size(); i++)
 					{
+						if (server->get(i).stat == NETWORK_STAT_DISCONNECTED)
+							continue;
+
 						server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_WATCHDOG] = NETWORK_CMD_WATCHDOG;
 					}
 				}
@@ -46,6 +49,9 @@ namespace Xplicit
 			{
 				for (size_t i = 0; i < server->size(); i++)
 				{
+					if (server->get(i).stat == NETWORK_STAT_DISCONNECTED)
+						continue;
+
 					if (server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK)
 						server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_KICK] = NETWORK_CMD_KICK;
 				}
@@ -56,20 +62,4 @@ namespace Xplicit
 	}
 
 	const char* ServerWatchdogEvent::name() noexcept { return ("ServerWatchdogEvent"); }
-
-	void ServerWatchdogEvent::watchdog() noexcept
-	{
-		auto server = InstanceManager::get_singleton_ptr()->get<NetworkServerInstance>("NetworkServerInstance");
-		
-		if (!server)
-			return;
-
-		for (size_t i = 0; i < server->size(); i++)
-		{
-			if (server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK)
-			{
-				server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_KICK] = NETWORK_CMD_KICK;
-			}
-		}
-	}
 }

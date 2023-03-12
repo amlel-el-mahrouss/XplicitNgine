@@ -61,8 +61,8 @@ namespace Xplicit
 	private:
 		struct MouseEventTraits
 		{
-			float X;
-			float Y;
+			int32_t X;
+			int32_t Y;
 			bool Down;
 		};
 

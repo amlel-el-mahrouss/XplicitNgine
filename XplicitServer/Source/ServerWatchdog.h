@@ -25,11 +25,8 @@ namespace Xplicit
 		ServerWatchdogEvent& operator=(const ServerWatchdogEvent&) = default;
 		ServerWatchdogEvent(const ServerWatchdogEvent&) = default;
 
-		virtual void operator()() override;
 		virtual const char* name() noexcept override;
-
-	public:
-		void watchdog() noexcept;
+		virtual void operator()() override;
 
 	private:
 		int16_t m_watchdog; // Watchdog delay

@@ -13,8 +13,8 @@
 #include "SDK.h"
 
 #include "Actor.h"
+#include "PlayerEvent.h"
 #include "ServerWatchdog.h"
-#include "PlayerJoinLeaveEvent.h"
 
 static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server); // called when the server stops.
 static void xplicit_create_common(); // create common events/instances.
@@ -103,9 +103,10 @@ static void xplicit_attach_mono()
 
 static void xplicit_create_common()
 {
-	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
+	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
 	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
+	Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerLeaveEvent>();
 }
 
 static void xplicit_load_shell()
@@ -155,7 +156,7 @@ static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server)
 
 	for (size_t i = 0; i < server->size(); i++)
 	{
-		server->get(i).packet.CMD[0] = Xplicit::NETWORK_CMD_STOP;
+		server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_STOP] = Xplicit::NETWORK_CMD_STOP;
 	}
 
 	server->send();

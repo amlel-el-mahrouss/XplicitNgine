@@ -133,12 +133,17 @@ namespace Xplicit
 			if (!actors[i])
 				continue;
 
-			for (size_t y = 0; y < server->size(); y++)
+			for (size_t server_cl = 0; server_cl < server->size(); server_cl++)
 			{
-				if (equals(server->get(y).addr, actors[i]->get().addr))
+				if (equals(server->get(server_cl).addr, actors[i]->get().addr))
 				{
-					memcpy(actors[i]->get().cmd, server->get(y).packet.CMD, XPLICIT_NETWORK_MAX_CMDS);
-					actors[i]->set(server->get(y).packet.X, server->get(y).packet.Y, server->get(y).packet.Z);
+					for (size_t cmd_index = 0; cmd_index < XPLICIT_NETWORK_MAX_CMDS; cmd_index++)
+					{
+						auto cmd = server->get(server_cl).packet.CMD[cmd_index];
+						actors[i]->get().cmd[cmd_index] = cmd;
+					}
+
+					actors[i]->set(server->get(server_cl).packet.X, server->get(server_cl).packet.Y, server->get(server_cl).packet.Z);
 				}
 			}
 		}

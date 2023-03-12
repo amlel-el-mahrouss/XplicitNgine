@@ -59,13 +59,20 @@ namespace Xplicit
 			throw NetworkError(NETERR_INTERNAL_ERROR);
 		
 		// Let's pre-allocate the clients.
-		// So we don't have to.
+		// So we don't have to allocate them.
 		for (size_t i = 0; i < MAX_CONNECTIONS; i++)
 		{
 			NetworkClient cl{};
-			memset(&cl, 0, sizeof(NetworkClient));
+			
+			for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; i++)
+			{
+				cl.packet.CMD[i] = NETWORK_CMD_INVALID;
+			}
 
-			memset(cl.packet.CMD, NETWORK_CMD_INVALID, XPLICIT_NETWORK_MAX_CMDS);
+			cl.packet.Health = -1;
+			cl.packet.ID = -1;
+
+			cl.stat = NETWORK_STAT_DISCONNECTED;
 
 			m_clients.push_back(cl);
 		}
@@ -158,6 +165,8 @@ namespace Xplicit
 						for (size_t y = 0; y < XPLICIT_NETWORK_MAX_CMDS; y++)
 						{
 							instance->m_clients[i].packet.CMD[y] = NETWORK_CMD_INVALID;
+
+
 						}
 					}
 

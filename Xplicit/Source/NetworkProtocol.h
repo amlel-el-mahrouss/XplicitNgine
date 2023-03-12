@@ -15,7 +15,7 @@
 #include "Foundation.h"
 
 #ifndef XPLICIT_NETWORK_PORT
-#define XPLICIT_NETWORK_PORT (30001)
+#define XPLICIT_NETWORK_PORT (60001)
 #endif // ifndef XPLICIT_NETWORK_PORT
 
 #define XPLICIT_NETWORK_MAG_0 ('X')
@@ -36,10 +36,10 @@ namespace Xplicit
     using Socket = socket;
 #endif
 
-    enum NETWORK_CMD : int 
+    enum NETWORK_CMD : int16_t
     {
         // Network Start/End messages.
-        NETWORK_CMD_BEGIN = 9, // start network, handshake
+        NETWORK_CMD_BEGIN, // start network, handshake
         NETWORK_CMD_STOP, // abort connection
         // Player versus player
         NETWORK_CMD_DEAD,
@@ -58,15 +58,16 @@ namespace Xplicit
         // Kick
         NETWORK_CMD_KICK,
         // Invalid
-        NETWORK_CMD_INVALID = 0xFFFFFFF,
+        NETWORK_CMD_INVALID,
+        NETWORK_CMD_COUNT,
     };
 
     // for the Watchdog protocol
-    enum NETWORK_STAT : int
+    enum NETWORK_STAT : int16_t
     {
         NETWORK_STAT_CONNECTED,
-        NETWORK_STAT_CONNECTING,
         NETWORK_STAT_DISCONNECTED,
+        NETWORK_STAT_COUNT,
     };
 
     class NetworkPacket
@@ -76,7 +77,7 @@ namespace Xplicit
         NETWORK_CMD CMD[XPLICIT_NETWORK_MAX_CMDS]; /* The current network command. */
 
         int64_t Health; /* The current actor's health, if sent by an actor */
-        int32_t ID; /* Clientside: the local actor targeted (for position commands only) */
+        int64_t ID; /* Clientside: the local actor targeted (for position commands only) */
 
         float X; /* X position */
         float Y; /* Y position */
@@ -90,7 +91,7 @@ namespace Xplicit
     public:
         PrivateAddressData addr; /* the current socket address. */
         NetworkPacket packet; /* the current packet. */
-        NETWORK_STAT stat; /* used by the watchdog to prevent unused actor to be unuseable. */
+        NETWORK_STAT stat; /* current network status */
 
     public:
         NetworkClient();

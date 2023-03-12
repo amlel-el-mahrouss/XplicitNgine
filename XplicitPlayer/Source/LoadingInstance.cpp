@@ -20,7 +20,7 @@ namespace Xplicit::Client
 {
 	constexpr const int XPLICIT_TIMEOUT_DELAY = 5; // why?, because it takes time to lookup into instances.
 	constexpr const int XPLICIT_TIMEOUT = 1000; // maximum timeout.
-	constexpr const int XPLICIT_MAX_RESETS = 100; // maximum timeout.
+	constexpr const int XPLICIT_MAX_RESETS = 5000; // maximum RST.
 
 	LoadingInstance::LoadingInstance() 
 		: m_run(true), m_network(nullptr), m_logo_tex(nullptr), m_timeout(XPLICIT_TIMEOUT)
@@ -69,7 +69,6 @@ namespace Xplicit::Client
 			return;
 		}
 
-		packet.CMD[XPLICIT_NETWORK_CMD_BEGIN] = NETWORK_CMD_BEGIN;
 		m_network->send(packet);
 
 		IRR->getVideoDriver()->draw2DImage(m_logo_tex, vector2di(Xplicit::Client::XPLICIT_DIM.Width * 0.02, Xplicit::Client::XPLICIT_DIM.Height * 0.825),
@@ -102,7 +101,10 @@ namespace Xplicit::Client
 		if (m_network->connect(ip))
 		{
 			NetworkPacket spawn{};
-			spawn.CMD[4] = NETWORK_CMD_BEGIN;
+
+			spawn.CMD[XPLICIT_NETWORK_CMD_BEGIN] = NETWORK_CMD_BEGIN;
+			spawn.CMD[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
+		
 			m_network->send(spawn);
 
 		}

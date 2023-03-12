@@ -414,15 +414,15 @@ namespace Xplicit
 			{
 				auto info = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
 				info->set_level(spdlog::level::info);
-				info->set_pattern("[%^ENGINE%$] %v");
+				info->set_pattern("[%^XPLICIT%$] %v");
 
 				auto critical = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
 				critical->set_level(spdlog::level::critical);
-				critical->set_pattern("[%^ENGINE%$] %v");
+				critical->set_pattern("[%^XPLICIT%$] %v");
 
 				auto err = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
 				err->set_level(spdlog::level::err);
-				err->set_pattern("[%^ENGINE%$] %v");
+				err->set_pattern("[%^XPLICIT%$] %v");
 
 				LOGGER = new spdlog::logger("EngineSink", { err, info, critical });
 			}

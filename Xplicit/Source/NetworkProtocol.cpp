@@ -29,14 +29,11 @@ namespace Xplicit
 
     void NetworkClient::reset() noexcept
     {
+        packet.ID = -1;
         stat = NETWORK_STAT_DISCONNECTED;
 
-        packet.ID = -1;
-
-        for (size_t i = 0; i < XPLICIT_NETWORK_MAX_CMDS; i++)
-        {
-            packet.CMD[i] = NETWORK_CMD_INVALID;
-        }
+        memset(&packet.CMD, 0, XPLICIT_NETWORK_MAX_CMDS);
+        memset(&addr, 0, sizeof(PrivateAddressData));
     }
 
     bool equals(struct sockaddr_in& lhs, struct sockaddr_in& rhs)
