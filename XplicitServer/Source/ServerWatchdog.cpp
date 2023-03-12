@@ -18,8 +18,9 @@ namespace Xplicit
 	static int16_t XPLICIT_WATCHDOG_DELAY = 5000;
 
 	ServerWatchdogEvent::ServerWatchdogEvent() 
-		: Event(), m_watchdog(0)
+		: Event(), m_watchdog(XPLICIT_WATCHDOG_DELAY)
 	{
+
 	}
 
 	ServerWatchdogEvent::~ServerWatchdogEvent() {}

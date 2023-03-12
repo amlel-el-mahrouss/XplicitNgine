@@ -13,13 +13,14 @@
 #pragma once
 
 #include "SDK.h"
+#include "Actor.h"
 
 namespace Xplicit
 {
 	class PlayerManager final
 	{
 	private:
-		PlayerManager() = default;
+		PlayerManager();
 
 	public:
 		~PlayerManager() = default;

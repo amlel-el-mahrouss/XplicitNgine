@@ -24,6 +24,7 @@ namespace Xplicit
 
 	Actor::~Actor()
 	{
+
 	}
 
 	Actor::INSTANCE_PHYSICS Actor::physics() noexcept { return PHYSICS_FAST; }
@@ -112,8 +113,9 @@ namespace Xplicit
 
 	void Actor::reset() noexcept
 	{
-		memset(&this->get().addr, 0, sizeof(struct sockaddr_in));
-
+		memset(&this->get().addr, 0, sizeof(PrivateAddressData));
+		memset(&this->get().cmd, 0, XPLICIT_NETWORK_MAX_CMDS);
+		
 		this->set(0.f, 0.f, 0.f);
 		this->get().health = 0;
 	}
