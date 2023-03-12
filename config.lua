@@ -76,6 +76,8 @@ XPLICIT_CLIENT_CONFIG = {
     ["_LIBDIR"] = {
     	"Vendor/XplicitIrr/lib/Irrlicht",
     	"bin/Debug/Xplicit",
+	"d3d11",
+	"dxgi",
     },
     ["_INCDIR"] = {
         "Vendor/",

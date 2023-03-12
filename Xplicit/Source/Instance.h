@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: Instance.h
- *			Purpose: Xplicit's ECS
+ *			Purpose: Xplicit's Multi-threaded ECS
  *
  * =====================================================================
  */
@@ -47,6 +47,7 @@ namespace Xplicit
 
 	public:
 		void update() noexcept;
+		std::vector<Instance*>& get() noexcept;
 		static InstanceManager* get_singleton_ptr();
 
 	private:

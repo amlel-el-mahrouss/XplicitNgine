@@ -15,12 +15,12 @@
 #include "Foundation.h"
 
 #ifndef XPLICIT_NETWORK_PORT
-#define XPLICIT_NETWORK_PORT (59543)
+#define XPLICIT_NETWORK_PORT (30001)
 #endif // ifndef XPLICIT_NETWORK_PORT
 
 #define XPLICIT_NETWORK_MAG_0 ('X')
-#define XPLICIT_NETWORK_MAG_1 ('G')
-#define XPLICIT_NETWORK_MAG_2 ('P')
+#define XPLICIT_NETWORK_MAG_1 ('P')
+#define XPLICIT_NETWORK_MAG_2 ('X')
 
 #define XPLICIT_NETWORK_MAG_COUNT (3U)
 #define XPLICIT_NETWORK_MAX_CMDS (32U)
@@ -45,7 +45,6 @@ namespace Xplicit
         NETWORK_CMD_DEAD,
         NETWORK_CMD_DAMAGE,
         NETWORK_CMD_SPAWN,
-        NETWORK_CMD_ERROR,
         // Forward, Backwards, Right, Left
         NETWORK_CMD_FORWARD,
         NETWORK_CMD_BACKWARDS,
@@ -58,6 +57,7 @@ namespace Xplicit
         NETWORK_CMD_ACK, // acknowledge
         // Kick
         NETWORK_CMD_KICK,
+        // Invalid
         NETWORK_CMD_INVALID = 0xFFFFFFF,
     };
 

@@ -40,9 +40,10 @@ namespace Xplicit {
 
 		template <typename T>
 		bool remove(const char* name);
-		
+
 	public:
 		static EventDispatcher* get_singleton_ptr();
+		std::vector<Event*>& get() noexcept;
 
 	private:
 		std::vector<Event*> m_events;

@@ -18,6 +18,7 @@
 #include <ApplicationContext.h>
 
 #include "LocalActor.h"
+#include "DriverD3D11.h"
 #include "LocalInstance.h"
 #include "LoadingInstance.h"
 
@@ -69,8 +70,8 @@ namespace Xplicit::App
 		};
 
 	private:
-		void setup_paths();
 		void read_manifest();
+		void setup_paths();
 		void setup();
 
 	private:

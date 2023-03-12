@@ -28,7 +28,7 @@ namespace Xplicit
 
 	Actor::INSTANCE_PHYSICS Actor::physics() noexcept { return PHYSICS_FAST; }
 
-	bool Actor::has_physics() noexcept { return true; }
+	bool Actor::has_physics() noexcept { return false; }
 
 	void Actor::update() 
 	{
@@ -91,7 +91,7 @@ namespace Xplicit
 	void Actor::health(const int32_t& health) noexcept { this->get().health = health; }
 	const int32_t& Actor::health() noexcept { return this->get().health; }
 
-	bool Actor::can_collide() noexcept { return true; }
+	bool Actor::can_collide() noexcept { return false; }
 
 	Actor::INSTANCE_TYPE Actor::type() noexcept { return INSTANCE_ACTOR; }
 	const char* Actor::name() noexcept { return "Actor"; }

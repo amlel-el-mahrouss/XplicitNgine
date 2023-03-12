@@ -1,11 +1,11 @@
 /*
  * =====================================================================
  *
- *			XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: Instance.h
- *			Purpose: Xplicit's ECS
+ *			Purpose: Xplicit's Multi-threaded ECS
  *
  * =====================================================================
  */
@@ -34,6 +34,8 @@ namespace Xplicit {
 
 		return ptr;
 	}
+
+	std::vector<Instance*>& InstanceManager::get() noexcept { return m_instances; }
 
 	const char* Instance::name() noexcept { return ("Instance"); }
 
