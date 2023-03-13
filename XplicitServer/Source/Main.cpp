@@ -97,6 +97,13 @@ static void xplicit_attach_mono()
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(path.c_str(), false);
 }
 
+static void xplicit_print_help()
+{
+	puts("-------------- HELP --------------");
+	puts("stop: stops the server.");
+	puts("-------------- HELP --------------");
+}
+
 static void xplicit_load_shell()
 {
 #ifdef XPLICIT_WINDOWS
@@ -118,16 +125,11 @@ static void xplicit_load_shell()
 				std::cin.getline(cmd_buf, 1024);
 
 				if (strcmp(cmd_buf, "stop") == 0)
-				{
-					xplicit_send_stop_packet(Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance"));
 					Xplicit::ApplicationContext::get_singleton().ShouldExit = true;
-				}
 
 				if (strcmp(cmd_buf, "help") == 0)
 				{
-					puts("-------------- HELP --------------");
-					puts("exit: Kills the server.");
-					puts("-------------- HELP --------------");
+					xplicit_print_help();
 				}
 
 			}
@@ -139,12 +141,11 @@ static void xplicit_load_shell()
 
 static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server)
 {
-	if (!server)
-		return;
+	XPLICIT_ASSERT(server);
 
 	for (size_t i = 0; i < server->size(); i++)
 	{
-		server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_STOP] = Xplicit::NETWORK_CMD_STOP;
+		server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_KICK] = Xplicit::NETWORK_CMD_KICK;
 	}
 }
 
@@ -153,18 +154,16 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		// init winsock for networking.
+		// init winsock for networking purposes.
 		WSADATA wsa;
 		Xplicit::init_winsock(&wsa);
 
-		// create a NULL device.
+		// create a NULL device, for XML.
 		Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_NULL));
 
-		// the address is located in the XPLICIT_SERVER_ADDR variable.
+		// the address is located in the XPLICIT_SERVER_ADDR environement variable.
 		char* addr = getenv("XPLICIT_SERVER_ADDR");
-
-		if (!addr)
-			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
+		if (!addr) throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
 
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
 		XPLICIT_ASSERT(server);
@@ -190,11 +189,14 @@ int main(int argc, char** argv)
 				break;
 		}
 
+		xplicit_send_stop_packet(server);
+		Xplicit::NetworkServerTraits::send(server);
+
 		return 0;
 	}
 	catch (std::runtime_error err)
 	{
-#ifndef _NDEBUG
+#ifdef XPLICIT_DEBUG
 		std::string msg;
 		msg += "Error: ";
 		msg += err.what();

@@ -59,7 +59,7 @@ namespace Xplicit
 					if (server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK)
 					{
 						server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_KICK] = NETWORK_CMD_KICK;
-						XPLICIT_INFO(uuids::to_string(server->get(i)->unique_addr.uuid) + " will be kicked..");
+						XPLICIT_INFO("[WATCHDOG] " + uuids::to_string(server->get(i)->unique_addr.uuid));
 					}
 				}
 

@@ -4,22 +4,22 @@
  *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
- *			File: Client.cpp
- *			Purpose: Client logic
+ *			File: Common.cpp
+ *			Purpose: Common components
  *
  * =====================================================================
  */
 
 #include "Application.h"
 #include "LocalActor.h"
-#include "Client.h"
+#include "Common.h"
 #include "Camera.h"
 #include "XUI.h"
 
 namespace Xplicit::Client
 {
-	constexpr const int XPLICIT_TIMEOUT = 100000; // connection timeout
-	constexpr const int XPLICIT_MAX_RESETS = 100000; // maximum RST timeout
+	constexpr const int XPLICIT_TIMEOUT = 10000; // connection timeout
+	constexpr const int XPLICIT_MAX_RESETS = 10000; // maximum RST timeout
 
 	LoadingInstance::LoadingInstance() 
 		: m_run(true), m_network(nullptr), m_logo_tex(nullptr), m_timeout(XPLICIT_TIMEOUT)
@@ -88,6 +88,8 @@ namespace Xplicit::Client
 
 			m_run = false; // sprious reponse
 		}
+
+		XPLICIT_SLEEP(100);
 	}
 
 	void LoadingInstance::connect(const char* ip)
@@ -135,18 +137,6 @@ namespace Xplicit::Client
 		if (!m_network)
 			return;
 
-		auto& packet = m_network->get();
-
-		if (packet.cmd[XPLICIT_NETWORK_CMD_STOP] == NETWORK_CMD_STOP)
-		{
-			if (!InstanceManager::get_singleton_ptr()->get<XUI::ErrorMessage>("ErrorMessage"))
-				InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
-				IRR->closeDevice();
-					}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::Shutdown);
-
-			return;
-		}
-
 		if (m_network->is_reset())
 		{
 			++m_num_resets;
@@ -176,7 +166,7 @@ namespace Xplicit::Client
 
 		XPLICIT_GET_DATA_DIR(data_dir);
 		std::string frame_path = data_dir;
-		frame_path += "\\Textures\\frame.png";
+		frame_path += "\\Textures\\leave_menu.png";
 
 		m_menu = IRR->getVideoDriver()->getTexture(frame_path.c_str());
 	}
@@ -191,20 +181,28 @@ namespace Xplicit::Client
 		return m_enabled;
 	}
 
+	static const int XPLICIT_TIMEOUT_MENU = 2000;
+
 	void LocalMenuEvent::operator()()
 	{
 		if (!m_network)
 			return;
 
+		static float tween_start = 8;
+
 		if (KB->key_down(KEY_ESCAPE) && m_timeout < 0)
 		{
+			tween_start = 8;
 			m_enabled = !m_enabled;
-			m_timeout = XPLICIT_TIMEOUT;
+			m_timeout = XPLICIT_TIMEOUT_MENU;
 		}
 
 		if (m_enabled)
 		{
-			IRR->getVideoDriver()->draw2DImage(m_menu, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4));
+			IRR->getVideoDriver()->draw2DImage(m_menu, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / tween_start));
+
+			if (tween_start > 4)
+				tween_start -= 0.01;
 
 			if (KB->key_down(KEY_KEY_L))
 			{
@@ -216,6 +214,10 @@ namespace Xplicit::Client
 
 				m_enabled = false;
 				IRR->closeDevice();
+			}
+			else if (KB->key_down(KEY_KEY_N))
+			{
+				m_enabled = false;
 			}
 		}
 

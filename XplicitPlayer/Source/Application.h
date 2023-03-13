@@ -18,7 +18,7 @@
 #include <ApplicationContext.h>
 
 #include "Camera.h"
-#include "Client.h"
+#include "Common.h"
 #include "LocalActor.h"
 #include "DriverD3D11.h"
 
