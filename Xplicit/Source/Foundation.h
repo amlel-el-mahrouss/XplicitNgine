@@ -48,6 +48,7 @@ namespace Xplicit
 
 	};
 
+#ifdef XPLICIT_WINDOWS
 	class Win32Error : public std::runtime_error 
 	{
 	public:
@@ -89,21 +90,21 @@ namespace Xplicit
 	class Win32Helpers final 
 	{
 	public:
-		static HWND find_wnd(const char* compare) 
+		static HWND find_wnd(const wchar_t* compare) 
 		{
 			if (!compare) return nullptr;
 
 			HWND hCurWnd = nullptr;
-			char string[256];
+			wchar_t string[256];
 
 			do
 			{
 				ZeroMemory(&string, 255);
 
 				hCurWnd = FindWindowEx(nullptr, hCurWnd, nullptr, nullptr);
-				GetWindowTextA(hCurWnd, string, 256);
+				GetWindowTextW(hCurWnd, string, 256);
 
-				if (string == compare || !strcmp(compare, string))
+				if (string == compare || !lstrcmpW(compare, string))
 					return hCurWnd;
 			} while (hCurWnd != nullptr);
 
@@ -152,6 +153,7 @@ namespace Xplicit
 	};
 
 	using ModuleManager = ModuleManagerWin32;
+#endif // XPLICIT_WINDOWS
 
 	template<typename T>
 	concept IsPointer = (std::is_pointer<T>::value);
@@ -239,6 +241,7 @@ namespace Xplicit
 		return ref;
 	}
 
+#ifdef XPLICIT_WINDOWS
 	using PrivShellData = HWND;
 
 	constexpr const char* SHELL_MANAGER_EXEC_OPEN = "open";
@@ -268,6 +271,7 @@ namespace Xplicit
 		}
 
 	};
+#endif
 
 	template <typename Fn, typename... Args>
 	class AsyncAction final 
@@ -337,10 +341,8 @@ namespace Xplicit
 #ifdef XPLICIT_WINDOWS
 	static inline void open_terminal(FILE* fp = stdout)
 	{
-#ifdef XPLICIT_WINDOWS
 		AllocConsole();
 		(void)freopen("CONOUT$", "w", fp);
-#endif //!XPLICIT_WINDOWS
 	}
 #endif
 

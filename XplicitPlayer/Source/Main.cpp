@@ -21,6 +21,16 @@ INT32 WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine
 {
 	try
 	{
+#ifdef XPLICIT_WINDOWS
+		if (Xplicit::Win32Helpers::find_wnd(Xplicit::Bites::XPLICIT_APP_NAME))
+		{
+			Xplicit::GUI::message_box(Xplicit::Bites::XPLICIT_APP_NAME, L"Another instance of XplicitNgin has been found! aborting..", MB_OK);
+			return 1;
+		}
+#else
+#error Undefined platform!
+#endif
+
 		Xplicit::Bites::Application* app = new Xplicit::Bites::Application("10.211.55.9");
 		if (!app) throw Xplicit::EngineError();
 
