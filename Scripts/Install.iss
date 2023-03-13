@@ -37,7 +37,7 @@ Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "XPLICIT_DATA_DI
 ChangesEnvironment=yes
 
 [Files]               
-Source: "C:\Users\amlal\XplicitNgin\bin\Release\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\amlal\XplicitNgin\Production\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\amlal\XplicitNgin\XplicitData\*"; DestDir: "{app}\XplicitData"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\amlal\XplicitNgin\bin\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
