@@ -25,12 +25,11 @@ namespace Xplicit
 
 	static void xplicit_join_event(NetworkPeer* cl, Actor* actor, NetworkServerInstance* server)
 	{
-		actor->get().uuid = cl->unique_addr.uuid;
-
-		auto hash = xplicit_hash_from_uuid(actor->get().uuid);
-
-		actor->get().uuid_hash = hash;
+		auto hash = xplicit_hash_from_uuid(cl->unique_addr.uuid);
 		cl->uuid_hash = hash;
+
+		actor->get().uuid = cl->unique_addr.uuid;
+		actor->get().uuid_hash = hash;
 
 		cl->packet.cmd[XPLICIT_NETWORK_CMD_ACCEPT] = NETWORK_CMD_ACCEPT;
 
@@ -44,7 +43,7 @@ namespace Xplicit
 
 		for (size_t at = 0; at < actors.size(); ++at)
 		{
-			if (actors[at]->get().uuid == cl->unique_addr.uuid)
+			if (actors[at]->get().uuid_hash == cl->uuid_hash)
 			{
 				cl->reset();
 
@@ -55,7 +54,7 @@ namespace Xplicit
 		return false;
 	}
 
-	PlayerJoinLeaveEvent::PlayerJoinLeaveEvent() : m_size(0) {}
+	PlayerJoinLeaveEvent::PlayerJoinLeaveEvent() : m_size(0), m_locked(false) {}
 	PlayerJoinLeaveEvent::~PlayerJoinLeaveEvent() {}
 
 	void PlayerJoinLeaveEvent::operator()()
@@ -65,39 +64,50 @@ namespace Xplicit
 		if (!server)
 			return;
 
-		this->join_event(server);
+		for (size_t peer = 0; peer < server->size(); ++peer)
+		{
+			if (this->size() > XPLICIT_MAX_CONNECTIONS)
+				break;
+
+			this->join_event(server, peer);
+		}
+
 		this->leave_event(server);
 	}
 
 	const size_t& PlayerJoinLeaveEvent::size() noexcept { return m_size; }
 
-	bool PlayerJoinLeaveEvent::join_event(NetworkServerInstance* server) noexcept
+	bool PlayerJoinLeaveEvent::join_event(NetworkServerInstance* server, size_t peer_idx) noexcept
 	{
-		if (this->size() > XPLICIT_MAX_CONNECTIONS)
-			return false;
+		if (!server) return false;
+		if (m_locked) return false;
 
-		if (!server)
-			return false;
+		m_locked = true;
 
-		for (size_t peer_idx = 0; peer_idx < server->size(); ++peer_idx)
+		if (server->get(peer_idx)->stat == NETWORK_STAT_CONNECTED)
 		{
-			if (server->get(peer_idx)->stat == NETWORK_STAT_CONNECTED)
-				continue;
-
-			if (server->get(peer_idx)->packet.cmd[XPLICIT_NETWORK_CMD_BEGIN] == NETWORK_CMD_BEGIN && 
-				server->get(peer_idx)->packet.cmd[XPLICIT_NETWORK_CMD_ACK] == NETWORK_CMD_ACK)
-			{
-				auto actor = InstanceManager::get_singleton_ptr()->add<Actor>();
-
-				if (!actor)
-					throw EngineError();
-
-				xplicit_join_event(server->get(peer_idx), actor, server);
-				++m_size;
-
-				XPLICIT_INFO("[CONNECT] Unique Connection ID: " + uuids::to_string(server->get(peer_idx)->unique_addr.uuid));
-			}
+			m_locked = false;
+			return false;
 		}
+
+		if (server->get(peer_idx)->packet.cmd[XPLICIT_NETWORK_CMD_BEGIN] == NETWORK_CMD_BEGIN &&
+			server->get(peer_idx)->packet.cmd[XPLICIT_NETWORK_CMD_ACK] == NETWORK_CMD_ACK)
+		{
+			auto actor = InstanceManager::get_singleton_ptr()->add<Actor>();
+
+			if (!actor)
+				throw EngineError();
+
+			++m_size;
+			xplicit_join_event(server->get(peer_idx), actor, server);
+			XPLICIT_INFO("[CONNECT] Unique Connection ID: " + uuids::to_string(server->get(peer_idx)->unique_addr.uuid));
+
+			m_locked = false;
+
+			return true;
+		}
+
+		m_locked = false;
 
 		return false;
 	}
