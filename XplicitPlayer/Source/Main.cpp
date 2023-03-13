@@ -11,11 +11,7 @@
  */
 
 #include "Application.h"
-
-//
-// creates an opengl device, alongside other things.
-// that's it
-//
+#include "Uri.h"
 
 INT32 WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
 {
@@ -31,7 +27,14 @@ INT32 WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine
 #error Undefined platform!
 #endif
 
-		Xplicit::Bites::Application* app = new Xplicit::Bites::Application("10.211.55.9");
+
+		Xplicit::Utils::UriParser uri;
+		uri /= pCmdLine;
+
+		if (inet_addr(uri.get().c_str()) == INADDR_NONE)
+			return 1;
+
+		Xplicit::Bites::Application* app = new Xplicit::Bites::Application(uri.get().c_str());
 		if (!app) throw Xplicit::EngineError();
 
 		while (IRR->run() && Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
