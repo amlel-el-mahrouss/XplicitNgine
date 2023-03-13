@@ -1,3 +1,15 @@
+/*
+ * =====================================================================
+ *
+ *			XplicitNgin
+ *			Copyright XPX, all rights reserved.
+ *
+ *			File: Config.h
+ *			Purpose: Engine Config File
+ *
+ * =====================================================================
+ */
+
 #pragma once
 
 #include <ctime>

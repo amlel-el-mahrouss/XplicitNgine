@@ -29,7 +29,7 @@ namespace Xplicit
 
     void NetworkPeer::reset() noexcept
     {
-        for (size_t cmd_index = 0; cmd_index < XPLICIT_NETWORK_MAX_CMDS; cmd_index++)
+        for (size_t cmd_index = 0; cmd_index < XPLICIT_NETWORK_CMD_MAX; cmd_index++)
         {
             packet.cmd[cmd_index] = NETWORK_CMD_INVALID;
         }

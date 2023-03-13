@@ -68,7 +68,7 @@ namespace Xplicit
 
 	public:
 		InputReceiver()
-			: m_mouse_left(), m_mouse_right()
+			: m_mouse_left(), m_mouse_right(), m_mouse_pos()
 		{
 			for (u32 i = 0; i < KEY_KEY_CODES_COUNT; ++i)
 				m_keys[i] = false;
@@ -195,10 +195,9 @@ namespace Xplicit
 
 #ifdef XPLICIT_WINDOWS
 #ifndef XPLICIT_GET_DATA_DIR
-#define XPLICIT_GET_DATA_DIR(DIR) 	char DIR[4096];\
-memset(DIR, 0, 4096);\
-\
-GetEnvironmentVariableA("XPLICIT_DATA_DIR", DIR, 4096);\
+#define XPLICIT_GET_DATA_DIR(DIR)\
+char DIR[15];\
+memcpy(DIR, "..\\XplicitData\\", 15);
 
 #endif
 #else

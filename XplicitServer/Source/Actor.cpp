@@ -16,7 +16,7 @@ namespace Xplicit
 {
 	constexpr const int32_t XPLICIT_ACTOR_COOLDOWN = 100;
 
-	Actor::Actor() : m_peer(nullptr) {}
+	Actor::Actor() : m_peer(nullptr), m_health(0) {}
 
 	Actor::~Actor() {}
 
@@ -29,43 +29,15 @@ namespace Xplicit
 		if (!m_peer)
 			return;
 
-		auto server = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance");
-		XPLICIT_ASSERT(server);
-
-		// little helper
-		// CMD = network command, COORD = either X, Y or Z.
-#define XPLICIT_SET_POS_CMD(COORD, VEL)\
-				m_peer->packet.cmd[XPLICIT_NETWORK_CMD_POS] = NETWORK_CMD_POS;\
-				m_peer->packet.COORD = VEL;\
-				m_peer->packet.id = this->m_peer->uuid_hash;
-
-
-		if (m_peer->packet.cmd[XPLICIT_NETWORK_CMD_FORWARD] == NETWORK_CMD_FORWARD)
+		if (this->health() < 0)
 		{
-			m_peer->packet.cmd[XPLICIT_NETWORK_CMD_FORWARD] = NETWORK_CMD_INVALID;
-			XPLICIT_SET_POS_CMD(Z, 100.f);
+			m_peer->packet.cmd[XPLICIT_NETWORK_CMD_DEAD] = NETWORK_CMD_DEAD;
 		}
 
-		if (m_peer->packet.cmd[XPLICIT_NETWORK_CMD_BACKWARD] == NETWORK_CMD_BACKWARDS)
-		{
-			m_peer->packet.cmd[XPLICIT_NETWORK_CMD_BACKWARD] = NETWORK_CMD_INVALID;
-			XPLICIT_SET_POS_CMD(Z, -100.f);
-		}
+		m_peer->packet.health = this->health();
+		m_peer->packet.id = m_peer->uuid_hash;
 
-		if (m_peer->packet.cmd[XPLICIT_NETWORK_CMD_LEFT] == NETWORK_CMD_LEFT)
-		{
-			m_peer->packet.cmd[XPLICIT_NETWORK_CMD_LEFT] = NETWORK_CMD_INVALID;
-			XPLICIT_SET_POS_CMD(X, -100.f);
-		}
-
-		if (m_peer->packet.cmd[XPLICIT_NETWORK_CMD_RIGHT] == NETWORK_CMD_RIGHT)
-		{
-			m_peer->packet.cmd[XPLICIT_NETWORK_CMD_RIGHT] = NETWORK_CMD_INVALID;
-			XPLICIT_SET_POS_CMD(X, 100.f);
-		}
-
-#undef XPLICIT_SET_POS_CMD
-
+		// TODO: 
 	}
 
 	void Actor::health(const int32_t& health) noexcept { this->m_health = health; }

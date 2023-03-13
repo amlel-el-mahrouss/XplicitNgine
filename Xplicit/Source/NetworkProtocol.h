@@ -24,7 +24,7 @@
 #define XPLICIT_NETWORK_MAG_2 ('X')
 
 #define XPLICIT_NETWORK_MAG_COUNT (3U)
-#define XPLICIT_NETWORK_MAX_CMDS (20U)
+#define XPLICIT_NETWORK_CMD_MAX (20U)
 
 namespace Xplicit 
 {
@@ -54,7 +54,6 @@ namespace Xplicit
         NETWORK_CMD_POS,
         // Connection Status
         NETWORK_CMD_ACCEPT, // handshake has been accepted.
-        NETWORK_CMD_REFUSE,
         NETWORK_CMD_WATCHDOG,
         NETWORK_CMD_ACK, // acknowledge
         // Kick
@@ -75,15 +74,15 @@ namespace Xplicit
     class NetworkPacket
     {
     public:
-        char magic[XPLICIT_NETWORK_MAG_COUNT]; /* ident */
-        NETWORK_CMD cmd[XPLICIT_NETWORK_MAX_CMDS]; /* The current network command. */
-        int64_t health; /* The current actor's health, if sent by an actor */
-        int64_t id; /* Clientside: the local actor targeted (for position commands only) */
+        char magic[XPLICIT_NETWORK_MAG_COUNT];
+        NETWORK_CMD cmd[XPLICIT_NETWORK_CMD_MAX];
+        
+        int64_t health; // health
+        int64_t id; // connection hash
 
-        float X; /* X position */
-        float Y; /* Y position */
-        float Z; /* Z position */
-
+        float X;
+        float Y;
+        float Z; 
 
     };
 
@@ -146,5 +145,8 @@ namespace Xplicit
 #define XPLICIT_NETWORK_CMD_KICK (8)
 #define XPLICIT_NETWORK_CMD_ACCEPT (9)
 #define XPLICIT_NETWORK_CMD_POS (10)
+#define XPLICIT_NETWORK_CMD_DEAD (11)
+#define XPLICIT_NETWORK_CMD_SPAWN (12)
+#define XPLICIT_NETWORK_CMD_DAMAGE (13)
 
-#define XPLICIT_LAST_RESERVED_CMD XPLICIT_NETWORK_CMD_POS
+#define XPLICIT_LAST_RESERVED_CMD XPLICIT_NETWORK_CMD_DAMAGE

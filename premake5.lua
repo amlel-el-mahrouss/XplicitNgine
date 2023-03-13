@@ -48,3 +48,14 @@ links{ XPLICIT_CLIENT_CONFIG["_LIBDIR"] }
 architecture "x64"
 
 kind ("WindowedApp")
+
+configurations { NPLICIT_CONFIG["_CONFIGS"] }
+project(NPLICIT_PROJ)
+defines { NPLICIT_CONFIG["_MACROS"] }
+lang = NPLICIT_CONFIG["_DIALECT"]
+files { NPLICIT_CONFIG["_FILES"]["_INC"], NPLICIT_CONFIG["_FILES"]["_SRC"] }
+includedirs { NPLICIT_CONFIG["_INCDIR"] } 
+links{ NPLICIT_CONFIG["_LIBDIR"] } 
+architecture "x64"
+
+kind ("SharedLib")

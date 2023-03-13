@@ -70,12 +70,8 @@ namespace Xplicit::XUI
 
 	private:
 		NetworkInstance* m_network;
+		ITexture* m_health_bar;
 		int64_t m_health;
-
-	private:
-		ITexture* m_full_heatlh;
-		ITexture* m_mid_heatlh;
-		ITexture* m_no_heatlh;
 
 	};
 }

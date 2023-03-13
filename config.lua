@@ -2,6 +2,7 @@ XPLICIT_PROJ = "Xplicit"
 XPLICIT_SERVER_PROJ = "XplicitServer"
 XPLICIT_CLIENT_PROJ = "XplicitPlayer"
 XPLICIT_WORKSPACE = "XplicitNgin"
+NPLICIT_PROJ = "Nplicit"
 
 XPLICIT_CONFIG = {
     ["_CXXDIALECT"] = 2022,
@@ -84,6 +85,39 @@ XPLICIT_CLIENT_CONFIG = {
     	"Xplicit/Source/",
     	"Xplicit/Vendor/include/",
     	"Vendor/XplicitIrr/include",
+        "Vendor/lua/",
+        "Vendor/stb/",
+        "Vendor/nuklear/",
+        "C:/Program Files/Mono/include/mono-2.0",
+    }
+};
+
+NPLICIT_CONFIG = {
+    ["_CXXDIALECT"] = 2022,
+    ["_CONFIGS"] = { "Debug", "Release" },
+    ["_MACROS"] = { "__NPLICIT__", "_CRT_SECURE_NO_WARNINGS", "_WINSOCK_DEPRECATED_NO_WARNINGS" },
+    ["_DIALECT"] = "C++",
+    ["_FILES"] = {
+        ["_INC"] = {
+            "Nplicit/Source/**.h",
+            "Nplicit/Source/**.inl",
+        },
+        ["_SRC"] = {
+            "Nplicit/Source/**.cpp",
+            "XplicitPlayer/Source/**.c"
+        },
+    },
+    ["_LIBDIR"] = {
+    	"Vendor/XplicitIrr/lib/Irrlicht",
+    	"bin/Debug/Xplicit",
+	"d3d11",
+	"dxgi",
+    },
+    ["_INCDIR"] = {
+        "Vendor/",
+    	  "Xplicit/Source/",
+    	  "Xplicit/Vendor/include/",
+    	  "Vendor/XplicitIrr/include",
         "Vendor/lua/",
         "Vendor/stb/",
         "Vendor/nuklear/",

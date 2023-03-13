@@ -25,9 +25,6 @@ static void xplicit_read_xml()
 {
 	XPLICIT_GET_DATA_DIR(data_dir);
 
-	if (*data_dir == 0)
-		throw std::runtime_error("getenv: XPLICIT_DATA_DIR doesn't exist!");
-
 	std::string path = data_dir;
 	path += "\\Server.xml";
 
@@ -38,7 +35,7 @@ static void xplicit_read_xml()
 	
 	auto mono = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::MonoEngineInstance>("MonoEngineInstance");
 
-	const char* argv[] = {"XplicitNgin"};
+	const char* argv[] = { "XplicitNgin" };
 
 	// read until nothing cant be read.
 	while (XML->read())
@@ -87,9 +84,6 @@ static void xplicit_attach_mono()
 {
 	XPLICIT_GET_DATA_DIR(data_dir);
 
-	if (*data_dir == 0)
-		throw std::runtime_error("getenv: XPLICIT_DATA_DIR doesn't exist! Make sure to define it!");
-
 	std::string path = data_dir;
 	path += "\\Lib\\Xplicit.dll"; // The Game API dll.
 
@@ -106,12 +100,6 @@ static void xplicit_print_help()
 
 static void xplicit_load_shell()
 {
-#ifdef XPLICIT_WINDOWS
-	// change window title to 'Xplicit Dedicated Server'
-	HWND wnd = GetConsoleWindow();
-	SetWindowTextA(wnd, "Xplicit Dedicated server");
-#endif
-
 	std::thread shell(
 		[]() -> void
 		{
@@ -203,16 +191,10 @@ int main(int argc, char** argv)
 	catch (std::runtime_error err)
 	{
 #ifdef XPLICIT_DEBUG
-		std::string msg;
-		msg += "Error: ";
-		msg += err.what();
+		XPLICIT_CRITICAL(err.what());
 
-		XPLICIT_CRITICAL(msg);
-#endif
-
-#ifdef XPLICIT_DEBUG
 #ifdef XPLICIT_WINDOWS
-		MessageBoxA(nullptr, msg.c_str(), "XplicitNgin", MB_OK);
+		MessageBoxA(nullptr, err.what(), "XplicitNgin", MB_OK);
 #endif
 #endif
 

@@ -77,49 +77,34 @@ namespace Xplicit::XUI
 	}
 	
 	HUD::HUD()
+		: m_health(0), m_health_bar(nullptr),  m_network(nullptr)
 	{
 		XPLICIT_GET_DATA_DIR(dat);
 
-		std::string full_health_path = dat;
-		std::string mid_health_path = dat;
-		std::string empty_health_path = dat;
+		std::string health_path = dat;
 
 		// precache the health textures
-		full_health_path += "\\Textures\\health_bar_full.png";
-		m_full_heatlh = IRR->getVideoDriver()->getTexture(full_health_path.c_str());
+		health_path += "\\Textures\\health_bar.png";
+		m_health_bar = IRR->getVideoDriver()->getTexture(health_path.c_str());
 
-		mid_health_path += "\\Textures\\health_bar_low.png";
-		m_mid_heatlh = IRR->getVideoDriver()->getTexture(full_health_path.c_str());
-
-		empty_health_path += "\\Textures\\health_bar_empty.png";
-		m_no_heatlh = IRR->getVideoDriver()->getTexture(full_health_path.c_str());
-
-		if (!m_mid_heatlh || !m_full_heatlh || !m_no_heatlh)
-			throw EngineError();
+		XPLICIT_ASSERT(m_health_bar);
 
 		m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
-		if (!m_network)
-			throw EngineError();
+		XPLICIT_ASSERT(m_network);
 	}
 
 	HUD::~HUD()
 	{
-		if (m_no_heatlh)
-			m_no_heatlh->drop();
-
-		if (m_mid_heatlh)
-			m_mid_heatlh->drop();
-
-		if (m_full_heatlh)
-			m_full_heatlh->drop();
+		if (m_health_bar)
+			m_health_bar->drop();
 	}
 
 	void HUD::update()
 	{
 		auto packet = m_network->get();
 		
-		for (size_t i = XPLICIT_LAST_RESERVED_CMD; i < XPLICIT_NETWORK_MAX_CMDS; ++i)
+		for (size_t i = XPLICIT_LAST_RESERVED_CMD; i < XPLICIT_NETWORK_CMD_MAX; ++i)
 		{
 			if (packet.cmd[i] == NETWORK_CMD_DAMAGE)
 				m_health = packet.health;
@@ -128,24 +113,9 @@ namespace Xplicit::XUI
 		auto dim = dimension2di(10, 10);
 		auto sz = core::rect<s32>(0, 0, 146, 22);
 
-		if (m_health > 50)
-		{
-			IRR->getVideoDriver()->draw2DImage(m_full_heatlh, dim,
-				sz, 0,
-				video::SColor(255, 255, 255, 255), true);
-		}
-		else if (m_health < 50)
-		{
-			IRR->getVideoDriver()->draw2DImage(m_mid_heatlh, dim,
-				sz, 0,
-				video::SColor(255, 255, 255, 255), true);
-		}
-		else if (m_health < 0)
-		{
-			IRR->getVideoDriver()->draw2DImage(m_no_heatlh, dim,
-				sz, 0,
-				video::SColor(255, 255, 255, 255), true);
-		}
+		IRR->getVideoDriver()->draw2DImage(m_health_bar, dim,
+			sz, 0,
+			video::SColor(255, 255, 255, 255), true);
 	}
 
 }

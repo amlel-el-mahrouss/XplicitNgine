@@ -27,7 +27,7 @@ namespace Xplicit::Client
 		XPLICIT_GET_DATA_DIR(data_dir);
 
 		std::string health_path = data_dir;
-		health_path += "\\Textures\\engine_logo.png";
+		health_path += "\\Textures\\logo.png";
 
 		m_logo_tex = IRR->getVideoDriver()->getTexture(health_path.c_str());
 	}

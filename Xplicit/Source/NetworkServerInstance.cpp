@@ -73,6 +73,8 @@ namespace Xplicit
 
 			m_peers.push_back(std::shared_ptr<NetworkPeer>(cl));
 		}
+
+		XPLICIT_INFO("[SERVER] IP: " + m_dns);
 	}
 
 	size_t NetworkServerInstance::size() noexcept 

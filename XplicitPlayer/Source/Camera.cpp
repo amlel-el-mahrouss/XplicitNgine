@@ -31,9 +31,6 @@ namespace Xplicit::Client
 
 		XPLICIT_GET_DATA_DIR(data_dir);
 
-		if (!data_dir)
-			throw EngineError();
-
 		// precache textures.
 
 		std::string idle_path = data_dir;

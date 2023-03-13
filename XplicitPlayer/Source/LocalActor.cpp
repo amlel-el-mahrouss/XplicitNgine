@@ -67,10 +67,6 @@ namespace Xplicit::Client
 			{
 				auto pos = m_node->getPosition();
 
-				XPLICIT_INFO(std::to_string(packet.X));
-				XPLICIT_INFO(std::to_string(packet.Y));
-				XPLICIT_INFO(std::to_string(packet.Z));
-
 				if (packet.X > 0)
 					pos.X += packet.X;
 				else
