@@ -28,8 +28,11 @@ namespace Xplicit
 		virtual const char* name() noexcept override;
 		virtual void operator()() override;
 
+	public:
+		void enable(const bool enable = true) noexcept;
+
 	private:
-		int16_t m_watchdog; // Watchdog delay
+		bool m_watchdog; // Watchdog delay
 
 	};
 }

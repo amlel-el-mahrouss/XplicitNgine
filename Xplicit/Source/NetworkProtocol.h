@@ -51,6 +51,7 @@ namespace Xplicit
         NETWORK_CMD_BACKWARDS,
         NETWORK_CMD_LEFT,
         NETWORK_CMD_RIGHT,
+        NETWORK_CMD_POS,
         // Connection Status
         NETWORK_CMD_ACCEPT, // handshake has been accepted.
         NETWORK_CMD_REFUSE,
@@ -144,5 +145,6 @@ namespace Xplicit
 #define XPLICIT_NETWORK_CMD_WATCHDOG (7)
 #define XPLICIT_NETWORK_CMD_KICK (8)
 #define XPLICIT_NETWORK_CMD_ACCEPT (9)
+#define XPLICIT_NETWORK_CMD_POS (10)
 
-#define XPLICIT_LAST_RESERVED_CMD XPLICIT_NETWORK_CMD_ACCEPT
+#define XPLICIT_LAST_RESERVED_CMD XPLICIT_NETWORK_CMD_POS

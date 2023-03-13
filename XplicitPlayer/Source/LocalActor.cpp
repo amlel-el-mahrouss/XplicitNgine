@@ -16,8 +16,8 @@
 
 namespace Xplicit::Client
 {
-	LocalActor::LocalActor()
-		: Instance(), m_model(nullptr), m_node(nullptr), m_packet()
+	LocalActor::LocalActor(const int64_t& id)
+		: Instance(), m_model(nullptr), m_node(nullptr), m_packet(), m_id(id), m_camera(nullptr)
 	{
 		XPLICIT_GET_DATA_DIR(data_dir);
 		std::string mesh_path = data_dir;
@@ -49,6 +49,9 @@ namespace Xplicit::Client
 		if (m_model)
 			m_model->drop();
 
+		if (m_node)
+			m_node->drop();
+
 	}
 
 	void LocalActor::update()
@@ -56,7 +59,36 @@ namespace Xplicit::Client
 		if (!m_network)
 			return;
 
-		
+		auto& packet = m_network->get();
+
+		if (packet.id == this->m_id)
+		{
+			if (packet.cmd[XPLICIT_NETWORK_CMD_POS] == NETWORK_CMD_POS)
+			{
+				auto pos = m_node->getPosition();
+
+				XPLICIT_INFO(std::to_string(packet.X));
+				XPLICIT_INFO(std::to_string(packet.Y));
+				XPLICIT_INFO(std::to_string(packet.Z));
+
+				if (packet.X > 0)
+					pos.X += packet.X;
+				else
+					pos.X -= packet.X;
+
+				if (packet.Y > 0)
+					pos.Y += packet.Y;
+				else
+					pos.Y -= packet.Y;
+
+				if (packet.Z > 0)
+					pos.Z += packet.Z;
+				else
+					pos.Z -= packet.Z;
+
+				m_node->setPosition(pos);
+			}
+		}
 	}
 
 	IAnimatedMeshSceneNode* LocalActor::operator->() const 
@@ -65,11 +97,11 @@ namespace Xplicit::Client
 		return m_node;
 	}
 
-	LocalMoveEvent::LocalMoveEvent() 
-		: m_packet(), m_network(nullptr)
+	LocalMoveEvent::LocalMoveEvent(const int64_t& id) 
+		: m_packet(), m_network(nullptr), m_id(id)
 	{
 		m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
-		assert(m_network);
+		XPLICIT_ASSERT(m_network);
 	}
 
 	LocalMoveEvent::~LocalMoveEvent() {}
@@ -80,6 +112,8 @@ namespace Xplicit::Client
 	{
 		if (!m_network)
 			return;
+
+		m_packet.id = m_id;
 
 		if (KB->key_down(KEY_KEY_W))
 			m_packet.cmd[XPLICIT_NETWORK_CMD_FORWARD] = NETWORK_CMD_FORWARD;

@@ -10,16 +10,21 @@
  * =====================================================================
  */
 
+#include "Application.h"
 #include "Camera.h"
+#include "XUI.h"
 
 namespace Xplicit::Client
 {
 	LocalCameraInstance::LocalCameraInstance()
 		: Instance(), m_camera(nullptr), m_idle_tex(nullptr), 
-		m_moving_tex(nullptr), m_typing_tex(nullptr),
-		m_network(nullptr)
+		m_moving_tex(nullptr), m_typing_tex(nullptr)
 	{
-		m_camera = IRR->getSceneManager()->addCameraSceneNodeFPS(nullptr, 60.F, 0.2F);
+		m_camera = IRR->getSceneManager()->addCameraSceneNodeFPS(nullptr, 100.f, 0.f);
+		XPLICIT_ASSERT(m_camera);
+
+		m_camera->setPosition(vector3df(0, 0, 0));
+
 		IRR->getCursorControl()->setVisible(false);
 
 		m_camera->setName("LocalCameraInstance");
@@ -46,8 +51,9 @@ namespace Xplicit::Client
 
 		m_typing_tex = IRR->getVideoDriver()->getTexture(typing_path.c_str());
 
-		// ask for the network instance.
-		m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
+		XPLICIT_ASSERT(m_typing_tex);
+		XPLICIT_ASSERT(m_moving_tex);
+		XPLICIT_ASSERT(m_idle_tex);
 	}
 
 	LocalCameraInstance::~LocalCameraInstance()
@@ -70,9 +76,6 @@ namespace Xplicit::Client
 
 	void LocalCameraInstance::update()
 	{
-		if (!m_network)
-			m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
-
 		auto pos = KB->get_pos();
 
 		if (KB->key_down(irr::KEY_KEY_W))
@@ -119,6 +122,17 @@ namespace Xplicit::Client
 			{
 				packet.cmd[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
 				m_network->send(packet);
+			}
+
+			if (packet.cmd[XPLICIT_NETWORK_CMD_KICK] == NETWORK_CMD_KICK)
+			{
+				if (!InstanceManager::get_singleton_ptr()->get<XUI::ErrorMessage>("ErrorMessage"))
+				{
+					InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
+						IRR->closeDevice();
+						}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::Kicked);
+
+				}
 			}
 		}
 	}

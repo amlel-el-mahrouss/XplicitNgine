@@ -68,7 +68,9 @@ namespace Xplicit::Client
 		LocalMenuEvent& operator=(const LocalMenuEvent&) = default;
 		LocalMenuEvent(const LocalMenuEvent&) = default;
 
-		bool enable(const bool enable = false) noexcept;
+		void enable(const bool enable = false) noexcept;
+		bool enabled() noexcept;
+
 		virtual void operator()() override;
 		const char* name() noexcept;
 

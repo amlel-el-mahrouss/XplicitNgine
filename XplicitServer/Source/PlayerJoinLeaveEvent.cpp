@@ -28,8 +28,7 @@ namespace Xplicit
 		auto hash = xplicit_hash_from_uuid(cl->unique_addr.uuid);
 		cl->uuid_hash = hash;
 
-		actor->get().uuid = cl->unique_addr.uuid;
-		actor->get().uuid_hash = hash;
+		actor->set(cl);
 
 		cl->packet.cmd[XPLICIT_NETWORK_CMD_ACCEPT] = NETWORK_CMD_ACCEPT;
 
@@ -43,10 +42,9 @@ namespace Xplicit
 
 		for (size_t at = 0; at < actors.size(); ++at)
 		{
-			if (actors[at]->get().uuid_hash == cl->uuid_hash)
+			if (actors[at]->get() == cl)
 			{
 				cl->reset();
-
 				return true;
 			}
 		}

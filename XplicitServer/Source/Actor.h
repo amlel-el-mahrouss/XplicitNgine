@@ -5,8 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: Actor.h
- *			Purpose: Actors are server-sided entities, they're used to
- *			describe Players and NPCs..
+ *			Purpose: Actor Logic
  *
  * =====================================================================
  */
@@ -20,48 +19,6 @@ namespace Xplicit
 	class XPLICIT_API Actor final : public Instance
 	{
 	public:
-		class XPLICIT_API ActorPosition final
-		{
-		public:
-			ActorPosition(float x, float y, float z)
-				: X(x), Y(y), Z(z)
-			{}
-
-			~ActorPosition() {}
-
-			ActorPosition& operator=(const ActorPosition&) = default;
-			ActorPosition(const ActorPosition&) = default;
-
-		public:
-			float X;
-			float Y;
-			float Z;
-
-		};
-
-		// Replication delegate
-		class XPLICIT_API ActorReplication final
-		{
-		public:
-			ActorReplication()
-				: addr(), cmd(), health(100), uuid()
-			{}
-
-			~ActorReplication() {}
-
-			ActorReplication& operator=(const ActorReplication&) = default;
-			ActorReplication(const ActorReplication&) = default;
-
-		public:
-			NETWORK_CMD cmd[XPLICIT_NETWORK_MAX_CMDS]; // Network Command Array.
-			PrivateAddressData addr; // Actor's socket address
-			int64_t uuid_hash;
-			uuids::uuid uuid;
-			int64_t health;
-
-		};
-
-	public:
 		Actor();
 		virtual ~Actor();
 
@@ -69,19 +26,15 @@ namespace Xplicit
 		Actor(const Actor&) = default;
 
 	public:
-		void reset() noexcept; // reset the actor for future usage.
-
 		void health(const int32_t& health) noexcept;
 		const int32_t& health() noexcept; // gets the health of the actor.
 
-		ActorReplication& get() noexcept; // gets the network replication data.
-		ActorPosition& pos() noexcept; // gets its position
+		void set(NetworkPeer* peer) noexcept;
+		NetworkPeer* get() noexcept;
 
 		virtual INSTANCE_TYPE type() noexcept override;
 		virtual const char* name() noexcept override;
 		virtual bool should_update() noexcept override;
-
-		void set(const float& x, const float& y, const float& z) noexcept;
 
 		virtual void update() override;
 
@@ -92,22 +45,8 @@ namespace Xplicit
 		virtual bool has_physics() noexcept override;
 
 	private:
-		ActorReplication m_replicated; /* Actor's replication data */
-		ActorPosition m_position; /* Actor's position */
-
-	};
-
-	class XPLICIT_API ActorEvent final : public Event
-	{
-	public:
-		ActorEvent() {}
-		virtual ~ActorEvent() {}
-
-		ActorEvent& operator=(const ActorEvent&) = default;
-		ActorEvent(const ActorEvent&) = default;
-
-		virtual const char* name() noexcept override;
-		virtual void operator()() override;
+		NetworkPeer* m_peer;
+		int64_t m_health;
 
 	};
 }

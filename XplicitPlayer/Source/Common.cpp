@@ -19,7 +19,7 @@
 namespace Xplicit::Client
 {
 	constexpr const int XPLICIT_TIMEOUT = 100; // connection timeout
-	constexpr const int XPLICIT_MAX_RESETS = 1000; // maximum RST timeout
+	constexpr const int XPLICIT_MAX_RESETS = 100; // maximum RST timeout
 
 	LoadingInstance::LoadingInstance() 
 		: m_run(true), m_network(nullptr), m_logo_tex(nullptr), m_timeout(XPLICIT_TIMEOUT)
@@ -45,11 +45,13 @@ namespace Xplicit::Client
 		if (packet.cmd[XPLICIT_NETWORK_CMD_ACCEPT] == NETWORK_CMD_ACCEPT)
 		{
 			InstanceManager::get_singleton_ptr()->add<Xplicit::XUI::HUD>();
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>();
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalCameraInstance>();
+			auto actor = InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.id);
+			XPLICIT_ASSERT(actor);
+
+			actor->attach(InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalCameraInstance>());
 
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalMenuEvent>(packet.id);
-			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalMoveEvent>();
+			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalMoveEvent>(packet.id);
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalResetEvent>();
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalWatchdogEvent>();
 
@@ -57,21 +59,6 @@ namespace Xplicit::Client
 
 			return;
 		}
-		else if (packet.cmd[XPLICIT_NETWORK_CMD_KICK] == NETWORK_CMD_KICK)
-		{
-			InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
-				IRR->closeDevice();
-				}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::Kicked);
-
-			m_run = false;
-
-			return;
-		}
-
-		packet.cmd[XPLICIT_NETWORK_CMD_BEGIN] = NETWORK_CMD_BEGIN;
-		packet.cmd[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
-
-		m_network->send(packet);
 
 		IRR->getVideoDriver()->draw2DImage(m_logo_tex, vector2di(Xplicit::Client::XPLICIT_DIM.Width * 0.02, Xplicit::Client::XPLICIT_DIM.Height * 0.825),
 			core::rect<s32>(0, 0, 105, 105), 0,
@@ -88,6 +75,12 @@ namespace Xplicit::Client
 
 			m_run = false; // sprious reponse
 		}
+
+		// retry...
+		packet.cmd[XPLICIT_NETWORK_CMD_BEGIN] = NETWORK_CMD_BEGIN;
+		packet.cmd[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
+
+		m_network->send(packet);
 
 		XPLICIT_SLEEP(100);
 	}
@@ -137,6 +130,20 @@ namespace Xplicit::Client
 		if (!m_network)
 			return;
 
+		auto& packet = m_network->get();
+
+		if (packet.cmd[XPLICIT_NETWORK_CMD_STOP] == NETWORK_CMD_STOP)
+		{
+			if (!InstanceManager::get_singleton_ptr()->get<XUI::ErrorMessage>("ErrorMessage"))
+			{
+				InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
+					IRR->closeDevice();
+					}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::Shutdown);
+
+				return;
+			}
+		}
+
 		if (m_network->is_reset())
 		{
 			++m_num_resets;
@@ -151,10 +158,6 @@ namespace Xplicit::Client
 
 				}
 			}
-		}
-		else
-		{
-			m_num_resets = 0;
 		}
 	}
 
@@ -175,11 +178,12 @@ namespace Xplicit::Client
 
 	const char* LocalMenuEvent::name() noexcept { return ("LocalMenuEvent"); }
 
-	bool LocalMenuEvent::enable(const bool enable) noexcept
+	void LocalMenuEvent::enable(const bool enable) noexcept
 	{
 		m_enabled = enable;
-		return m_enabled;
 	}
+
+	bool LocalMenuEvent::enabled() noexcept { return m_enabled; }
 
 	static const int XPLICIT_TIMEOUT_MENU = 2000;
 
@@ -202,7 +206,7 @@ namespace Xplicit::Client
 			IRR->getVideoDriver()->draw2DImage(m_menu, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / tween_start));
 
 			if (tween_start > 4)
-				tween_start -= 0.01;
+				tween_start -= 0.01f;
 
 			if (KB->key_down(KEY_KEY_L))
 			{

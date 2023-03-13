@@ -125,7 +125,16 @@ static void xplicit_load_shell()
 				std::cin.getline(cmd_buf, 1024);
 
 				if (strcmp(cmd_buf, "stop") == 0)
+				{
+					auto server = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::NetworkServerInstance>("NetworkServerInstance");
+					XPLICIT_ASSERT(server);
+
+					xplicit_send_stop_packet(server);
+					Xplicit::NetworkServerTraits::send(server);
+
 					Xplicit::ApplicationContext::get_singleton().ShouldExit = true;
+
+				}
 
 				if (strcmp(cmd_buf, "help") == 0)
 				{
@@ -145,7 +154,7 @@ static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server)
 
 	for (size_t i = 0; i < server->size(); i++)
 	{
-		server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_KICK] = Xplicit::NETWORK_CMD_KICK;
+		server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_STOP] = Xplicit::NETWORK_CMD_STOP;
 	}
 }
 
@@ -154,16 +163,16 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		// init winsock for networking purposes.
 		WSADATA wsa;
 		Xplicit::init_winsock(&wsa);
 
-		// create a NULL device, for XML.
 		Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_NULL));
 
-		// the address is located in the XPLICIT_SERVER_ADDR environement variable.
+		// the address to bind to is located in the XPLICIT_SERVER_ADDR environement variable.
 		char* addr = getenv("XPLICIT_SERVER_ADDR");
-		if (!addr) throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
+
+		if (!addr) 
+			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
 
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
 		XPLICIT_ASSERT(server);
@@ -180,17 +189,14 @@ int main(int argc, char** argv)
 		{
 			Xplicit::NetworkServerTraits::recv(server);
 
-			Xplicit::InstanceManager::get_singleton_ptr()->update();
 			Xplicit::EventDispatcher::get_singleton_ptr()->update();
+			Xplicit::InstanceManager::get_singleton_ptr()->update();
 
 			Xplicit::NetworkServerTraits::send(server);
 
 			if (Xplicit::ApplicationContext::get_singleton().ShouldExit)
 				break;
 		}
-
-		xplicit_send_stop_packet(server);
-		Xplicit::NetworkServerTraits::send(server);
 
 		return 0;
 	}

@@ -38,14 +38,9 @@ namespace Xplicit::Client
 
 	private:
 		irr::scene::ICameraSceneNode* m_camera;
-
-	private:
 		irr::video::ITexture* m_moving_tex;
 		irr::video::ITexture* m_typing_tex;
 		irr::video::ITexture* m_idle_tex;
-
-	private:
-		NetworkInstance* m_network;
 
 	};
 
