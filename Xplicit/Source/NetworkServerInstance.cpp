@@ -62,7 +62,9 @@ namespace Xplicit
 		for (size_t i = 0; i < MAX_CONNECTIONS; i++)
 		{
 			NetworkPeer cl{};
+
 			cl.stat = NETWORK_STAT_DISCONNECTED;
+			cl.bad = false;
 
 			m_clients.push_back(std::move(cl));
 		}
@@ -108,7 +110,7 @@ namespace Xplicit
 	}
 
 	// we need a way to tell which client is who.
-	void NetworkServerTraits::recv(NetworkServerEvent* env, NetworkServerInstance* instance)
+	void NetworkServerTraits::compute(NetworkServerEvent* env, NetworkServerInstance* instance)
 	{
 		if (instance)
 		{
@@ -117,9 +119,9 @@ namespace Xplicit
 			{
 				for (size_t i = 0; i < instance->m_clients.size(); i++)
 				{
-					instance->m_clients[i].packet.Magic[0] = XPLICIT_NETWORK_MAG_0;
-					instance->m_clients[i].packet.Magic[1] = XPLICIT_NETWORK_MAG_1;
-					instance->m_clients[i].packet.Magic[2] = XPLICIT_NETWORK_MAG_2;
+					instance->m_clients[i].packet.magic[0] = XPLICIT_NETWORK_MAG_0;
+					instance->m_clients[i].packet.magic[1] = XPLICIT_NETWORK_MAG_1;
+					instance->m_clients[i].packet.magic[2] = XPLICIT_NETWORK_MAG_2;
 
 #ifdef XPLICIT_WINDOWS
 					::sendto(instance->m_socket, (const char*)&
@@ -148,17 +150,11 @@ namespace Xplicit
 #pragma error("DEFINE ME ServerInstance.cpp")
 #endif
 
-					if (sz < 0)
-						return;
-
-					if (instance->m_clients[i].packet.Magic[0] != XPLICIT_NETWORK_MAG_0 ||
-						instance->m_clients[i].packet.Magic[1] != XPLICIT_NETWORK_MAG_1 ||
-						instance->m_clients[i].packet.Magic[2] != XPLICIT_NETWORK_MAG_2)
+					if (instance->m_clients[i].packet.magic[0] != XPLICIT_NETWORK_MAG_0 ||
+						instance->m_clients[i].packet.magic[1] != XPLICIT_NETWORK_MAG_1 ||
+						instance->m_clients[i].packet.magic[2] != XPLICIT_NETWORK_MAG_2)
 					{
-						for (size_t cmd_index = 0; cmd_index < XPLICIT_NETWORK_MAX_CMDS; cmd_index++)
-						{
-							instance->m_clients[i].packet.CMD[cmd_index] = NETWORK_CMD_INVALID;
-						}
+						instance->m_clients[i].bad = true;
 					}
 
 				}
@@ -185,7 +181,7 @@ namespace Xplicit
 
 	void NetworkServerEvent::operator()()
 	{
-		NetworkServerTraits::recv(this, m_instance.get());
+		NetworkServerTraits::compute(this, m_instance.get());
 	}
 
 	const char* NetworkServerEvent::name() noexcept { return ("NetworkServerEvent"); }

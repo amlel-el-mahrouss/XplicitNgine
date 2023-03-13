@@ -19,14 +19,14 @@
 namespace Xplicit::Client
 {
 	// The 'player' in-person.
-	class LocalInstance : public Instance
+	class LocalCameraInstance : public Instance
 	{
 	public:
-		LocalInstance();
-		virtual ~LocalInstance();
+		LocalCameraInstance();
+		virtual ~LocalCameraInstance();
 
-		LocalInstance& operator=(const LocalInstance&) = default;
-		LocalInstance(const LocalInstance&) = default;
+		LocalCameraInstance& operator=(const LocalCameraInstance&) = default;
+		LocalCameraInstance(const LocalCameraInstance&) = default;
 
 		virtual INSTANCE_TYPE type() noexcept override;
 		virtual const char* name() noexcept override;

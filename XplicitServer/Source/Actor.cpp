@@ -17,7 +17,7 @@ namespace Xplicit
 	constexpr const int32_t XPLICIT_ACTOR_COOLDOWN = 100;
 
 	Actor::Actor()
-		: m_replication(), m_position(0, 0, 0), m_delay(0)
+		: m_replicated(), m_position(0, 0, 0)
 	{
 
 	}
@@ -39,9 +39,9 @@ namespace Xplicit
 		// little helper
 		// CMD = network command, COORD = either X, Y or Z.
 #define XPLICIT_SET_POS_CMD(_CMD, COORD, VEL, IDX)\
-				server->get(i).packet.CMD[IDX] = _CMD;\
+				server->get(i).packet.cmd[IDX] = _CMD;\
 				server->get(i).packet.COORD = this->pos().COORD = VEL;\
-				server->get(i).packet.ID = this->get().id;
+				server->get(i).packet.id = this->get().uuid_hash;
 
 
 
@@ -98,9 +98,7 @@ namespace Xplicit
 	bool Actor::should_update() noexcept { return true; }
 
 	Actor::ActorPosition& Actor::pos() noexcept { return m_position; }
-	Actor::ActorReplication& Actor::get() noexcept { return m_replication; }
-
-	void Actor::set(const struct sockaddr_in& sockaddr) noexcept { m_replication.addr = sockaddr; }
+	Actor::ActorReplication& Actor::get() noexcept { return m_replicated; }
 
 	void Actor::set(const float& x, const float& y, const float& z)  noexcept
 	{
@@ -111,8 +109,8 @@ namespace Xplicit
 
 	void Actor::reset() noexcept
 	{
-		memset(&this->m_replication.addr, 0, sizeof(PrivateAddressData));
-		memset(&this->m_replication.cmd, 0, XPLICIT_NETWORK_MAX_CMDS);
+		memset(&this->m_replicated.addr, 0, sizeof(PrivateAddressData));
+		memset(&this->m_replicated.cmd, 0, XPLICIT_NETWORK_MAX_CMDS);
 
 		this->set(0.f, 0.f, 0.f);
 		this->get().health = 0;
@@ -139,7 +137,7 @@ namespace Xplicit
 				{
 					for (size_t cmd_index = 0; cmd_index < XPLICIT_NETWORK_MAX_CMDS; cmd_index++)
 					{
-						auto cmd = server->get(server_cl).packet.CMD[cmd_index];
+						auto cmd = server->get(server_cl).packet.cmd[cmd_index];
 						actors[i]->get().cmd[cmd_index] = cmd;
 					}
 

@@ -11,8 +11,7 @@
  */
 
 #include "LocalActor.h"
-
-#include "App.h"
+#include "Application.h"
 #include "XUI.h"
 
 namespace Xplicit::Client
@@ -64,7 +63,7 @@ namespace Xplicit::Client
 		// TODO: move the actor.
 		m_network->read(m_packet);
 		
-		if (m_packet.ID != m_id)
+		if (m_packet.id != m_id)
 			return;
 	}
 
@@ -91,16 +90,16 @@ namespace Xplicit::Client
 			return;
 
 		if (KB->key_down(KEY_KEY_W))
-			m_packet.CMD[XPLICIT_NETWORK_CMD_FORWARD] = NETWORK_CMD_FORWARD;
+			m_packet.cmd[XPLICIT_NETWORK_CMD_FORWARD] = NETWORK_CMD_FORWARD;
 
 		if (KB->key_down(KEY_KEY_S))
-			m_packet.CMD[XPLICIT_NETWORK_CMD_BACKWARD] = NETWORK_CMD_BACKWARDS;
+			m_packet.cmd[XPLICIT_NETWORK_CMD_BACKWARD] = NETWORK_CMD_BACKWARDS;
 
 		if (KB->key_down(KEY_KEY_A))
-			m_packet.CMD[XPLICIT_NETWORK_CMD_LEFT] = NETWORK_CMD_LEFT;
+			m_packet.cmd[XPLICIT_NETWORK_CMD_LEFT] = NETWORK_CMD_LEFT;
 
 		if (KB->key_down(KEY_KEY_D))
-			m_packet.CMD[XPLICIT_NETWORK_CMD_RIGHT] = NETWORK_CMD_RIGHT;
+			m_packet.cmd[XPLICIT_NETWORK_CMD_RIGHT] = NETWORK_CMD_RIGHT;
 
 		m_network->send(m_packet);
 	}

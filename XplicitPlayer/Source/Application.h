@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: App.h
- *			Purpose: Application Implementation
+ *			Purpose: Application Framework
  *
  * =====================================================================
  */
@@ -30,14 +30,17 @@ namespace Xplicit::Client
 	static inline dimension2du XPLICIT_DIM = dimension2du(XPLICIT_DEFAULT_WIDTH, XPLICIT_DEFAULT_HEIGHT);
 }
 
-namespace Xplicit::App
+namespace Xplicit::Bites
 {
 	constexpr const wchar_t* XPLICIT_APP_NAME = L"XplicitNgin";
 
 	class Application final
 	{
 	public:
-		Application();
+		Application() = delete;
+
+	public:
+		Application(const char* ip);
 		~Application();
 
 		Application& operator=(const Application&) = delete;
@@ -70,8 +73,6 @@ namespace Xplicit::App
 		};
 
 	private:
-		void read_manifest();
-		void setup_paths();
 		void setup();
 
 	private:

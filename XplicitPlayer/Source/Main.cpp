@@ -10,18 +10,21 @@
  * =====================================================================
  */
 
-#include "App.h"
+#include "Application.h"
 
 //
 // creates an opengl device, alongside other things.
 // that's it
 //
 
-INT32 WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
+INT32 WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
 {
 	try
 	{
-		Xplicit::App::Application* app = new Xplicit::App::Application();
+		Xplicit::Bites::Application* app = new Xplicit::Bites::Application("10.211.55.9");
+		
+		if (!app)
+			throw Xplicit::EngineError();
 
 		while (IRR->run() && Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{

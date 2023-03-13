@@ -13,6 +13,7 @@
 #pragma once
 
 #include "SDK.h"
+#include "Actor.h"
 
 namespace Xplicit
 {
@@ -29,11 +30,8 @@ namespace Xplicit
 		virtual const char* name() noexcept override;
 
 	private:
-		bool on_leave(NetworkServerInstance* server) noexcept;
-		bool on_join(NetworkServerInstance* server) noexcept;
-
-	private:
-		int64_t m_id_counter;
+		bool leave_event(NetworkServerInstance* server) noexcept;
+		bool join_event(NetworkServerInstance* server) noexcept;
 
 	};
 }

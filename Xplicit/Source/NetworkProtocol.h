@@ -16,12 +16,12 @@
 #include "ApplicationContext.h"
 
 #ifndef XPLICIT_NETWORK_PORT
-#define XPLICIT_NETWORK_PORT (30002)
+#define XPLICIT_NETWORK_PORT (60000)
 #endif // ifndef XPLICIT_NETWORK_PORT
 
 #define XPLICIT_NETWORK_MAG_0 ('X')
-#define XPLICIT_NETWORK_MAG_1 ('G')
-#define XPLICIT_NETWORK_MAG_2 ('P')
+#define XPLICIT_NETWORK_MAG_1 ('P')
+#define XPLICIT_NETWORK_MAG_2 ('X')
 
 #define XPLICIT_NETWORK_MAG_COUNT (3U)
 #define XPLICIT_NETWORK_MAX_CMDS (16U)
@@ -40,7 +40,7 @@ namespace Xplicit
     enum NETWORK_CMD : int16_t
     {
         // Network Start/End messages.
-        NETWORK_CMD_BEGIN = 15, // start network, handshake
+        NETWORK_CMD_BEGIN = 100, // start network, handshake
         NETWORK_CMD_STOP, // abort connection
         // Player versus player
         NETWORK_CMD_DEAD,
@@ -60,7 +60,7 @@ namespace Xplicit
         NETWORK_CMD_KICK,
         // Invalid
         NETWORK_CMD_INVALID,
-        NETWORK_CMD_COUNT,
+        NETWORK_CMD_COUNT = 15,
     };
 
     // for the Watchdog protocol
@@ -74,11 +74,10 @@ namespace Xplicit
     class NetworkPacket
     {
     public:
-        char Magic[XPLICIT_NETWORK_MAG_COUNT]; /* magic numbers. */
-        NETWORK_CMD CMD[XPLICIT_NETWORK_MAX_CMDS]; /* The current network command. */
-
-        int64_t Health; /* The current actor's health, if sent by an actor */
-        int64_t ID; /* Clientside: the local actor targeted (for position commands only) */
+        char magic[XPLICIT_NETWORK_MAG_COUNT]; /* ident */
+        NETWORK_CMD cmd[XPLICIT_NETWORK_MAX_CMDS]; /* The current network command. */
+        int64_t health; /* The current actor's health, if sent by an actor */
+        int64_t id; /* Clientside: the local actor targeted (for position commands only) */
 
         float X; /* X position */
         float Y; /* Y position */
@@ -112,7 +111,7 @@ namespace Xplicit
         PrivateAddressData addr; /* current socket address. */
         NetworkPacket packet; /* current packet. */
         NETWORK_STAT stat; /* current network status */
-        int64_t id; /* peer id */
+        bool bad; /* is the current peer bad, (has sent bad packets?) */
 
     public:
         NetworkPeer();

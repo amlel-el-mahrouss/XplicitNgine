@@ -4,17 +4,17 @@
  *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
- *			File: App.cpp
- *			Purpose: Application Implementation
+ *			File: Application.cpp
+ *			Purpose: Application Framework
  *
  * =====================================================================
  */
 
-#include "App.h"
+#include "Application.h"
 
-namespace Xplicit::App
+namespace Xplicit::Bites
 {
-	Application::Application()
+	Application::Application(const char* ip)
 		: m_settings(), m_wsa(), m_data_path("")
 	{
 		XPLICIT_GET_DATA_DIR(data_tmp);
@@ -32,60 +32,16 @@ namespace Xplicit::App
 #endif
 
 		this->setup();
-		this->setup_paths();
-		this->read_manifest();
+
+		auto loading_instance = InstanceManager::get_singleton_ptr()->add<Client::LoadingInstance>();
+		XPLICIT_ASSERT(loading_instance);
+
+		loading_instance->connect(ip);
 	}
 
 	Application::~Application()
 	{
 
-	}
-
-	void Application::setup_paths()
-	{
-		std::string path = m_data_path;
-		path += "\\MANIFEST.xml";
-
-		XML = IRR->getFileSystem()->createXMLReaderUTF8(path.c_str());
-	}
-
-	void Application::read_manifest()
-	{
-		if (!XML)
-			throw std::runtime_error("No XML provided..");
-
-		char ip[128];
-
-		// read until EOF.
-		while (XML->read())
-		{
-			switch (XML->getNodeType())
-			{
-			//we found a new element
-			case irr::io::EXN_ELEMENT:
-			{
-				if (std::string(XML->getNodeName()) == "CONNECT")
-				{
-					if (strlen(XML->getAttributeValue("IP")) > 128)
-						throw EngineError();
-
-					memcpy(ip, XML->getAttributeValue("IP"), strlen(XML->getAttributeValue("IP")));
-					ip[strlen(XML->getAttributeValue("IP"))] = 0;
-
-#ifdef XPLICIT_DEBUG
-					XPLICIT_INFO("Connecting to server: " + std::string(XML->getAttributeValue("IP")));
-#endif
-				}
-
-				break;
-			}
-			}
-		}
-
-		auto loader = InstanceManager::get_singleton_ptr()->add<Client::LoadingInstance>();
-		XPLICIT_ASSERT(loader);
-
-		loader->connect(ip);
 	}
 
 	void Application::setup()
@@ -119,7 +75,7 @@ namespace Xplicit::App
 		if (traits.window_width >= 800 && traits.window_width >= 600) 
 			IRR->setWindowSize(dimension2d<irr::u32>(traits.window_width, traits.window_height));
 
-		IRR->setWindowCaption(Xplicit::App::XPLICIT_APP_NAME);
+		IRR->setWindowCaption(Xplicit::Bites::XPLICIT_APP_NAME);
 	}
 
 	// Application Settings
@@ -132,9 +88,9 @@ namespace Xplicit::App
 		XPLICIT_GET_DATA_DIR(dat);
 
 		m_settings_path = dat;
-		m_settings_path += "\\SETTINGS.xml";
+		m_settings_path += "\\ClientSettings.xml";
 
-		assert(!m_settings_path.empty());
+		XPLICIT_ASSERT(!m_settings_path.empty());
 
 		m_xml_reader = IRR->getFileSystem()->createXMLReaderUTF8(m_settings_path.c_str());
 		m_xml_writer = IRR->getFileSystem()->createXMLWriterUTF8(m_settings_path.c_str());

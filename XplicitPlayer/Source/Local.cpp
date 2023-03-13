@@ -14,7 +14,7 @@
 
 namespace Xplicit::Client
 {
-	LocalInstance::LocalInstance()
+	LocalCameraInstance::LocalCameraInstance()
 		: Instance(), m_camera(nullptr), m_idle_tex(nullptr), 
 		m_moving_tex(nullptr), m_typing_tex(nullptr),
 		m_network(nullptr)
@@ -22,7 +22,7 @@ namespace Xplicit::Client
 		m_camera = IRR->getSceneManager()->addCameraSceneNodeFPS(nullptr, 60.F, 0.2F);
 		IRR->getCursorControl()->setVisible(false);
 
-		m_camera->setName("LocalInstance");
+		m_camera->setName("LocalCameraInstance");
 
 		XPLICIT_GET_DATA_DIR(data_dir);
 
@@ -50,7 +50,7 @@ namespace Xplicit::Client
 		m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 	}
 
-	LocalInstance::~LocalInstance()
+	LocalCameraInstance::~LocalCameraInstance()
 	{
 		if (m_camera)
 			m_camera->drop();
@@ -65,13 +65,13 @@ namespace Xplicit::Client
 			m_idle_tex->drop();
 	}
 
-	LocalInstance::INSTANCE_TYPE LocalInstance::type() noexcept { return INSTANCE_CAMERA; }
-	const char* LocalInstance::name() noexcept { return ("LocalInstance"); }
+	LocalCameraInstance::INSTANCE_TYPE LocalCameraInstance::type() noexcept { return INSTANCE_CAMERA; }
+	const char* LocalCameraInstance::name() noexcept { return ("LocalCameraInstance"); }
 
-	void LocalInstance::update()
+	void LocalCameraInstance::update()
 	{
 		if (!m_network)
-			return;
+			m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
 		auto pos = KB->get_pos();
 
@@ -93,19 +93,9 @@ namespace Xplicit::Client
 				core::rect<s32>(0, 0, 38, 38), 0,
 				video::SColor(255, 255, 255, 255), true);
 		}
-
-		if (KB->key_down(irr::KEY_ESCAPE))
-		{
-			NetworkPacket packet{};
-			packet.CMD[XPLICIT_NETWORK_CMD_STOP] = NETWORK_CMD_STOP;
-
-			m_network->send(packet);
-
-			IRR->closeDevice();
-		}
 	}
 
-	irr::scene::ICameraSceneNode* LocalInstance::get() noexcept { return m_camera; }
+	irr::scene::ICameraSceneNode* LocalCameraInstance::get() noexcept { return m_camera; }
 
 	LocalWatchdogEvent::LocalWatchdogEvent()
 		: m_network(nullptr)
@@ -125,9 +115,9 @@ namespace Xplicit::Client
 		{
 			auto& packet = m_network->get();
 
-			if (packet.CMD[XPLICIT_NETWORK_CMD_WATCHDOG] == NETWORK_CMD_WATCHDOG)
+			if (packet.cmd[XPLICIT_NETWORK_CMD_WATCHDOG] == NETWORK_CMD_WATCHDOG)
 			{
-				packet.CMD[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
+				packet.cmd[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
 				m_network->send(packet);
 			}
 		}

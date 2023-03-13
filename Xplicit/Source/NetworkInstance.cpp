@@ -94,9 +94,9 @@ namespace Xplicit
 
 	bool NetworkInstance::send(NetworkPacket& packet)
 	{
-		packet.Magic[0] = XPLICIT_NETWORK_MAG_0;
-		packet.Magic[1] = XPLICIT_NETWORK_MAG_1;
-		packet.Magic[2] = XPLICIT_NETWORK_MAG_2;
+		packet.magic[0] = XPLICIT_NETWORK_MAG_0;
+		packet.magic[1] = XPLICIT_NETWORK_MAG_1;
+		packet.magic[2] = XPLICIT_NETWORK_MAG_2;
 
 #ifdef XPLICIT_WINDOWS
 		int res = ::sendto(m_socket, (const char*)&packet, sizeof(NetworkPacket), 0, 
@@ -175,8 +175,8 @@ namespace Xplicit
 
 		}
 
-		return packet.Magic[0] == XPLICIT_NETWORK_MAG_0 && packet.Magic[1] == XPLICIT_NETWORK_MAG_1 &&
-				packet.Magic[2] == XPLICIT_NETWORK_MAG_2;
+		return packet.magic[0] == XPLICIT_NETWORK_MAG_0 && packet.magic[1] == XPLICIT_NETWORK_MAG_1 &&
+				packet.magic[2] == XPLICIT_NETWORK_MAG_2;
 	}
 
 	bool NetworkInstance::is_reset() noexcept { return m_reset; }

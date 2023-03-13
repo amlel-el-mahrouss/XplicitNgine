@@ -10,8 +10,8 @@
  * =====================================================================
  */
 
+#include "Application.h"
 #include "XUI.h"
-#include "App.h"
 
 namespace Xplicit::XUI
 {
@@ -121,8 +121,8 @@ namespace Xplicit::XUI
 		
 		for (size_t i = XPLICIT_LAST_RESERVED_CMD; i < XPLICIT_NETWORK_MAX_CMDS; ++i)
 		{
-			if (packet.CMD[i] == NETWORK_CMD_DAMAGE)
-				m_health = packet.Health;
+			if (packet.cmd[i] == NETWORK_CMD_DAMAGE)
+				m_health = packet.health;
 		}
 
 		auto dim = dimension2di(10, 10);

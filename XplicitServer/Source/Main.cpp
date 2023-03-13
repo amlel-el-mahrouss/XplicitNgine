@@ -16,12 +16,11 @@
 #include "ServerWatchdog.h"
 #include "PlayerJoinLeaveEvent.h"
 
-static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server); // called when the server stops.
-static void xplicit_attach_mono(); // attach mono plugins
-static void xplicit_load_shell(); // loads a shell..
-static void xplicit_load_cfg(); // load from MANIFEST.xml
+static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server);
+static void xplicit_attach_mono();
+static void xplicit_load_shell();
+static void xplicit_load_cfg();
 
-// loads everything from the MANIFEST.xml file.
 static void xplicit_load_cfg()
 {
 	XPLICIT_GET_DATA_DIR(data_dir);
@@ -30,7 +29,7 @@ static void xplicit_load_cfg()
 		throw std::runtime_error("getenv: XPLICIT_DATA_DIR doesn't exist!");
 
 	std::string path = data_dir;
-	path += "\\MANIFEST.xml";
+	path += "\\Server.xml";
 
 	XML = IRR->getFileSystem()->createXMLReaderUTF8(path.c_str());
 
@@ -101,7 +100,7 @@ static void xplicit_attach_mono()
 static void xplicit_load_shell()
 {
 #ifdef XPLICIT_WINDOWS
-	// change window title to 'Xplicit Server'
+	// change window title to 'Xplicit Dedicated Server'
 	HWND wnd = GetConsoleWindow();
 	SetWindowTextA(wnd, "Xplicit Dedicated server");
 #endif
@@ -145,15 +144,10 @@ static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server)
 
 	for (size_t i = 0; i < server->size(); i++)
 	{
-		server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_STOP] = Xplicit::NETWORK_CMD_STOP;
+		server->get(i).packet.cmd[XPLICIT_NETWORK_CMD_STOP] = Xplicit::NETWORK_CMD_STOP;
 	}
 
 	server->send();
-
-	auto env = Xplicit::EventDispatcher::get_singleton_ptr()->get<Xplicit::NetworkServerEvent>("NetworkServerEvent");
-	XPLICIT_ASSERT(env);
-
-	env->update();
 }
 
 // our main entrypoint.
@@ -175,9 +169,9 @@ int main(int argc, char** argv)
 			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
 
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
-		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkServerEvent>(server);
 
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
+		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkServerEvent>(server);
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
 

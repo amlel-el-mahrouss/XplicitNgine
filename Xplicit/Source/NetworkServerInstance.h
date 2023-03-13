@@ -59,7 +59,7 @@ namespace Xplicit
 	class XPLICIT_API NetworkServerTraits
 	{
 	public:
-		static void recv(NetworkServerEvent* env, NetworkServerInstance* instance);
+		static void compute(NetworkServerEvent* env, NetworkServerInstance* instance);
 
 	};
 

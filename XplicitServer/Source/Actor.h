@@ -20,10 +20,6 @@ namespace Xplicit
 	class XPLICIT_API Actor final : public Instance
 	{
 	public:
-		/*
-		*	Replicated position structure
-		*/
-
 		class XPLICIT_API ActorPosition final
 		{
 		public:
@@ -43,12 +39,12 @@ namespace Xplicit
 
 		};
 
-		// a delegate which tells who this actor belongs to.
+		// Replication delegate
 		class XPLICIT_API ActorReplication final
 		{
 		public:
 			ActorReplication()
-				: addr(), cmd(), health(100), id(0)
+				: addr(), cmd(), health(100), uuid()
 			{}
 
 			~ActorReplication() {}
@@ -59,8 +55,9 @@ namespace Xplicit
 		public:
 			NETWORK_CMD cmd[XPLICIT_NETWORK_MAX_CMDS]; // Network Command Array.
 			PrivateAddressData addr; // Actor's socket address
+			int64_t uuid_hash;
+			uuids::uuid uuid;
 			int64_t health;
-			int64_t id;
 
 		};
 
@@ -85,7 +82,6 @@ namespace Xplicit
 		virtual bool should_update() noexcept override;
 
 		void set(const float& x, const float& y, const float& z) noexcept;
-		void set(const struct sockaddr_in& sockaddr) noexcept;
 
 		virtual void update() override;
 
@@ -96,9 +92,8 @@ namespace Xplicit
 		virtual bool has_physics() noexcept override;
 
 	private:
-		ActorReplication m_replication; /* Actor replication data */
+		ActorReplication m_replicated; /* Actor's replication data */
 		ActorPosition m_position; /* Actor's position */
-		int32_t m_delay; /* Actor cooldown */
 
 	};
 

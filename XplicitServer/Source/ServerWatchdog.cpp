@@ -14,7 +14,7 @@
 
 namespace Xplicit
 {
-	static int16_t XPLICIT_WATCHDOG_DELAY = 5000;
+	static int16_t XPLICIT_WATCHDOG_DELAY = 1000;
 
 	ServerWatchdogEvent::ServerWatchdogEvent() 
 		: Event(), m_watchdog(XPLICIT_WATCHDOG_DELAY)
@@ -39,7 +39,7 @@ namespace Xplicit
 						if (server->get(i).stat == NETWORK_STAT_DISCONNECTED)
 							continue;
 
-						server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_WATCHDOG] = NETWORK_CMD_WATCHDOG;
+						server->get(i).packet.cmd[XPLICIT_NETWORK_CMD_WATCHDOG] = NETWORK_CMD_WATCHDOG;
 					}
 				}
 
@@ -52,8 +52,8 @@ namespace Xplicit
 					if (server->get(i).stat == NETWORK_STAT_DISCONNECTED)
 						continue;
 
-					if (server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK)
-						server->get(i).packet.CMD[XPLICIT_NETWORK_CMD_STOP] = NETWORK_CMD_KICK;
+					if (server->get(i).packet.cmd[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK)
+						server->get(i).packet.cmd[XPLICIT_NETWORK_CMD_KICK] = NETWORK_CMD_KICK;
 				}
 
 				this->m_watchdog = XPLICIT_WATCHDOG_DELAY;

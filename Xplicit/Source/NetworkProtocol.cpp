@@ -14,7 +14,7 @@
 
 namespace Xplicit
 {
-    NetworkPeer::NetworkPeer() : packet(), addr(), stat(NETWORK_STAT_COUNT), unique_addr(), id(-1) {}
+    NetworkPeer::NetworkPeer() : packet(), addr(), stat(NETWORK_STAT_COUNT), unique_addr() {}
     NetworkPeer::~NetworkPeer() {}
     
     bool NetworkPeer::operator==(const NetworkPeer& cl)
@@ -29,12 +29,12 @@ namespace Xplicit
 
     void NetworkPeer::reset() noexcept
     {
-        packet.ID = -1;
-        id = -1;
+        for (size_t cmd_index = 0; cmd_index < XPLICIT_NETWORK_MAX_CMDS; cmd_index++)
+        {
+            packet.cmd[cmd_index] = NETWORK_CMD_INVALID;
+        }
 
         stat = NETWORK_STAT_DISCONNECTED;
-
-        memset(&packet.CMD, 0, XPLICIT_NETWORK_MAX_CMDS);
         memset(&addr, 0, sizeof(PrivateAddressData));
     }
 

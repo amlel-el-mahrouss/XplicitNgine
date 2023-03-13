@@ -11,9 +11,9 @@
  */
 
 #include "LoadingInstance.h"
+#include "Application.h"
 #include "LocalActor.h"
 #include "Local.h"
-#include "App.h"
 #include "XUI.h"
 
 namespace Xplicit::Client
@@ -40,31 +40,34 @@ namespace Xplicit::Client
 	
 		m_network->read(packet);
 
-		if (packet.CMD[XPLICIT_NETWORK_CMD_STOP] == NETWORK_CMD_STOP)
+		if (packet.cmd[XPLICIT_NETWORK_CMD_STOP] == NETWORK_CMD_STOP)
 		{
 			if (!InstanceManager::get_singleton_ptr()->get<XUI::ErrorMessage>("ErrorMessage"))
 				InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
 					IRR->closeDevice();
 				}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::Shutdown);
+
+			return;
 		}
 
 		if (!m_run)
 			return;
 
-		if (packet.CMD[XPLICIT_NETWORK_CMD_ACCEPT] == NETWORK_CMD_ACCEPT)
+		if (packet.cmd[XPLICIT_NETWORK_CMD_ACCEPT] == NETWORK_CMD_ACCEPT)
 		{
 			InstanceManager::get_singleton_ptr()->add<Xplicit::XUI::HUD>();
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalInstance>();
-			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.ID);
+			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalCameraInstance>();
+			InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.id);
 
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalMoveEvent>();
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalResetEvent>();
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalWatchdogEvent>();
 
 			m_run = false;
+
+			return;
 		}
-		
-		if (packet.CMD[XPLICIT_NETWORK_CMD_KICK] == NETWORK_CMD_KICK)
+		else if (packet.cmd[XPLICIT_NETWORK_CMD_KICK] == NETWORK_CMD_KICK)
 		{
 			InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
 				IRR->closeDevice();
@@ -75,8 +78,8 @@ namespace Xplicit::Client
 			return;
 		}
 
-		packet.CMD[XPLICIT_NETWORK_CMD_BEGIN] = NETWORK_CMD_BEGIN;
-		packet.CMD[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
+		packet.cmd[XPLICIT_NETWORK_CMD_BEGIN] = NETWORK_CMD_BEGIN;
+		packet.cmd[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
 
 		m_network->send(packet);
 
@@ -111,8 +114,8 @@ namespace Xplicit::Client
 		{
 			NetworkPacket spawn{};
 
-			spawn.CMD[XPLICIT_NETWORK_CMD_BEGIN] = NETWORK_CMD_BEGIN;
-			spawn.CMD[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
+			spawn.cmd[XPLICIT_NETWORK_CMD_BEGIN] = NETWORK_CMD_BEGIN;
+			spawn.cmd[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
 		
 			m_network->send(spawn);
 		}
