@@ -14,7 +14,7 @@
 
 namespace Xplicit
 {
-	static int16_t XPLICIT_WATCHDOG_DELAY = 1000;
+	static int16_t XPLICIT_WATCHDOG_DELAY = 100000;
 
 	ServerWatchdogEvent::ServerWatchdogEvent() 
 		: Event(), m_watchdog(XPLICIT_WATCHDOG_DELAY)
@@ -36,10 +36,14 @@ namespace Xplicit
 				{
 					for (size_t i = 0; i < server->size(); i++)
 					{
-						if (server->get(i).stat == NETWORK_STAT_DISCONNECTED)
+						if (server->get(i)->stat == NETWORK_STAT_DISCONNECTED)
 							continue;
 
-						server->get(i).packet.cmd[XPLICIT_NETWORK_CMD_WATCHDOG] = NETWORK_CMD_WATCHDOG;
+						if (server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_BEGIN] == NETWORK_CMD_BEGIN ||
+							server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_ACCEPT] == NETWORK_CMD_ACCEPT)
+							continue;
+
+						server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_WATCHDOG] = NETWORK_CMD_WATCHDOG;
 					}
 				}
 
@@ -49,11 +53,14 @@ namespace Xplicit
 			{
 				for (size_t i = 0; i < server->size(); i++)
 				{
-					if (server->get(i).stat == NETWORK_STAT_DISCONNECTED)
+					if (server->get(i)->stat == NETWORK_STAT_DISCONNECTED)
 						continue;
 
-					if (server->get(i).packet.cmd[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK)
-						server->get(i).packet.cmd[XPLICIT_NETWORK_CMD_KICK] = NETWORK_CMD_KICK;
+					if (server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK)
+					{
+						server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_KICK] = NETWORK_CMD_KICK;
+						XPLICIT_INFO(uuids::to_string(server->get(i)->unique_addr.uuid) + " will be kicked..");
+					}
 				}
 
 				this->m_watchdog = XPLICIT_WATCHDOG_DELAY;

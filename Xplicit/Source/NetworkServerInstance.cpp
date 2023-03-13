@@ -1,11 +1,12 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: NetworkServerInstance.cpp
- *			Purpose: UDP Server
+ *			Purpose: XPX Protocol Server
+ * 
  * =====================================================================
  */
 
@@ -17,14 +18,16 @@ namespace Xplicit
 	{
 #ifdef XPLICIT_WINDOWS
 		u_long ul = 1;
-		ioctlsocket(sock, FIONBIO, &ul);
+		auto err = ioctlsocket(sock, FIONBIO, &ul);
+
+		XPLICIT_ASSERT(err == NO_ERROR);
 #else
 #pragma error("DEFINE ME ServerInstance.cpp")
 #endif
 	}
 
 	NetworkServerInstance::NetworkServerInstance(const char* ip)
-		: m_socket(INVALID_SOCKET), m_dns(ip), m_send(false), m_server()
+		: m_socket(INVALID_SOCKET), m_dns(ip), m_server()
 	{
 #ifndef _NDEBUG
 		std::string message;
@@ -59,25 +62,38 @@ namespace Xplicit
 		
 		// Let's pre-allocate the clients.
 		// So we don't have to allocate them.
-		for (size_t i = 0; i < MAX_CONNECTIONS; i++)
+		for (size_t i = 0; i < XPLICIT_MAX_CONNECTIONS; i++)
 		{
-			NetworkPeer cl{};
+			NetworkPeer* cl = new NetworkPeer();
+			XPLICIT_ASSERT(cl);
 
-			cl.stat = NETWORK_STAT_DISCONNECTED;
-			cl.bad = false;
+			cl->stat = NETWORK_STAT_DISCONNECTED;
+			cl->bad = false;
+			cl->uuid_hash = 0;
 
-			m_clients.push_back(std::move(cl));
+			m_peers.push_back(std::shared_ptr<NetworkPeer>(cl));
 		}
 	}
 
-	size_t NetworkServerInstance::size() noexcept { return m_clients.size(); }
-	NetworkPeer& NetworkServerInstance::get(size_t idx) noexcept { return m_clients[idx]; }
+	size_t NetworkServerInstance::size() noexcept 
+	{ 
+		return m_peers.size(); 
+	}
+
+	NetworkPeer* NetworkServerInstance::get(size_t idx) noexcept 
+	{
+		XPLICIT_ASSERT(m_peers[idx]);
+		return m_peers[idx].get(); 
+	}
 
 	const char* NetworkServerInstance::name() noexcept { return ("NetworkServerInstance"); }
 
 	NetworkServerInstance::INSTANCE_TYPE NetworkServerInstance::type() noexcept { return INSTANCE_NETWORK; }
 
-	void NetworkServerInstance::update() {}
+	void NetworkServerInstance::update() 
+	{
+
+	}
 
 	NetworkServerInstance::~NetworkServerInstance()
 	{
@@ -102,87 +118,46 @@ namespace Xplicit
 
 	const char* NetworkServerInstance::dns() noexcept { return m_dns.c_str(); }
 
-	// mark the packet queue (m_clients) to be sent over the network.
-	void NetworkServerInstance::send() noexcept 
-	{
-		if (!m_send)
-			m_send = true; 
-	}
-
 	// we need a way to tell which client is who.
-	void NetworkServerTraits::compute(NetworkServerEvent* env, NetworkServerInstance* instance)
+	void NetworkServerTraits::recv(NetworkServerInstance* server)
 	{
-		if (instance)
+		if (server)
 		{
-			// either send or recieve.
-			if (instance->m_send)
+			for (size_t i = 0; i < server->size(); ++i)
 			{
-				for (size_t i = 0; i < instance->m_clients.size(); i++)
+				NetworkPacket tmp{};
+				int fromLen = sizeof(struct sockaddr_in);
+
+				int res = ::recvfrom(server->m_socket, (char*)&tmp, sizeof(NetworkPacket), 0,
+					reinterpret_cast<sockaddr*>(&server->get(i)->addr), &fromLen);
+
+				if (res == SOCKET_ERROR)
+					break;
+
+				if (tmp.magic[0] == XPLICIT_NETWORK_MAG_0 &&
+					tmp.magic[1] == XPLICIT_NETWORK_MAG_1 &&
+					tmp.magic[2] == XPLICIT_NETWORK_MAG_2 && server->get(i)->uuid_hash == tmp.id)
 				{
-					instance->m_clients[i].packet.magic[0] = XPLICIT_NETWORK_MAG_0;
-					instance->m_clients[i].packet.magic[1] = XPLICIT_NETWORK_MAG_1;
-					instance->m_clients[i].packet.magic[2] = XPLICIT_NETWORK_MAG_2;
-
-#ifdef XPLICIT_WINDOWS
-					::sendto(instance->m_socket, (const char*)&
-						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, 
-						(struct sockaddr*)&instance->m_clients[i].addr, sizeof(struct sockaddr_in));
-#else
-#pragma error("DEFINE ME ServerInstance.cpp")
-#endif
-				}
-				
-				instance->m_send = false;
-			}
-			else
-			{
-				int sz = sizeof(struct sockaddr_in);
-
-				for (size_t i = 0; i < instance->m_clients.size(); ++i)
-				{
-#ifdef XPLICIT_WINDOWS
-					int sz = sizeof(struct sockaddr_in);
-
-					::recvfrom(instance->m_socket, (char*)&
-						instance->m_clients[i].packet, sizeof(NetworkPacket), 0, 
-						(struct sockaddr*)&instance->m_clients[i].addr, &sz);
-#else
-#pragma error("DEFINE ME ServerInstance.cpp")
-#endif
-
-					if (instance->m_clients[i].packet.magic[0] != XPLICIT_NETWORK_MAG_0 ||
-						instance->m_clients[i].packet.magic[1] != XPLICIT_NETWORK_MAG_1 ||
-						instance->m_clients[i].packet.magic[2] != XPLICIT_NETWORK_MAG_2)
-					{
-						instance->m_clients[i].bad = true;
-					}
-
+					server->get(i)->packet = tmp;
 				}
 			}
 		}
 	}
 
-	NetworkServerEvent::NetworkServerEvent(NetworkServerInstance* instance)
-		: m_instance(instance)
+	void NetworkServerTraits::send(NetworkServerInstance* server)
 	{
-		if (!instance)
-			throw NetworkError(NETERR_INTERNAL_ERROR);
+		if (server)
+		{
+			for (size_t i = 0; i < server->size(); i++)
+			{
+				auto peer = server->get(i);
 
-#ifndef _NDEBUG
-		std::string message;
-		message += "Class NetworkServerInstance, Epoch: ";
-		message += std::to_string(xplicit_get_epoch());
+				peer->packet.magic[0] = XPLICIT_NETWORK_MAG_0;
+				peer->packet.magic[1] = XPLICIT_NETWORK_MAG_1;
+				peer->packet.magic[2] = XPLICIT_NETWORK_MAG_2;
 
-		XPLICIT_INFO(message);
-#endif
+				sendto(server->m_socket, reinterpret_cast<char*>(&peer->packet), sizeof(NetworkPacket), 0, reinterpret_cast<sockaddr*>(&peer->addr), sizeof(PrivateAddressData));
+			}
+		}
 	}
-
-	NetworkServerEvent::~NetworkServerEvent() {}
-
-	void NetworkServerEvent::operator()()
-	{
-		NetworkServerTraits::compute(this, m_instance.get());
-	}
-
-	const char* NetworkServerEvent::name() noexcept { return ("NetworkServerEvent"); }
 }

@@ -68,7 +68,7 @@ namespace Xplicit::XUI
 
 	const char* ErrorMessage::name() noexcept
 	{
-		return "NetworkPopup";
+		return "ErrorMessage";
 	}
 
 	ErrorMessage::INSTANCE_TYPE ErrorMessage::type() noexcept

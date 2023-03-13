@@ -14,7 +14,7 @@
 
 #include "ApplicationContext.h"
 #include "NetworkInstance.h"
-#include "Local.h"
+#include "Camera.h"
 
 // FIXME: rework them when we will roll our own renderer.
 namespace Xplicit::Client
@@ -25,10 +25,7 @@ namespace Xplicit::Client
 	class LocalActor : public Instance
 	{
 	public:
-		LocalActor() = delete;
-
-	public:
-		LocalActor(int64_t id);
+		LocalActor();
 		virtual ~LocalActor();
 
 		LocalActor& operator=(const LocalActor&) = default;
@@ -40,13 +37,13 @@ namespace Xplicit::Client
 		IAnimatedMeshSceneNode* operator->() const;
 		virtual void update() override;
 
+	private:
+		NetworkInstance* m_network;
+		NetworkPacket m_packet;
 
 	private:
 		IAnimatedMeshSceneNode* m_node;
-		NetworkInstance* m_network;
-		NetworkPacket m_packet;
 		IAnimatedMesh* m_model;
-		int64_t m_id;
 
 	};
 

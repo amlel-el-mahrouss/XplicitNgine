@@ -19,9 +19,9 @@
 static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server);
 static void xplicit_attach_mono();
 static void xplicit_load_shell();
-static void xplicit_load_cfg();
+static void xplicit_read_xml();
 
-static void xplicit_load_cfg()
+static void xplicit_read_xml()
 {
 	XPLICIT_GET_DATA_DIR(data_dir);
 
@@ -144,10 +144,8 @@ static void xplicit_send_stop_packet(Xplicit::NetworkServerInstance* server)
 
 	for (size_t i = 0; i < server->size(); i++)
 	{
-		server->get(i).packet.cmd[XPLICIT_NETWORK_CMD_STOP] = Xplicit::NETWORK_CMD_STOP;
+		server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_STOP] = Xplicit::NETWORK_CMD_STOP;
 	}
-
-	server->send();
 }
 
 // our main entrypoint.
@@ -169,21 +167,24 @@ int main(int argc, char** argv)
 			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
 
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
+		XPLICIT_ASSERT(server);
 
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();
-		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::NetworkServerEvent>(server);
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ServerWatchdogEvent>();
-		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::ActorEvent>();
 
 		xplicit_attach_mono();
-		xplicit_load_cfg();
+		xplicit_read_xml();
 
 		xplicit_load_shell();
 
 		while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{
-			Xplicit::EventDispatcher::get_singleton_ptr()->update();
+			Xplicit::NetworkServerTraits::recv(server);
+
 			Xplicit::InstanceManager::get_singleton_ptr()->update();
+			Xplicit::EventDispatcher::get_singleton_ptr()->update();
+
+			Xplicit::NetworkServerTraits::send(server);
 
 			if (Xplicit::ApplicationContext::get_singleton().ShouldExit)
 				break;
@@ -195,7 +196,7 @@ int main(int argc, char** argv)
 	{
 #ifndef _NDEBUG
 		std::string msg;
-		msg += "C++ Exception! ";
+		msg += "Error: ";
 		msg += err.what();
 
 		XPLICIT_CRITICAL(msg);

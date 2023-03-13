@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: NetworkInstance.cpp
- *			Purpose: UDP Networking API
+ *			Purpose: XPX Protocol Client
  *
  * =====================================================================
  */
@@ -19,7 +19,9 @@ namespace Xplicit
 	{
 #ifdef XPLICIT_WINDOWS
 		u_long ul = 1;
-		ioctlsocket(sock, FIONBIO, &ul);
+		auto err = ioctlsocket(sock, FIONBIO, &ul);
+
+		XPLICIT_ASSERT(err == NO_ERROR);
 #else
 #pragma error("DEFINE ME NetworkInstance.cpp")
 #endif
@@ -131,40 +133,16 @@ namespace Xplicit
 
 		if (length > 0)
 		{
+			m_packet = packet;
+
 			if (res == SOCKET_ERROR)
 			{
 				int err = WSAGetLastError();
-#ifdef XPLICIT_DEBUG
-				XPLICIT_INFO("recvfrom failed with code: " + std::to_string(err));
-#endif
 
 				switch (err)
 				{
-				case WSAEWOULDBLOCK:
-				{
-#ifdef XPLICIT_DEBUG
-					XPLICIT_INFO("Unblocking socket...");
-#endif
-
-#ifdef XPLICIT_WINDOWS
-					struct timeval timeout = { .tv_sec = 0, .tv_usec = 200 };
-
-					fd_set wr_set{};
-
-					FD_ZERO(&wr_set);
-					FD_SET(m_socket, &wr_set);
-
-					select(m_socket, &wr_set, nullptr, nullptr, &timeout);
-#else
-#pragma error("DEFINE ME NetworkInstance.cpp")
-#endif
-					break;
-				}
 				case WSAECONNRESET:
 				{
-#ifdef XPLICIT_DEBUG
-					XPLICIT_INFO("Connection has been reset by peer..");
-#endif				
 					m_reset = true;
 					break;
 				}

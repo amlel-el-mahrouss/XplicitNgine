@@ -16,6 +16,8 @@ XplicitData/Lib/*.runtimeconfig.json
 
 *.irr
 
+Scripts/Output/XplicitSetup.exe
+
 packages.config
 
 # Compiled Object files

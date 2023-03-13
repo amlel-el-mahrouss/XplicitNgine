@@ -22,9 +22,7 @@ INT32 WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine
 	try
 	{
 		Xplicit::Bites::Application* app = new Xplicit::Bites::Application("10.211.55.9");
-		
-		if (!app)
-			throw Xplicit::EngineError();
+		if (!app) throw Xplicit::EngineError();
 
 		while (IRR->run() && Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{

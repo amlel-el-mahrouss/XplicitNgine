@@ -39,15 +39,15 @@ namespace Xplicit
 		// little helper
 		// CMD = network command, COORD = either X, Y or Z.
 #define XPLICIT_SET_POS_CMD(_CMD, COORD, VEL, IDX)\
-				server->get(i).packet.cmd[IDX] = _CMD;\
-				server->get(i).packet.COORD = this->pos().COORD = VEL;\
-				server->get(i).packet.id = this->get().uuid_hash;
+				server->get(i)->packet.cmd[IDX] = _CMD;\
+				server->get(i)->packet.COORD = this->pos().COORD = VEL;\
+				server->get(i)->packet.id = this->get().uuid_hash;
 
 
 
 		for (size_t i = 0; i < server->size(); i++)
 		{
-			if (equals(server->get(i).addr, this->get().addr))
+			if (equals(server->get(i)->addr, this->get().addr))
 			{
 				for (size_t z = 0; z < XPLICIT_NETWORK_MAX_CMDS; z++)
 				{
@@ -80,8 +80,6 @@ namespace Xplicit
 				break;
 			}
 		}
-
-		server->send();
 
 #undef XPLICIT_SET_POS_CMD
 
@@ -133,15 +131,15 @@ namespace Xplicit
 
 			for (size_t server_cl = 0; server_cl < server->size(); server_cl++)
 			{
-				if (equals(server->get(server_cl).addr, actors[i]->get().addr))
+				if (equals(server->get(server_cl)->addr, actors[i]->get().addr))
 				{
 					for (size_t cmd_index = 0; cmd_index < XPLICIT_NETWORK_MAX_CMDS; cmd_index++)
 					{
-						auto cmd = server->get(server_cl).packet.cmd[cmd_index];
+						auto cmd = server->get(server_cl)->packet.cmd[cmd_index];
 						actors[i]->get().cmd[cmd_index] = cmd;
 					}
 
-					actors[i]->set(server->get(server_cl).packet.X, server->get(server_cl).packet.Y, server->get(server_cl).packet.Z);
+					actors[i]->set(server->get(server_cl)->packet.X, server->get(server_cl)->packet.Y, server->get(server_cl)->packet.Z);
 				}
 			}
 		}

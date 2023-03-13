@@ -16,7 +16,7 @@
 #include "ApplicationContext.h"
 
 #ifndef XPLICIT_NETWORK_PORT
-#define XPLICIT_NETWORK_PORT (60000)
+#define XPLICIT_NETWORK_PORT (60001)
 #endif // ifndef XPLICIT_NETWORK_PORT
 
 #define XPLICIT_NETWORK_MAG_0 ('X')
@@ -24,7 +24,7 @@
 #define XPLICIT_NETWORK_MAG_2 ('X')
 
 #define XPLICIT_NETWORK_MAG_COUNT (3U)
-#define XPLICIT_NETWORK_MAX_CMDS (16U)
+#define XPLICIT_NETWORK_MAX_CMDS (20U)
 
 namespace Xplicit 
 {
@@ -111,6 +111,7 @@ namespace Xplicit
         PrivateAddressData addr; /* current socket address. */
         NetworkPacket packet; /* current packet. */
         NETWORK_STAT stat; /* current network status */
+        int64_t uuid_hash; /* connection hash. */
         bool bad; /* is the current peer bad, (has sent bad packets?) */
 
     public:

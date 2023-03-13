@@ -14,7 +14,7 @@
 
 namespace Xplicit
 {
-    NetworkPeer::NetworkPeer() : packet(), addr(), stat(NETWORK_STAT_COUNT), unique_addr() {}
+    NetworkPeer::NetworkPeer() : packet(), addr(), stat(NETWORK_STAT_COUNT), unique_addr(), bad(false) {}
     NetworkPeer::~NetworkPeer() {}
     
     bool NetworkPeer::operator==(const NetworkPeer& cl)

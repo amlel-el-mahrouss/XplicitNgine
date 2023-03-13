@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: NetworkInstance.h
- *			Purpose: UDP Networking API
+ *			Purpose: XPX Protocol Client
  *
  * =====================================================================
  */
@@ -18,7 +18,7 @@
 
 #ifdef XPLICIT_WINDOWS
 #ifdef XPLICIT_DEBUG
-#define XPLICIT_NET_ASSERT(EXPR) if (!(EXPR)) { MessageBoxA(nullptr, #EXPR, "C++ Network Exception", 0); std::terminate(); }
+#define XPLICIT_NET_ASSERT(EXPR) if (!(EXPR)) { MessageBoxA(nullptr, #EXPR, "XplicitNetwork Error", 0); std::terminate(); }
 #else
 #define XPLICIT_NET_ASSERT(EXPR) 
 #endif
@@ -49,14 +49,14 @@ namespace Xplicit {
     class XPLICIT_API NetworkError final : public std::runtime_error 
     {
     public:
-        NetworkError(const int what = NETERR_INTERNAL_ERROR) : std::runtime_error("Network Error") 
+        NetworkError(const int what = NETERR_INTERNAL_ERROR) : std::runtime_error("XplicitNetwork Error") 
         { 
             m_iErr = WSAGetLastError(); 
             std::string err = "Error: ";
             err += std::to_string(m_iErr);
         }
 
-        virtual ~NetworkError() = default; // let the ABI define that.
+        virtual ~NetworkError() = default; // let the A.B.I define that.
 
         NetworkError& operator=(const NetworkError&) = default;
         NetworkError(const NetworkError&) = default;

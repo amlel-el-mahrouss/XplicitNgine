@@ -68,4 +68,14 @@ using namespace scene;
 #define XPLICIT_RELEASE (2)
 #endif
 
-#define XPLICIT_ASSERT(BOOL) assert(BOOL)
+#ifdef XPLICIT_DEBUG
+#define XPLICIT_ASSERT(expression) (void)(                                                       \
+            (!!(expression)) ||                                                              \
+            (_wassert(_CRT_WIDE(#expression), _CRT_WIDE(__FILE__), (unsigned)(__LINE__)), 0) \
+        )
+#else
+#define XPLICIT_ASSERT(BOOL) (void)(                                                       \
+            (!!(expression)) ||                                                              \
+            (_wassert("Something unexpected happen, click abort to exit the client."), "????.cpp", 0, 0) \
+        )
+#endif
