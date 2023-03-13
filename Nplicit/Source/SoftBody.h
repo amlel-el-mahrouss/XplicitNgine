@@ -13,3 +13,8 @@
 #pragma once
 
 #include <Foundation.h>
+
+namespace Xplicit::Physics
+{
+
+}

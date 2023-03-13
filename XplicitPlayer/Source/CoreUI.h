@@ -4,8 +4,8 @@
  *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
- *			File: XUI.h
- *			Purpose: Xplicit Resource based UI.
+ *			File: CoreUI.h
+ *			Purpose: Core Client UI.
  *
  * =====================================================================
  */
@@ -20,11 +20,10 @@
 #include "DriverD3D11.h"
 #endif
 
-namespace Xplicit::XUI
+namespace Xplicit::CoreUI
 {
 	enum class ERROR_TYPE
 	{
-		Generic,
 		NetworkError,
 		Shutdown,
 		Kicked,
@@ -49,7 +48,7 @@ namespace Xplicit::XUI
 
 	private:
 		std::function<void()> m_on_click;
-		ITexture* m_error_texture;
+		ITexture* m_texture;
 		vector2di m_pos;
 
 	};
@@ -70,7 +69,6 @@ namespace Xplicit::XUI
 
 	private:
 		NetworkInstance* m_network;
-		ITexture* m_health_bar;
 		int64_t m_health;
 
 	};

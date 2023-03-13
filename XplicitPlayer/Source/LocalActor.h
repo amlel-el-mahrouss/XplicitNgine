@@ -4,7 +4,7 @@
  *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
- *			File: LocalPlayer.h
+ *			File: LocalActor.h
  *			Purpose: Client-side Player Instance
  *
  * =====================================================================
@@ -38,10 +38,10 @@ namespace Xplicit::Client
 		virtual void update() override;
 
 	public:
-		void attach(LocalCameraInstance* cam) noexcept { m_camera = cam; }
+		void attach(CameraInstance* cam) noexcept { m_camera = cam; }
 
 	private:
-		LocalCameraInstance* m_camera;
+		CameraInstance* m_camera;
 		NetworkInstance* m_network;
 		NetworkPacket m_packet;
 

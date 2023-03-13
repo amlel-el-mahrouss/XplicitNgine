@@ -14,19 +14,18 @@
 
 #include "Instance.h"
 #include "ApplicationContext.h"
-#include "NetworkInstance.h"
 
 namespace Xplicit::Client
 {
 	// The 'player' in-person.
-	class LocalCameraInstance : public Instance
+	class CameraInstance : public Instance
 	{
 	public:
-		LocalCameraInstance();
-		virtual ~LocalCameraInstance();
+		CameraInstance();
+		virtual ~CameraInstance();
 
-		LocalCameraInstance& operator=(const LocalCameraInstance&) = default;
-		LocalCameraInstance(const LocalCameraInstance&) = default;
+		CameraInstance& operator=(const CameraInstance&) = default;
+		CameraInstance(const CameraInstance&) = default;
 
 		virtual INSTANCE_TYPE type() noexcept override;
 		virtual const char* name() noexcept override;
@@ -34,30 +33,10 @@ namespace Xplicit::Client
 		virtual void update() override;
 
 	public:
-		irr::scene::ICameraSceneNode* get() noexcept;
+		ICameraSceneNode* get() noexcept;
 
 	private:
-		irr::scene::ICameraSceneNode* m_camera;
-		irr::video::ITexture* m_moving_tex;
-		irr::video::ITexture* m_typing_tex;
-		irr::video::ITexture* m_idle_tex;
-
-	};
-
-	class LocalWatchdogEvent : public Event
-	{
-	public:
-		LocalWatchdogEvent();
-		~LocalWatchdogEvent();
-
-		LocalWatchdogEvent& operator=(const LocalWatchdogEvent&) = default;
-		LocalWatchdogEvent(const LocalWatchdogEvent&) = default;
-
-		virtual const char* name() noexcept override { return ("LocalWatchdogEvent"); }
-		virtual void operator()() override;
-
-	private:
-		NetworkInstance* m_network;
+		ICameraSceneNode* m_camera;
 
 	};
 }

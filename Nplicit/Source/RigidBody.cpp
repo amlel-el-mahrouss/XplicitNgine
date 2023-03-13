@@ -11,3 +11,8 @@
  */
 
 #include "RigidBody.h"
+
+namespace Xplicit::Physics
+{
+
+}

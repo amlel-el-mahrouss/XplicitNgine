@@ -441,16 +441,8 @@ namespace Xplicit
 	class Timer final
 	{
 	public:
-		Timer() noexcept
-			: m_then(std::chrono::steady_clock::now())
-		{
-			XPLICIT_INFO("Timer::Timer");
-		}
-
-		~Timer()
-		{
-			XPLICIT_INFO("Timer::~Timer");
-		}
+		Timer() noexcept : m_then(std::chrono::steady_clock::now()) {}
+		~Timer() {}
 
 		std::chrono::steady_clock::time_point now() noexcept
 		{
@@ -473,5 +465,5 @@ namespace Xplicit
 	};
 }
 
-#define XPLICIT_INIT_COM assert(SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)))
+#define XPLICIT_INIT_COM XPLICIT_ASSERT(SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)))
 #define XPLICIT_FINI_COM CoUninitialize()

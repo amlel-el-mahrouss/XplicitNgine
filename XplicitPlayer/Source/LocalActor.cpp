@@ -1,18 +1,18 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin C++ Game Engine
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
- *			File: LocalPlayer.cpp
- *			Purpose: Client-side Player Instance
+ *			File: LocalActor.cpp
+ *			Purpose: Client-side Actor Instance
  *
  * =====================================================================
  */
 
-#include "LocalActor.h"
 #include "Application.h"
-#include "XUI.h"
+#include "LocalActor.h"
+#include "CoreUI.h"
 
 namespace Xplicit::Client
 {
@@ -63,27 +63,7 @@ namespace Xplicit::Client
 
 		if (packet.id == this->m_id)
 		{
-			if (packet.cmd[XPLICIT_NETWORK_CMD_POS] == NETWORK_CMD_POS)
-			{
-				auto pos = m_node->getPosition();
 
-				if (packet.X > 0)
-					pos.X += packet.X;
-				else
-					pos.X -= packet.X;
-
-				if (packet.Y > 0)
-					pos.Y += packet.Y;
-				else
-					pos.Y -= packet.Y;
-
-				if (packet.Z > 0)
-					pos.Z += packet.Z;
-				else
-					pos.Z -= packet.Z;
-
-				m_node->setPosition(pos);
-			}
 		}
 	}
 

@@ -38,7 +38,8 @@ namespace Xplicit
 					if (server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_KICK] == NETWORK_CMD_KICK)
 						continue;
 
-					if (server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK)
+					if (server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_ACK] != NETWORK_CMD_ACK ||
+						server->get(i)->packet.id != server->get(i)->uuid_hash)
 					{
 						server->get(i)->packet.cmd[XPLICIT_NETWORK_CMD_KICK] = NETWORK_CMD_KICK;
 						XPLICIT_INFO("[WATCHDOG] " + uuids::to_string(server->get(i)->unique_addr.uuid));

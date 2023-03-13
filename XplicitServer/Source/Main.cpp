@@ -85,7 +85,7 @@ static void xplicit_attach_mono()
 	XPLICIT_GET_DATA_DIR(data_dir);
 
 	std::string path = data_dir;
-	path += "\\Lib\\Xplicit.dll"; // The Game API dll.
+	path += "\\Lib\\Xplicit.dll"; // The game dll.
 
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoEngineInstance>();
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(path.c_str(), false);
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
 		char* addr = getenv("XPLICIT_SERVER_ADDR");
 
 		if (!addr) 
-			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist");
+			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist!");
 
 		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
 		XPLICIT_ASSERT(server);
@@ -175,15 +175,15 @@ int main(int argc, char** argv)
 
 		while (Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{
+			if (Xplicit::ApplicationContext::get_singleton().ShouldExit)
+				break;
+
 			Xplicit::NetworkServerTraits::recv(server);
 
 			Xplicit::EventDispatcher::get_singleton_ptr()->update();
 			Xplicit::InstanceManager::get_singleton_ptr()->update();
 
 			Xplicit::NetworkServerTraits::send(server);
-
-			if (Xplicit::ApplicationContext::get_singleton().ShouldExit)
-				break;
 		}
 
 		return 0;

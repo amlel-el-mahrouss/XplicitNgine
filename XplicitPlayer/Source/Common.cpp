@@ -10,11 +10,13 @@
  * =====================================================================
  */
 
+#include "Common.h"
+
+#include "LocalWatchdogEvent.h"
 #include "Application.h"
 #include "LocalActor.h"
-#include "Common.h"
 #include "Camera.h"
-#include "XUI.h"
+#include "CoreUI.h"
 
 namespace Xplicit::Client
 {
@@ -44,16 +46,16 @@ namespace Xplicit::Client
 
 		if (packet.cmd[XPLICIT_NETWORK_CMD_ACCEPT] == NETWORK_CMD_ACCEPT)
 		{
-			InstanceManager::get_singleton_ptr()->add<Xplicit::XUI::HUD>();
+			InstanceManager::get_singleton_ptr()->add<Xplicit::CoreUI::HUD>();
 			auto actor = InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalActor>(packet.id);
 			XPLICIT_ASSERT(actor);
 
-			actor->attach(InstanceManager::get_singleton_ptr()->add<Xplicit::Client::LocalCameraInstance>());
+			actor->attach(InstanceManager::get_singleton_ptr()->add<Xplicit::Client::CameraInstance>());
 
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalMenuEvent>(packet.id);
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalMoveEvent>(packet.id);
 			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalResetEvent>();
-			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalWatchdogEvent>();
+			EventDispatcher::get_singleton_ptr()->add<Xplicit::Client::LocalWatchdogEvent>(packet.id);
 
 			m_run = false;
 
@@ -69,9 +71,9 @@ namespace Xplicit::Client
 		// peek after the ++timeout
 		if (m_timeout < 0)
 		{
-			InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
+			InstanceManager::get_singleton_ptr()->add<CoreUI::ErrorMessage>([]()-> void {
 				IRR->closeDevice();
-			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::NetworkError);
+			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), CoreUI::ERROR_TYPE::NetworkError);
 
 			m_run = false; // sprious reponse
 		}
@@ -108,9 +110,9 @@ namespace Xplicit::Client
 
 	void LoadingInstance::reset() noexcept
 	{
-		InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
+		InstanceManager::get_singleton_ptr()->add<CoreUI::ErrorMessage>([]()-> void {
 			IRR->closeDevice();
-			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::NetworkError);
+			}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), CoreUI::ERROR_TYPE::NetworkError);
 
 	}
 
@@ -134,11 +136,11 @@ namespace Xplicit::Client
 
 		if (packet.cmd[XPLICIT_NETWORK_CMD_STOP] == NETWORK_CMD_STOP)
 		{
-			if (!InstanceManager::get_singleton_ptr()->get<XUI::ErrorMessage>("ErrorMessage"))
+			if (!InstanceManager::get_singleton_ptr()->get<CoreUI::ErrorMessage>("ErrorMessage"))
 			{
-				InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
+				InstanceManager::get_singleton_ptr()->add<CoreUI::ErrorMessage>([]()-> void {
 					IRR->closeDevice();
-					}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::Shutdown);
+					}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), CoreUI::ERROR_TYPE::Shutdown);
 
 				return;
 			}
@@ -150,11 +152,11 @@ namespace Xplicit::Client
 
 			if (m_num_resets > XPLICIT_MAX_RESETS)
 			{
-				if (!InstanceManager::get_singleton_ptr()->get<XUI::ErrorMessage>("ErrorMessage"))
+				if (!InstanceManager::get_singleton_ptr()->get<CoreUI::ErrorMessage>("ErrorMessage"))
 				{
-					InstanceManager::get_singleton_ptr()->add<XUI::ErrorMessage>([]()-> void {
+					InstanceManager::get_singleton_ptr()->add<CoreUI::ErrorMessage>([]()-> void {
 						IRR->closeDevice();
-					}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), XUI::ERROR_TYPE::NetworkError);
+					}, vector2di(Xplicit::Client::XPLICIT_DIM.Width / 3.45, Xplicit::Client::XPLICIT_DIM.Height / 4), CoreUI::ERROR_TYPE::NetworkError);
 
 				}
 			}
