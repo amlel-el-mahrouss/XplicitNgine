@@ -18,8 +18,8 @@
 
 namespace Xplicit::Client
 {
-	constexpr const int XPLICIT_TIMEOUT = 10000; // connection timeout
-	constexpr const int XPLICIT_MAX_RESETS = 10000; // maximum RST timeout
+	constexpr const int XPLICIT_TIMEOUT = 100; // connection timeout
+	constexpr const int XPLICIT_MAX_RESETS = 1000; // maximum RST timeout
 
 	LoadingInstance::LoadingInstance() 
 		: m_run(true), m_network(nullptr), m_logo_tex(nullptr), m_timeout(XPLICIT_TIMEOUT)

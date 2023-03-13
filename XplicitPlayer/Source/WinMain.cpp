@@ -13,20 +13,17 @@
 #include "Application.h"
 #include "Uri.h"
 
+#ifdef XPLICIT_WINDOWS
+
 INT32 WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
 {
 	try
 	{
-#ifdef XPLICIT_WINDOWS
 		if (Xplicit::Win32Helpers::find_wnd(Xplicit::Bites::XPLICIT_APP_NAME))
 		{
-			Xplicit::GUI::message_box(Xplicit::Bites::XPLICIT_APP_NAME, L"Another instance of XplicitNgin has been found! aborting..", MB_OK);
+			Xplicit::GUI::message_box(Xplicit::Bites::XPLICIT_APP_NAME, L"Another instance of XplicitNgin is running! Close this one first!", MB_OK);
 			return 1;
 		}
-#else
-#error Undefined platform!
-#endif
-
 
 		Xplicit::Utils::UriParser uri;
 		uri /= pCmdLine;
@@ -55,10 +52,9 @@ INT32 WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine
 	}
 	catch (std::runtime_error err)
 	{
-#ifdef XPLICIT_WINDOWS
 		MessageBoxA(nullptr, err.what(), "XplicitNgin", MB_OK);
-#endif
-
 		return -1;
 	}
 }
+
+#endif
