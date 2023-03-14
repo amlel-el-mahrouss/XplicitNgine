@@ -59,6 +59,11 @@ namespace Xplicit::Bites
 			false,
 			KB));
 
+#ifdef XPLICIT_WINDOWS
+		HMENU menuHandle = GetSystemMenu((HWND)IRR->getVideoDriver()->getExposedVideoData().OpenGLWin32.HWnd, FALSE);
+		EnableMenuItem(menuHandle, SC_CLOSE, MF_GRAYED);
+#endif
+
 		m_settings = std::make_unique<Settings>();
 		assert(m_settings);
 

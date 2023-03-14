@@ -17,23 +17,11 @@
 namespace Xplicit::Client
 {
 	LocalActor::LocalActor(const int64_t& id)
-		: Instance(), m_model(nullptr), m_node(nullptr), m_packet(), m_id(id), m_camera(nullptr)
+		: Instance(), m_packet(), m_id(id), m_camera(nullptr)
 	{
-		XPLICIT_GET_DATA_DIR(data_dir);
-		std::string mesh_path = data_dir;
-		mesh_path += "\\Models\\player.obj";
-
-		m_model = IRR->getSceneManager()->getMesh(mesh_path.c_str());
-		m_node = IRR->getSceneManager()->addAnimatedMeshSceneNode(m_model);
-
 		m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 
 		XPLICIT_ASSERT(m_network);
-		XPLICIT_ASSERT(m_model);
-		XPLICIT_ASSERT(m_node);
-
-		m_node->setPosition(vector3df(0, 0, 0));
-		m_node->setMaterialFlag(EMF_LIGHTING, false);
 
 #ifdef XPLICIT_DEBUG
 		XPLICIT_INFO("LocalActor::LocalActor");
@@ -45,12 +33,6 @@ namespace Xplicit::Client
 #ifdef XPLICIT_DEBUG
 		XPLICIT_INFO("LocalActor::~LocalActor");
 #endif
-
-		if (m_model)
-			m_model->drop();
-
-		if (m_node)
-			m_node->drop();
 
 	}
 
@@ -65,12 +47,6 @@ namespace Xplicit::Client
 		{
 
 		}
-	}
-
-	IAnimatedMeshSceneNode* LocalActor::operator->() const 
-	{ 
-		assert(m_node);
-		return m_node;
 	}
 
 	LocalMoveEvent::LocalMoveEvent(const int64_t& id) 

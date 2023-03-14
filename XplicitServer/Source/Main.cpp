@@ -157,7 +157,7 @@ int main(int argc, char** argv)
 		Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_NULL));
 
 		// the address to bind to is located in the XPLICIT_SERVER_ADDR environement variable.
-		char* addr = getenv("XPLICIT_SERVER_ADDR");
+		const char* addr = getenv("XPLICIT_SERVER_ADDR");
 
 		if (!addr) 
 			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist!");

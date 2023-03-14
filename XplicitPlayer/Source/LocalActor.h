@@ -34,20 +34,15 @@ namespace Xplicit::Client
 		virtual INSTANCE_TYPE type() noexcept override { return INSTANCE_ACTOR; }
 		virtual const char* name() noexcept override { return ("LocalActor"); }
 
-		IAnimatedMeshSceneNode* operator->() const;
 		virtual void update() override;
 
 	public:
 		void attach(CameraInstance* cam) noexcept { m_camera = cam; }
 
 	private:
-		CameraInstance* m_camera;
 		NetworkInstance* m_network;
+		CameraInstance* m_camera;
 		NetworkPacket m_packet;
-
-	private:
-		IAnimatedMeshSceneNode* m_node;
-		IAnimatedMesh* m_model;
 		int64_t m_id;
 
 	};

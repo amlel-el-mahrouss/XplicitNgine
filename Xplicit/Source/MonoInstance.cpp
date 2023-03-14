@@ -107,11 +107,7 @@ namespace Xplicit
 	MonoEngineInstance::MonoEngineInstance()
 		: m_domain(nullptr), m_app_domain(nullptr)
 	{
-		char data_dir[4096];
-		memset(data_dir, 0, 4096);
-
-		GetEnvironmentVariableA("XPLICIT_DATA_DIR", data_dir, 4096);
-
+		XPLICIT_GET_DATA_DIR(data_dir);
 		std::string path = data_dir;
 		path += "\\Lib\\";
 
