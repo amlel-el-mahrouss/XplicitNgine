@@ -29,10 +29,18 @@ INT32 WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine
 		uri /= pCmdLine;
 
 		if (inet_addr(uri.get().c_str()) == XPLICIT_INVALID_ADDR)
+		{
+			Xplicit::Utils::UriParser xdp{ XPLICIT_XDP_PROTOCOL };
+			xdp /= pCmdLine;
+			
+			// TODO: XDP Lookup.
+
 			return 1;
+		}
 
 		Xplicit::Bites::Application* app = new Xplicit::Bites::Application(uri.get().c_str());
-		if (!app) throw Xplicit::EngineError();
+		if (!app)
+			throw Xplicit::EngineError();
 
 		while (IRR->run() && Xplicit::InstanceManager::get_singleton_ptr() && Xplicit::EventDispatcher::get_singleton_ptr())
 		{

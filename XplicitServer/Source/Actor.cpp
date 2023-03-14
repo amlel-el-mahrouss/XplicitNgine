@@ -20,7 +20,7 @@ namespace Xplicit
 
 	Actor::~Actor() {}
 
-	Actor::INSTANCE_PHYSICS Actor::physics() noexcept { return PHYSICS_NONE; }
+	Actor::PHYSICS_TYPE Actor::physics() noexcept { return PHYSICS_NONE; }
 
 	bool Actor::has_physics() noexcept { return false; }
 

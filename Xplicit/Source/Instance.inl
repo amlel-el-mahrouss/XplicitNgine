@@ -81,26 +81,14 @@ bool Xplicit::InstanceManager::remove(T* ptr)
 	if (!ptr)
 		return false;
 
-	for (size_t it = 0; it < m_instances.size(); ++it)
+	auto element = std::find(m_instances.cbegin(), m_instances.cend(), ptr);
+
+	if (element != m_instances.cend())
 	{
-		if (m_instances[it] == ptr)
-		{
-			auto obj = m_instances[it];
+		m_instances.erase(element);
+		delete ptr;
 
-			auto element = std::find(m_instances.cbegin(), m_instances.cend(), m_instances[it]);
-
-			if (element != m_instances.cend())
-			{
-				m_instances.erase(element);
-
-				// finally remove the object
-				delete obj;
-
-				return true;
-			}
-
-			break;
-		}
+		return true;
 	}
 
 	return false;

@@ -40,7 +40,7 @@ namespace Xplicit
 
 	public:
 		// for the physics engine.
-		virtual INSTANCE_PHYSICS physics() noexcept override;
+		virtual PHYSICS_TYPE physics() noexcept override;
 		virtual bool can_collide() noexcept override;
 		virtual bool has_physics() noexcept override;
 

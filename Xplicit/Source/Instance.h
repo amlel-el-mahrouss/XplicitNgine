@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: Instance.h
- *			Purpose: Xplicit's Multi-threaded ECS
+ *			Purpose: Xplicit's ECS
  *
  * =====================================================================
  */
@@ -74,6 +74,7 @@ namespace Xplicit
 			INSTANCE_SCRIPT, // C#/Lua script instance
 			INSTANCE_RENDER, // Renderable instance.
 			INSTANCE_NETWORK, // Network instance
+			INSTANCE_PHYSICS, // Physics instance
 			INSTANCE_GUI, // GUI instance
 			INSTANCE_COUNT
 		};
@@ -86,7 +87,7 @@ namespace Xplicit
 		virtual bool has_physics() noexcept;
 		virtual bool should_update() noexcept;
 
-		enum INSTANCE_PHYSICS : uint8_t
+		enum PHYSICS_TYPE : uint8_t
 		{
 			PHYSICS_FAST, // Fast physics calculation
 			PHYSICS_COMPLEX, // Complex physics calculation
@@ -94,7 +95,7 @@ namespace Xplicit
 			PHYSICS_COUNT,
 		};
 
-		virtual INSTANCE_PHYSICS physics() noexcept;
+		virtual PHYSICS_TYPE physics() noexcept;
 
 	};
 }

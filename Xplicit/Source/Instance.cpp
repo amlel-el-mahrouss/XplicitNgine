@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: Instance.h
- *			Purpose: Xplicit's Multi-threaded ECS
+ *			Purpose: Xplicit's
  *
  * =====================================================================
  */
@@ -48,5 +48,5 @@ namespace Xplicit {
 
 	bool Instance::should_update() noexcept { return true; }
 
-	Instance::INSTANCE_PHYSICS Instance::physics() noexcept { return PHYSICS_FAST; }
+	Instance::PHYSICS_TYPE Instance::physics() noexcept { return PHYSICS_FAST; }
 }
