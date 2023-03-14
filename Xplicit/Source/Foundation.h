@@ -225,7 +225,7 @@ namespace Xplicit
 	};
 
 	template <typename T>
-	static inline Ref<T> make_from(Ref<T> cls)
+	static inline Ref<T> make_ref(Ref<T> cls)
 	{
 		Ref<T> ref{ cls };
 		ref._inc_ref();
@@ -234,7 +234,7 @@ namespace Xplicit
 	}
 
 	template <typename T>
-	static inline Ref<T> make_from(T cls)
+	static inline Ref<T> make_ref(T cls)
 	{
 		Ref<T> ref{ cls };
 

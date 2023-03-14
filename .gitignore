@@ -5,6 +5,8 @@
 # Prerequisites
 *.d
 
+Docs/html/
+
 *.ini
 
 *.Interpreter.xml

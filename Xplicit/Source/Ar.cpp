@@ -15,7 +15,8 @@
 static bool
 ar_internal_write(struct ar_context* ctx, const unsigned char* bytes, size_t sz) 
 {
-    assert(ctx);
+    XPLICIT_ASSERT(ctx);
+
     if (!ctx)
         return false;
 
@@ -38,7 +39,8 @@ ar_internal_write(struct ar_context* ctx, const unsigned char* bytes, size_t sz)
 static char
 ar_internal_read(struct ar_context* ctx, fpos_t pos) 
 {
-    assert(ctx);
+    XPLICIT_ASSERT(ctx);
+
     if (!ctx)
         return AR_END_OF_RECORD;
 
@@ -70,6 +72,7 @@ ar_update_epoch(struct ar_context* ctx) {
 
     fpos_t pos = 0;
     fsetpos(ctx->fp, &pos);
+
     for (int index = 0; index < AR_HDR_SZ; ++index) {
         char* byte = (char*)&ctx->header;
         fputc(byte[index], ctx->fp);
@@ -81,6 +84,7 @@ ar_update_epoch(struct ar_context* ctx) {
 struct ar_context*
 ar_new(const char* path, const char* res) {
     ar_file_t* fp = NULL;
+
     xplicit_log("Assert: fopen_s...");
     xplicit_log("Begin of record...");
 
@@ -91,7 +95,7 @@ ar_new(const char* path, const char* res) {
 
         if (ctx) {
             ctx->fp = fp;
-            assert(ctx->fp);
+            XPLICIT_ASSERT(ctx->fp);
 
             time_t epoch = time(0);
 
@@ -216,7 +220,7 @@ ar_close(struct ar_context* ctx) {
             free(ctx);
 
 #ifndef _NDEBUG
-            XPLICIT_INFO("[AR] Closed archive context!");
+            xplicit_log("[AR] Closed archive context!");
 #endif
 
             return true;

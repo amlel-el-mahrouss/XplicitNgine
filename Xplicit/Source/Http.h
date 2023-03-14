@@ -117,30 +117,34 @@ namespace Xplicit
             const char* user_agent = "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36\n"
         ) 
         {
-            if (path.empty()) return "";
-            if (host.empty()) return "";
+            if (path.empty() || host.empty()) return "";
+            if (!user_agent || *user_agent == 0) return "";
 
-            std::string request = "GET " + path + " HTTP/1.1\n";
-            request += "Host: " + host + "\n";
+            std::string request = "GET " + path + " HTTP/1.1\r\n";
+            request += "Host: " + host + "\r\n";
             request += user_agent;
             request += "\r\n\r\n";
 
             return request;
         }
 
-        static bool has_field(std::string& http, std::string & r) 
+        static bool has_field(const std::string& http, const std::string& rest)
         {
-            if (http.empty()) return false;
-            if (r.empty()) throw std::runtime_error("Bad restrict");
+            if (http.empty()) 
+                return false;
 
-            return http.find(r) != std::string::npos;
+            if (rest.empty())
+                throw std::runtime_error("Bad restrict");
+
+            return http.find(rest) != std::string::npos;
         }
 
         template <int Base>
-        static int content_length(std::string& http) 
+        static int content_length(const std::string& http)
         {
             size_t at = http.find("Content-Length: ");
-            if (at == std::string::npos) return -1;
+            if (at == std::string::npos) 
+                return HTTPHelpers::bad_pos;
 
             std::string final;
 
@@ -156,6 +160,8 @@ namespace Xplicit
 
             return std::stoi(final, nullptr, Base);
         }
+
+        static const int bad_pos = -1;
 
     };
 
