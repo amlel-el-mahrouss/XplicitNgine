@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <Foundation.h>
+#include "Nplicit.h"
 
 namespace Xplicit::Physics
 {

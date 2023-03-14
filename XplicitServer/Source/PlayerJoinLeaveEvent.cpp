@@ -26,13 +26,13 @@ namespace Xplicit
 	static void xplicit_join_event(NetworkPeer* cl, Actor* actor, NetworkServerInstance* server)
 	{
 		auto hash = xplicit_hash_from_uuid(cl->unique_addr.uuid);
-		cl->uuid_hash = hash;
+		cl->hash = hash;
 
 		actor->set(cl);
 
 		cl->packet.cmd[XPLICIT_NETWORK_CMD_ACCEPT] = NETWORK_CMD_ACCEPT;
 
-		cl->packet.id = hash;
+		cl->packet.hash = hash;
 		cl->stat = NETWORK_STAT_CONNECTED;
 	}
 

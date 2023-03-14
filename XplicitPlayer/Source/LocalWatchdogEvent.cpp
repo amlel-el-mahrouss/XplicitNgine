@@ -37,7 +37,7 @@ namespace Xplicit::Client
 			if (packet.cmd[XPLICIT_NETWORK_CMD_WATCHDOG] == NETWORK_CMD_WATCHDOG)
 			{
 				packet.cmd[XPLICIT_NETWORK_CMD_ACK] = NETWORK_CMD_ACK;
-				packet.id = m_id;
+				packet.hash = m_id;
 
 				m_network->send(packet);
 			}

@@ -1,20 +1,19 @@
 /*
  * =====================================================================
  *
- *			NplicitNgin
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
- *			File: SoftBody.h
- *			Purpose: 
+ *			File: Nplicit.h
+ *			Purpose: Nplicit standard includes
  *
  * =====================================================================
  */
 
 #pragma once
 
-#include "Nplicit.h"
+#include <Avx.h>
+#include <Foundation.h>
 
-namespace Xplicit::Physics
-{
+#include "NMath.h"
 
-}

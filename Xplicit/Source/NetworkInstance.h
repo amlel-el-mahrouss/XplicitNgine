@@ -84,13 +84,15 @@ namespace Xplicit {
 
         virtual void update() override;
 
-        bool reset() noexcept;
         bool connect(const char* ip);
-        bool send(NetworkPacket& cmd);
+        bool send(NetworkPacket& packet);
         bool read(NetworkPacket& packet);
 
         NetworkPacket& get() noexcept;
         bool is_reset() noexcept;
+
+    private:
+        bool reset() noexcept;
 
     private:
         PrivateAddressData m_addr;

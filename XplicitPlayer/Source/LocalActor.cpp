@@ -61,7 +61,7 @@ namespace Xplicit::Client
 
 		auto& packet = m_network->get();
 
-		if (packet.id == this->m_id)
+		if (packet.hash == this->m_id)
 		{
 
 		}
@@ -89,7 +89,7 @@ namespace Xplicit::Client
 		if (!m_network)
 			return;
 
-		m_packet.id = m_id;
+		m_packet.hash = m_id;
 
 		if (KB->key_down(KEY_KEY_W))
 			m_packet.cmd[XPLICIT_NETWORK_CMD_FORWARD] = NETWORK_CMD_FORWARD;

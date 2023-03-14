@@ -29,19 +29,12 @@ namespace Xplicit
 		if (!m_peer)
 			return;
 
-		if (this->health() < 0)
-		{
-			m_peer->packet.cmd[XPLICIT_NETWORK_CMD_DEAD] = NETWORK_CMD_DEAD;
-		}
-
 		m_peer->packet.health = this->health();
-		m_peer->packet.id = m_peer->uuid_hash;
-
-		// TODO: 
+		m_peer->packet.hash = m_peer->hash;
 	}
 
 	void Actor::health(const int32_t& health) noexcept { this->m_health = health; }
-	const int32_t& Actor::health() noexcept { return this->m_health; }
+	const int64_t Actor::health() noexcept { return this->m_health; }
 
 	bool Actor::can_collide() noexcept { return false; }
 

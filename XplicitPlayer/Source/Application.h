@@ -18,9 +18,9 @@
 #include <ApplicationContext.h>
 
 #include "Camera.h"
-#include "Common.h"
 #include "LocalActor.h"
 #include "DriverD3D11.h"
+#include "LoadingInstance.h"
 
 #define XPLICIT_DEFAULT_WIDTH (1280)
 #define XPLICIT_DEFAULT_HEIGHT (720)

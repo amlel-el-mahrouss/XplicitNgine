@@ -69,7 +69,7 @@ namespace Xplicit
 
 			cl->stat = NETWORK_STAT_DISCONNECTED;
 			cl->bad = false;
-			cl->uuid_hash = 0;
+			cl->hash = 0;
 
 			m_peers.push_back(std::shared_ptr<NetworkPeer>(cl));
 		}
@@ -138,7 +138,7 @@ namespace Xplicit
 
 				if (tmp.magic[0] == XPLICIT_NETWORK_MAG_0 &&
 					tmp.magic[1] == XPLICIT_NETWORK_MAG_1 &&
-					tmp.magic[2] == XPLICIT_NETWORK_MAG_2 && server->get(i)->uuid_hash == tmp.id)
+					tmp.magic[2] == XPLICIT_NETWORK_MAG_2 && server->get(i)->hash == tmp.hash)
 				{
 					server->get(i)->packet = tmp;
 				}

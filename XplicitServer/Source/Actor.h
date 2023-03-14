@@ -27,7 +27,7 @@ namespace Xplicit
 
 	public:
 		void health(const int32_t& health) noexcept;
-		const int32_t& health() noexcept; // gets the health of the actor.
+		const int64_t health() noexcept; // gets the health of the actor.
 
 		void set(NetworkPeer* peer) noexcept;
 		NetworkPeer* get() noexcept;

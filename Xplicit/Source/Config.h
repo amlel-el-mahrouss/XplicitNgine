@@ -86,8 +86,5 @@ using namespace scene;
             (_wassert(_CRT_WIDE(#expression), _CRT_WIDE(__FILE__), (unsigned)(__LINE__)), 0) \
         )
 #else
-#define XPLICIT_ASSERT(expression)                                                       \
-            if (!(expression))                                                              \
-             _wassert(L"Production error, can't recover correctly!", L"????.cpp", 0)\
-
+#define XPLICIT_ASSERT(expression)
 #endif

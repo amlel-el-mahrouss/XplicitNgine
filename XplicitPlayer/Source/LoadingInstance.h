@@ -40,46 +40,4 @@ namespace Xplicit::Client
 		bool m_run; /* Should we seek for a connection? */
 
 	};
-
-	class XPLICIT_API LocalResetEvent : public Event
-	{
-	public:
-		LocalResetEvent();
-		virtual ~LocalResetEvent();
-
-		LocalResetEvent& operator=(const LocalResetEvent&) = default;
-		LocalResetEvent(const LocalResetEvent&) = default;
-
-		virtual void operator()() override;
-		const char* name() noexcept;
-
-	private:
-		NetworkInstance* m_network;
-		int32_t m_num_resets;
-
-	};
-
-	class XPLICIT_API LocalMenuEvent : public Event
-	{
-	public:
-		LocalMenuEvent(const int64_t& id);
-		virtual ~LocalMenuEvent();
-
-		LocalMenuEvent& operator=(const LocalMenuEvent&) = default;
-		LocalMenuEvent(const LocalMenuEvent&) = default;
-
-		void enable(const bool enable = false) noexcept;
-		bool enabled() noexcept;
-
-		virtual void operator()() override;
-		const char* name() noexcept;
-
-	private:
-		NetworkInstance* m_network;
-		int64_t m_timeout;
-		ITexture* m_menu;
-		bool m_enabled;
-		int64_t m_hash;
-
-	};
 }

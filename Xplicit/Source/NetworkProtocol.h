@@ -39,31 +39,24 @@ namespace Xplicit
 
     enum NETWORK_CMD : int16_t
     {
-        // Network Start/End messages.
         NETWORK_CMD_BEGIN = 100, // start network, handshake
         NETWORK_CMD_STOP, // abort connection
-        // Player versus player
         NETWORK_CMD_DEAD,
         NETWORK_CMD_DAMAGE,
         NETWORK_CMD_SPAWN,
-        // Forward, Backwards, Right, Left
         NETWORK_CMD_FORWARD,
         NETWORK_CMD_BACKWARDS,
         NETWORK_CMD_LEFT,
         NETWORK_CMD_RIGHT,
         NETWORK_CMD_POS,
-        // Connection Status
         NETWORK_CMD_ACCEPT, // handshake has been accepted.
         NETWORK_CMD_WATCHDOG,
         NETWORK_CMD_ACK, // acknowledge
-        // Kick
         NETWORK_CMD_KICK,
-        // Invalid
         NETWORK_CMD_INVALID,
         NETWORK_CMD_COUNT = 15,
     };
 
-    // for the Watchdog protocol
     enum NETWORK_STAT : int16_t
     {
         NETWORK_STAT_CONNECTED,
@@ -76,10 +69,8 @@ namespace Xplicit
     public:
         char magic[XPLICIT_NETWORK_MAG_COUNT];
         NETWORK_CMD cmd[XPLICIT_NETWORK_CMD_MAX];
-        
-        int64_t health; // health
-        int64_t id; // connection hash
-
+        int64_t health;
+        int64_t hash;
         float X;
         float Y;
         float Z; 
@@ -111,7 +102,7 @@ namespace Xplicit
         PrivateAddressData addr; /* current socket address. */
         NetworkPacket packet; /* current packet. */
         NETWORK_STAT stat; /* current network status */
-        int64_t uuid_hash; /* connection hash. */
+        int64_t hash; /* connection hash. */
         bool bad; /* is the current peer bad, (has sent bad packets?) */
 
     public:
