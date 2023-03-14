@@ -124,7 +124,7 @@ namespace Xplicit
 			assert(m_app_domain);
 
 			if (!mono_domain_set(m_app_domain, true))
-				throw std::runtime_error("MonoDomain: Internal error");
+				throw std::runtime_error("MonoDomain: Internal Error");
 
 			// finaly do that, register needed API calls for C#.
 			xplicit_register_events();

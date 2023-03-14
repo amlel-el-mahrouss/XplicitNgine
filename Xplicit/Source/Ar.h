@@ -103,7 +103,7 @@ namespace Xplicit
         ArchiveManager(const char* path, const char* rest) 
             : m_ar(ar_new(path, rest)), m_err(false), m_off(0)
         {
-#ifndef _NDEBUG
+#ifdef XPLICIT_DEBUG
             std::string message;
             message += "Class ArchiveManager, Epoch: ";
             message += std::to_string(xplicit_get_epoch());
@@ -117,7 +117,7 @@ namespace Xplicit
             if (m_ar) 
                 ar_close(m_ar);
 
-#ifndef _NDEBUG
+#ifdef XPLICIT_DEBUG
             std::string message;
             message += "~ArchiveManager, Epoch: ";
             message += std::to_string(xplicit_get_epoch());
@@ -130,7 +130,7 @@ namespace Xplicit
         {
             auto fp = m_ar->fp;
             
-            assert(fp);
+            XPLICIT_ASSERT(fp);
 
             fseek(fp, 0, SEEK_END);
             return ftell(fp);
@@ -139,15 +139,15 @@ namespace Xplicit
         ArchiveManager& operator<<(const unsigned char* bytes) 
         {
             if (!bytes) 
-            {
-                m_err = true;
                 return *this;
-            }
 
             auto len = ar_len(bytes, 1024);
 
             ar_write(m_ar, bytes, m_off, len);
+
             ++m_off;
+
+            m_err = (ferror(m_ar->fp) != 0);
 
             return *this;
         }
@@ -165,10 +165,12 @@ namespace Xplicit
             ar_read(m_ar, bytes, m_off, len);
             ++m_off;
 
+            m_err = (ferror(m_ar->fp) != 0);
+
             return *this;
         }
 
-        void seek(size_t seek = 0) noexcept 
+        void seek(const size_t seek = 0) noexcept 
         {
             m_off = seek; 
         }
@@ -176,19 +178,19 @@ namespace Xplicit
         size_t tell() noexcept 
         {
             if (!m_ar)
-                return this->npos;
+                return ArchiveManager::npos;
 
             return ftell(m_ar->fp);
         }
 
-        bool error() const noexcept { return m_err; }
+        bool good() const noexcept { return !m_err; }
 
-        const size_t npos = 0xFFFFFF;
+        static const size_t npos = 0xFFFFFF;
 
     private:
-        bool m_err;
         ar_context* m_ar;
         size_t m_off;
+        bool m_err;
 
     };
 
