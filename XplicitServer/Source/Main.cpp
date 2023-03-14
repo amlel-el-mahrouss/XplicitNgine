@@ -23,68 +23,64 @@ static void xplicit_read_xml();
 
 static void xplicit_read_xml()
 {
-	XPLICIT_GET_DATA_DIR(data_dir);
+	XPLICIT_GET_DATA_DIR(data);
 
-	std::string path = data_dir;
+	std::string path = data;
 	path += "\\Server.xml";
 
-	XML = IRR->getFileSystem()->createXMLReaderUTF8(path.c_str());
+	rapidxml::file<> xml{ path.c_str() };
+	XPLICIT_ASSERT(xml.size() > 0);
 
-	if (!XML)
-		throw std::runtime_error("No XML provided..");
-	
 	auto mono = Xplicit::InstanceManager::get_singleton_ptr()->get<Xplicit::MonoEngineInstance>("MonoEngineInstance");
 
-	const char* argv[] = { "XplicitNgin" };
+	const int argc = 2;
+	const char* argv[] = { "XplicitNgin", "1.0.0" };
 
-	// read until nothing cant be read.
-	while (XML->read())
+	rapidxml::xml_document<> doc{};
+	doc.parse<0>(xml.data());
+
+	auto node = doc.first_node();
+
+	while (node)
 	{
-		switch (XML->getNodeType())
+		if (strcmp(node->name(), "Plugin") == 0)
 		{
-			//we found a new element
-		case irr::io::EXN_ELEMENT:
-		{
-			if (std::string(XML->getNodeName()) == "PLUGIN")
+			auto dll = node->value();
+
+			path.clear();
+
+			path += data;
+			path += "\\Lib\\";
+			path += dll;
+
+			auto csharp_dll = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(path.c_str(), false);
+
+			auto assembly_file = mono->open(path.c_str());
+
+			if (assembly_file)
 			{
-				try
-				{
-					auto dllPath = XML->getAttributeValue("VFS");
-					if (!dllPath)
-						throw std::runtime_error("Plugin: Can't find the plugin");
-
-					std::string str_dll_path = data_dir;
-
-					str_dll_path += "\\Lib\\";
-					str_dll_path += dllPath;
-					
-					Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoScriptInstance>(str_dll_path.c_str(), false);
-
-					auto assembly_file = mono->open(str_dll_path.c_str());
-
-					if (assembly_file)
-					{
-						XPLICIT_INFO("Loaded DLL: " + str_dll_path);
-						mono->run(assembly_file, 1, argv);
-					}
-				}
-				catch (...)
-				{
-					XPLICIT_INFO("Skipping bad DLL..");
-				}
+				XPLICIT_INFO("[C#] " + path + " Loaded.");
+				mono->run(assembly_file, argc, argv);
 			}
+			else
+			{
+				XPLICIT_INFO("[C#] " + path + " Was found found.");
+				Xplicit::InstanceManager::get_singleton_ptr()->remove(csharp_dll);
+			}
+		}
 
+		if (node->parent())
+			node = node->next_sibling();
+		else
 			break;
-		}
-		}
 	}
 }
 
 static void xplicit_attach_mono()
 {
-	XPLICIT_GET_DATA_DIR(data_dir);
+	XPLICIT_GET_DATA_DIR(data);
 
-	std::string path = data_dir;
+	std::string path = data;
 	path += "\\Lib\\Xplicit.dll"; // The game dll.
 
 	Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::MonoEngineInstance>();
@@ -93,8 +89,8 @@ static void xplicit_attach_mono()
 
 static void xplicit_print_help()
 {
-	puts("-------------- HELP --------------");
-	puts("stop: stops the server.");
+	puts("\a-------------- HELP --------------");
+	puts("stop: Stops and exits the server.");
 	puts("-------------- HELP --------------");
 }
 
@@ -154,15 +150,13 @@ int main(int argc, char** argv)
 		WSADATA wsa;
 		Xplicit::init_winsock(&wsa);
 
-		Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_NULL));
-
 		// the address to bind to is located in the XPLICIT_SERVER_ADDR environement variable.
-		const char* addr = getenv("XPLICIT_SERVER_ADDR");
+		const char* ip_address = XPLICIT_ENV("XPLICIT_SERVER_ADDR");
 
-		if (!addr) 
-			throw std::runtime_error("getenv: XPLICIT_SERVER_ADDR does not exist!");
+		if (!ip_address)
+			return 1;
 
-		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(addr);
+		auto server = Xplicit::InstanceManager::get_singleton_ptr()->add<Xplicit::NetworkServerInstance>(ip_address);
 		XPLICIT_ASSERT(server);
 
 		Xplicit::EventDispatcher::get_singleton_ptr()->add<Xplicit::PlayerJoinLeaveEvent>();

@@ -19,13 +19,13 @@ XPLICIT_CONFIG = {
         },
     },
     ["_LIBDIR"] = {
-    	"Vendor/XplicitIrr/lib/Irrlicht",
+    	  "Vendor/lib/Irrlicht",
         "C:/Program Files/Mono/lib/mono-2.0-sgen",
     },
     ["_INCDIR"] = {
         "Vendor/",
     	  "Xplicit/Vendor/include/",
-    	"Vendor/XplicitIrr/include",
+    	  "Vendor/irr/include",
         "C:/Program Files/Mono/include/mono-2.0",
     }
 };
@@ -46,7 +46,7 @@ XPLICIT_SERVER_CONFIG = {
     },
     ["_LIBDIR"] = {
         "C:/Program Files/Mono/lib/mono-2.0-sgen",
-    	"Vendor/XplicitIrr/lib/Irrlicht",
+    	"Vendor/lib/Irrlicht",
     	"bin/Debug/Xplicit",
     },
     ["_INCDIR"] = {
@@ -54,7 +54,7 @@ XPLICIT_SERVER_CONFIG = {
         "Vendor/stb/",
     	"Xplicit/Source/",
         "Vendor/nuklear/",
-    	"Vendor/XplicitIrr/include",
+    	"Vendor/irr/include",
         "C:/Program Files/Mono/include/mono-2.0",
     }
 };
@@ -75,7 +75,7 @@ XPLICIT_CLIENT_CONFIG = {
         },
     },
     ["_LIBDIR"] = {
-    	"Vendor/XplicitIrr/lib/Irrlicht",
+    	"Vendor/lib/Irrlicht",
     	"bin/Debug/Xplicit",
 	"d3d11",
 	"dxgi",
@@ -84,7 +84,7 @@ XPLICIT_CLIENT_CONFIG = {
         "Vendor/",
     	"Xplicit/Source/",
     	"Xplicit/Vendor/include/",
-    	"Vendor/XplicitIrr/include",
+    	"Vendor/irr/include",
         "Vendor/lua/",
         "Vendor/stb/",
         "Vendor/nuklear/",
@@ -108,7 +108,7 @@ NPLICIT_CONFIG = {
         },
     },
     ["_LIBDIR"] = {
-    	"Vendor/XplicitIrr/lib/Irrlicht",
+    	"Vendor/lib/Irrlicht",
     	"bin/Debug/Xplicit",
 	"d3d11",
 	"dxgi",
@@ -117,7 +117,7 @@ NPLICIT_CONFIG = {
         "Vendor/",
     	  "Xplicit/Source/",
     	  "Xplicit/Vendor/include/",
-    	  "Vendor/XplicitIrr/include",
+    	  "Vendor/irr/include",
         "Vendor/lua/",
         "Vendor/stb/",
         "Vendor/nuklear/",

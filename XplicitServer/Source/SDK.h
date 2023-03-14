@@ -26,3 +26,6 @@ extern "C"
 #	include <conio.h>
 };
 #endif
+
+#include <rapidxml/rapidxml.hpp>
+#include <rapidxml/rapidxml_utils.hpp>

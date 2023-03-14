@@ -88,3 +88,7 @@ using namespace scene;
 #else
 #define XPLICIT_ASSERT(expression)
 #endif
+
+#ifndef XPLICIT_ENV
+#define XPLICIT_ENV getenv
+#endif // XPLICIT_ENV
