@@ -29,8 +29,8 @@ WizardStyle=modern
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]               
-Source: "C:\Users\amlal\XplicitNgin\Production\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\amlal\XplicitNgin\XplicitData\*"; DestDir: "{app}\XplicitData"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\amlal\XplicitNgin\Release\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\amlal\XplicitNgin\Data\*"; DestDir: "{app}\XplicitData"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\amlal\XplicitNgin\bin\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

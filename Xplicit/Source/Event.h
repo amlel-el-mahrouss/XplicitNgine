@@ -43,7 +43,6 @@ namespace Xplicit {
 
 	public:
 		static EventDispatcher* get_singleton_ptr();
-		std::vector<Event*>& get() noexcept;
 
 	private:
 		std::vector<Event*> m_events;

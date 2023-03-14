@@ -10,10 +10,6 @@
 *.Interpreter.xml
 *.exe.config
 
-XplicitData/Lib/*.exe
-XplicitData/Lib/*.deps.json
-XplicitData/Lib/*.runtimeconfig.json
-
 *.irr
 
 Scripts/Output/XplicitSetup.exe

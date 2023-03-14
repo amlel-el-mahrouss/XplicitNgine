@@ -69,4 +69,7 @@ namespace Xplicit::Physics
 		}
 
 	};
+
+	using VectorFloat = Vector<float>;
+	using VectorDouble = Vector<double>;
 }

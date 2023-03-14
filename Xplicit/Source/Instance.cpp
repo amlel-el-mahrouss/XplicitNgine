@@ -19,7 +19,6 @@ namespace Xplicit {
 		{
 			assert(m_instances[i]);
 
-			// either delete or invalidate the instance.
 			if (m_instances[i]->should_update())
 				m_instances[i]->update();
 		}
@@ -27,19 +26,13 @@ namespace Xplicit {
 
 	InstanceManager* InstanceManager::get_singleton_ptr()
 	{
-		static InstanceManager* ptr;
-
+		static InstanceManager* ptr = nullptr;
+		
 		if (!ptr)
 			ptr = new InstanceManager();
 
 		return ptr;
 	}
-
-	std::vector<Instance*>& InstanceManager::get() noexcept { return m_instances; }
-
-	const char* Instance::name() noexcept { return ("Instance"); }
-
-	Instance::INSTANCE_TYPE Instance::type() noexcept { return INSTANCE_LOGIC; }
 
 	void Instance::update() {}
 
@@ -48,5 +41,9 @@ namespace Xplicit {
 
 	bool Instance::should_update() noexcept { return true; }
 
+	const char* Instance::name() noexcept { return ("Instance"); }
+
 	Instance::PHYSICS_TYPE Instance::physics() noexcept { return PHYSICS_FAST; }
+	Instance::INSTANCE_TYPE Instance::type() noexcept { return INSTANCE_LOGIC; }
+
 }

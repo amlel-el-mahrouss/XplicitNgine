@@ -47,7 +47,8 @@ namespace Xplicit
 
 	public:
 		void update() noexcept;
-		std::vector<Instance*>& get() noexcept;
+
+	public:
 		static InstanceManager* get_singleton_ptr();
 
 	private:
@@ -66,26 +67,19 @@ namespace Xplicit
 		Instance& operator=(const Instance&) = default;
 		Instance(const Instance&) = default;
 
+	public:
 		enum INSTANCE_TYPE : uint8_t 
 		{
 			INSTANCE_ACTOR, // Engine Actor
 			INSTANCE_LOGIC, // Generic Logic Instance
 			INSTANCE_CAMERA, // Camera instance
-			INSTANCE_SCRIPT, // C#/Lua script instance
+			INSTANCE_SCRIPT, // C#/Lua instance
 			INSTANCE_RENDER, // Renderable instance.
 			INSTANCE_NETWORK, // Network instance
 			INSTANCE_PHYSICS, // Physics instance
 			INSTANCE_GUI, // GUI instance
 			INSTANCE_COUNT
 		};
-
-		virtual void update();
-		virtual const char* name() noexcept;
-		virtual INSTANCE_TYPE type() noexcept;
-
-		virtual bool can_collide() noexcept;
-		virtual bool has_physics() noexcept;
-		virtual bool should_update() noexcept;
 
 		enum PHYSICS_TYPE : uint8_t
 		{
@@ -95,6 +89,17 @@ namespace Xplicit
 			PHYSICS_COUNT,
 		};
 
+	public:
+		virtual void update();
+		virtual bool should_update() noexcept;
+
+	public:
+		virtual const char* name() noexcept;
+		virtual INSTANCE_TYPE type() noexcept;
+
+	public:
+		virtual bool can_collide() noexcept;
+		virtual bool has_physics() noexcept;
 		virtual PHYSICS_TYPE physics() noexcept;
 
 	};

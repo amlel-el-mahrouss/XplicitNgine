@@ -34,7 +34,7 @@ namespace Xplicit::Renderer
 
 	DriverSystemD3D11::~DriverSystemD3D11() 
 	{
-	
+		
 	}
 
 	const char* DriverSystemD3D11::name() noexcept { return ("DriverSystemD3D11"); }

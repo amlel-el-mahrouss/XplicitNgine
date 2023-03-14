@@ -16,7 +16,7 @@
 
 namespace Xplicit
 {
-	class XPLICIT_API Actor final : public Instance
+	class Actor final : public Instance
 	{
 	public:
 		Actor();
@@ -32,14 +32,13 @@ namespace Xplicit
 		void set(NetworkPeer* peer) noexcept;
 		NetworkPeer* get() noexcept;
 
+	public:
 		virtual INSTANCE_TYPE type() noexcept override;
 		virtual const char* name() noexcept override;
 		virtual bool should_update() noexcept override;
-
 		virtual void update() override;
 
 	public:
-		// for the physics engine.
 		virtual PHYSICS_TYPE physics() noexcept override;
 		virtual bool can_collide() noexcept override;
 		virtual bool has_physics() noexcept override;

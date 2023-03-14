@@ -32,11 +32,9 @@ namespace Xplicit
 		return ptr;
 	}
 
-	std::vector<Event*>& EventDispatcher::get() noexcept { return m_events; }
+	void Event::operator()() {}
 
 	void Event::update() noexcept { this->operator()(); }
-
-	void Event::operator()() {}
 
 	const char* Event::name() noexcept { return ("Event"); }
 }
