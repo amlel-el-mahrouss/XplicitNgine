@@ -22,7 +22,8 @@
 
 namespace Xplicit::Utils
 {
-	UriParser::UriParser()
+	UriParser::UriParser(const char* protocol)
+		: m_protocol(protocol)
 	{
 
 	}
@@ -35,7 +36,7 @@ namespace Xplicit::Utils
 	std::string UriParser::get() noexcept
 	{
 		if (m_data.empty())
-			return ("xasset://invalid");
+			return (m_protocol + "invalid");
 
 		std::string uri;
 
@@ -63,12 +64,12 @@ namespace Xplicit::Utils
 			*uri == 0)
 			return *this;
 
-		if (!strstr(uri, XPLICIT_URI_PROTOCOL))
+		if (!strstr(uri, m_protocol.c_str()))
 			return *this;
 
 		int32_t count = 0;
 
-		for (size_t i = strlen(XPLICIT_URI_PROTOCOL); i < strlen(uri); ++i)
+		for (size_t i = strlen(m_protocol.c_str()); i < strlen(uri); ++i)
 		{
 			if (uri[i] == '\\' || uri[i] == '/')
 				m_data.push_back(URI_SEPARATOR);

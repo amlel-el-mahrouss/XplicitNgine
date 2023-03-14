@@ -26,6 +26,10 @@
 #define XPLICIT_NETWORK_MAG_COUNT (3U)
 #define XPLICIT_NETWORK_CMD_MAX (20U)
 
+#ifndef XPLICIT_INVALID_ADDR
+#define XPLICIT_INVALID_ADDR INADDR_NONE
+#endif
+
 namespace Xplicit 
 {
 
@@ -69,11 +73,20 @@ namespace Xplicit
     public:
         char magic[XPLICIT_NETWORK_MAG_COUNT];
         NETWORK_CMD cmd[XPLICIT_NETWORK_CMD_MAX];
+
+    public:
         int64_t health;
         int64_t hash;
+
+    public:
         float X;
         float Y;
-        float Z; 
+        float Z;
+
+    public:
+        float pitch;
+        float yaw;
+        float roll;
 
     };
 
@@ -122,6 +135,10 @@ namespace Xplicit
 
     XPLICIT_API bool equals(PrivateAddressData& lhs, PrivateAddressData& rhs);
 }
+
+#ifdef XPLICIT_WINDOWS
+typedef int socklen_t;
+#endif // XPLICIT_WINDOWS
 
 // reserved slots
 

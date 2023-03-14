@@ -69,6 +69,7 @@ namespace Xplicit::CoreUI
 
 	private:
 		NetworkInstance* m_network;
+		ITexture* m_texture;
 		int64_t m_health;
 
 	};

@@ -20,19 +20,18 @@ namespace Xplicit::CoreUI
 	{
 		XPLICIT_ASSERT(on_click);
 
-		XPLICIT_GET_DATA_DIR(dat);
-		std::string path = dat;
+		std::string path;
 
 		switch (shutdown_type)
 		{
 		case ERROR_TYPE::Kicked:
-			path += "\\Textures\\network_kicked.png";
+			path += "network_kicked.png";
 			break;
 		case ERROR_TYPE::NetworkError:
-			path += "\\Textures\\network_error.png";
+			path += "network_error.png";
 			break;
 		case ERROR_TYPE::Shutdown:
-			path += "\\Textures\\network_shutdown.png";
+			path += "network_shutdown.png";
 
 			break;
 		}
@@ -74,15 +73,19 @@ namespace Xplicit::CoreUI
 	}
 	
 	HUD::HUD()
-		: m_health(0), m_network(nullptr)
+		: m_health(50), m_network(nullptr), m_texture(nullptr)
 	{
 		m_network = InstanceManager::get_singleton_ptr()->get<NetworkInstance>("NetworkInstance");
 		XPLICIT_ASSERT(m_network);
+
+		m_texture = IRR->getVideoDriver()->getTexture("health.png");
+		XPLICIT_ASSERT(m_texture);
 	}
 
 	HUD::~HUD()
 	{
-
+		if (m_texture)
+			m_texture->drop();
 	}
 
 	void HUD::update()
@@ -96,6 +99,7 @@ namespace Xplicit::CoreUI
 		}
 
 		// TODO: draw health
+		IRR->getVideoDriver()->draw2DImage(m_texture, vector2di(30, 30), recti(0, 0, 326, 28), nullptr, SColor(255, 255, 255, 255), true);
 	}
 
 }

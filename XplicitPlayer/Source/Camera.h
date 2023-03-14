@@ -37,6 +37,7 @@ namespace Xplicit::Client
 
 	private:
 		ICameraSceneNode* m_camera;
+		ITexture* m_cursor;
 
 	};
 }

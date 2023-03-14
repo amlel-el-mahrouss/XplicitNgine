@@ -21,14 +21,14 @@ INT32 WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine
 	{
 		if (Xplicit::Win32Helpers::find_wnd(Xplicit::Bites::XPLICIT_APP_NAME))
 		{
-			Xplicit::GUI::message_box(Xplicit::Bites::XPLICIT_APP_NAME, L"Another instance of XplicitNgin is running! Close this one first!", MB_OK);
+			Xplicit::GUI::message_box(Xplicit::Bites::XPLICIT_APP_NAME, L"Cannot open more than one instance of XplicitNgin!", MB_OK);
 			return 1;
 		}
 
-		Xplicit::Utils::UriParser uri;
+		Xplicit::Utils::UriParser uri{ XPLICIT_URI_PROTOCOL };
 		uri /= pCmdLine;
 
-		if (inet_addr(uri.get().c_str()) == INADDR_NONE)
+		if (inet_addr(uri.get().c_str()) == XPLICIT_INVALID_ADDR)
 			return 1;
 
 		Xplicit::Bites::Application* app = new Xplicit::Bites::Application(uri.get().c_str());

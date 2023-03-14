@@ -15,7 +15,7 @@
 #include <Foundation.h>
 
 #ifndef XPLICIT_URI_PROTOCOL
-#define XPLICIT_URI_PROTOCOL ("xconnect://")
+#define XPLICIT_URI_PROTOCOL ("xdp://")
 #endif // XPLICIT_URI_PROTOCOL
 
 namespace Xplicit::Utils
@@ -23,7 +23,7 @@ namespace Xplicit::Utils
 	class UriParser final
 	{
 	public:
-		UriParser();
+		UriParser(const char* protocol);
 		virtual ~UriParser();
 
 		UriParser& operator=(const UriParser&) = default;
@@ -36,6 +36,7 @@ namespace Xplicit::Utils
 		UriParser& operator/=(const char* uri);
 
 	private:
+		std::string m_protocol;
 		std::vector<char> m_data;
 
 	};

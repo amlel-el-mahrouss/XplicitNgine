@@ -51,20 +51,13 @@ namespace Xplicit::Bites
 		if (!KB)
 			throw std::bad_alloc();
 
-#ifdef XPLICIT_WINDOWS
-
-		Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_DIRECT3D9,
+		Xplicit::ApplicationContext::get_singleton().set(irr::createDevice(irr::video::EDT_OPENGL,
 			Xplicit::Client::XPLICIT_DIM,
 			32U,
 			false,
 			false,
 			false,
 			KB));
-
-		HMENU menuHandle = GetSystemMenu((HWND)IRR->getVideoDriver()->getExposedVideoData().D3D9.HWnd, FALSE);
-		EnableMenuItem(menuHandle, SC_CLOSE, MF_GRAYED);
-
-#endif
 
 		m_settings = std::make_unique<Settings>();
 		assert(m_settings);
@@ -94,6 +87,11 @@ namespace Xplicit::Bites
 
 		m_xml_reader = IRR->getFileSystem()->createXMLReaderUTF8(m_settings_path.c_str());
 		m_xml_writer = IRR->getFileSystem()->createXMLWriterUTF8(m_settings_path.c_str());
+
+		std::string prebuilt = dat;
+		prebuilt += "\\Textures\\PreBuiltDialogs.zip";
+
+		IRR->getFileSystem()->addZipFileArchive(prebuilt.c_str());
 	}
 
 	Application::Settings::~Settings()

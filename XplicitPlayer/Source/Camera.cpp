@@ -23,6 +23,12 @@ namespace Xplicit::Client
 		XPLICIT_ASSERT(m_camera);
 
 		m_camera->setName(this->name());
+
+		IRR->getCursorControl()->setVisible(false);
+
+		m_cursor = IRR->getVideoDriver()->getTexture("cursor.png");
+
+		XPLICIT_ASSERT(m_cursor);
 	}
 
 	CameraInstance::~CameraInstance()
@@ -37,7 +43,10 @@ namespace Xplicit::Client
 
 	void CameraInstance::update()
 	{
-		
+		if (!m_cursor)
+			return;
+
+		IRR->getVideoDriver()->draw2DImage(m_cursor, IRR->getCursorControl()->getPosition(), rect<s32>(0, 0, 38, 38), nullptr, SColor(255, 255, 255, 255), true);
 	}
 
 	irr::scene::ICameraSceneNode* CameraInstance::get() noexcept { return m_camera; }
