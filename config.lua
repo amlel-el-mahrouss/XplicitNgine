@@ -52,9 +52,10 @@ XPLICIT_SERVER_CONFIG = {
     ["_INCDIR"] = {
         "Vendor/",
         "Vendor/stb/",
-    	"Xplicit/Source/",
+    	  "Xplicit/Source/",
         "Vendor/nuklear/",
-    	"Vendor/irr/include",
+    	  "Vendor/irr/include",
+    	  "Nplicit/Source/",
         "C:/Program Files/Mono/include/mono-2.0",
     }
 };
@@ -88,6 +89,7 @@ XPLICIT_CLIENT_CONFIG = {
         "Vendor/lua/",
         "Vendor/stb/",
         "Vendor/nuklear/",
+    	  "Nplicit/Source/",
         "C:/Program Files/Mono/include/mono-2.0",
     }
 };

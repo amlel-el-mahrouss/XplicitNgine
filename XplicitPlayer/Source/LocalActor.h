@@ -5,12 +5,15 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: LocalActor.h
- *			Purpose: Client-side Player Instance
+ *			Purpose: Client-side Actor Instance
  *
  * =====================================================================
  */
 
 #pragma once
+
+#include <Nplicit.h>
+#include <RigidBody.h>
 
 #include "ApplicationContext.h"
 #include "NetworkInstance.h"

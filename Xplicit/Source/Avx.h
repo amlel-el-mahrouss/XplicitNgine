@@ -18,7 +18,7 @@
 
 #include <immintrin.h>
 
-bool avx_strcmp(const char* str1, const char* str2);
+XPLICIT_API bool avx_strcmp(const char* str1, const char* str2);
 
 // use XPLICIT_USE_AVX, in order to tell if you want AVX or not.
 

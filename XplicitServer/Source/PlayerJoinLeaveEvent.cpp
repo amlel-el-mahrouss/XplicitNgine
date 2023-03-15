@@ -5,7 +5,7 @@
  *			Copyright XPX, all rights reserved.
  *
  *			File: PlayerJoinLeaveEvent.h
- *			Purpose: Player Join and Leave Event
+ *			Purpose: Player Join and Leave Event (duh x2)
  *
  * =====================================================================
  */

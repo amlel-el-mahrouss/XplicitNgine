@@ -14,7 +14,7 @@
 
 namespace Xplicit
 {
-	constexpr const int32_t XPLICIT_ACTOR_COOLDOWN = 100;
+	constexpr const int16_t XPLICIT_ACTOR_COOLDOWN = 100;
 
 	Actor::Actor() : m_peer(nullptr), m_health(0) {}
 

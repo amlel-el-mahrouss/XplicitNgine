@@ -287,14 +287,14 @@ namespace Xplicit
 			if (!fn)
 				throw std::bad_alloc();
 
-			m_pThread = std::thread(fn, args...);
+			m_thread = std::thread(fn, args...);
 		}
 
 		~AsyncAction() {}
 
-		void join() 
+		void detach() noexcept
 		{
-			m_pThread.join();
+			m_thread.detach();
 		}
 
 	public:
@@ -302,7 +302,7 @@ namespace Xplicit
 		AsyncAction(const AsyncAction&) = default;
 
 	private:
-		std::thread m_pThread;
+		std::thread m_thread;
 
 	};
 
@@ -311,7 +311,8 @@ namespace Xplicit
 		auto path = std::filesystem::current_path();
 		path /= program_name;
 
-		try {
+		try 
+		{
 			std::ifstream io(path);
 
 			// if it aint exist, throw and error
@@ -319,7 +320,8 @@ namespace Xplicit
 				throw std::bad_alloc();
 
 		}
-		catch (...) {
+		catch (std::bad_alloc err) 
+		{
 			return "";
 		}
 
@@ -339,6 +341,7 @@ namespace Xplicit
 #endif
 
 #ifdef XPLICIT_WINDOWS
+	// for debug builds, also new the in-game console :p
 	static inline void open_terminal(FILE* fp = stdout)
 	{
 		AllocConsole();

@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *				XplicitNgin
+ *			XplicitNgin
  *			Copyright XPX, all rights reserved.
  *
  *			File: Http.h
@@ -14,9 +14,9 @@
 
 #include "Foundation.h"
 
-namespace Xplicit 
+namespace Xplicit::Utils
 {
-    constexpr int HTTP_PORT = 80;
+    constexpr int16_t HTTP_PORT = 80;
 
     class MIMEFactory;
     class HTTPError;
@@ -51,17 +51,18 @@ namespace Xplicit
 
     };
 
-    namespace http {
-        class HTTPSocket final {
+    namespace HTTP {
+        class HTTPSocket final 
+        {
         private:
-            struct sockaddr_in m_Addr{ };
-            std::string m_Dns{ "" };
-            SOCKET m_Socket{ INVALID_SOCKET };
+            struct sockaddr_in m_Addr;
+            std::string m_Dns;
+            SOCKET m_Socket;
 
-            friend Xplicit::HTTPWriter;
+            friend Xplicit::Utils::HTTPWriter;
 
         public:
-            HTTPSocket() = default;
+            HTTPSocket() : m_Socket(~0), m_Addr() {}
             ~HTTPSocket() = default;
 
             HTTPSocket& operator=(const HTTPSocket&) = default;
@@ -69,21 +70,24 @@ namespace Xplicit
 
         };
 
-        enum class http_request_type {
+        enum class RequestType : uint8_t
+        {
             GET,
             POST,
         };
 
-        struct HTTPHeader final {
-            http_request_type Type;
-            const char* Bytes;
-            int SizeOfBytes;
+        struct HTTPHeader final 
+        {
+            RequestType Type;
+            char* Bytes;
+            int Size;
 
         };
 
     }
 
-    enum HTTP_ERROR_LIST : int16_t {
+    enum HTTP_ERROR_LIST : int16_t 
+    {
         HTTP_OK = 200,
         HTTP_BAD_GATEWAY = 502,
         HTTP_NOT_FOUND = 404,
@@ -93,9 +97,10 @@ namespace Xplicit
         HTTP_ERROR_COUNT = 6,
     };
 
-    class HTTPError : public std::runtime_error {
+    class HTTPError : public std::runtime_error 
+    {
     public:
-        HTTPError(const uint16_t what) : std::runtime_error("HTTP Error") {}
+        HTTPError(const uint16_t what) : std::runtime_error("Xplicit HTTP Error") {}
         ~HTTPError() = default; // let the ABI define that.
 
         HTTPError& operator=(const HTTPError&) = default;
@@ -109,7 +114,8 @@ namespace Xplicit
 
     };
 
-    class HTTPHelpers {
+    class HTTPHelpers 
+    {
     public:
 
         static std::string make_get(const std::string& path, 
@@ -165,15 +171,16 @@ namespace Xplicit
 
     };
 
-    using HTTPSharedPtr = std::shared_ptr<http::HTTPSocket>;
+    using HTTPSharedPtr = std::shared_ptr<HTTP::HTTPSocket>;
     
-    class HTTPWriter final {
+    class HTTPWriter final 
+    {
     public:
         HTTPWriter() = default;
 
         ~HTTPWriter() noexcept 
         {
-            shutdown(m_Socket->m_Socket, SD_SEND);
+            shutdown(m_Socket->m_Socket, SD_BOTH);
             closesocket(m_Socket->m_Socket);
 
 #ifndef _NDEBUG
@@ -181,6 +188,7 @@ namespace Xplicit
             vsprintf_s<256U>(buf, "[SERVER] %s has been closed!", m_Socket->m_Dns.data());
 
             XPLICIT_INFO(buf);
+            xplicit_log(buf);
 #endif
         }
 
@@ -191,7 +199,7 @@ namespace Xplicit
             if (dns.empty()) 
                 throw HTTPError(HTTP_INTERNAL_ERROR);
 
-            HTTPSharedPtr sock = std::make_unique<http::HTTPSocket>();
+            HTTPSharedPtr sock = std::make_unique<HTTP::HTTPSocket>();
 
             if (!sock)
                 throw HTTPError(HTTP_INTERNAL_ERROR);
@@ -211,13 +219,13 @@ namespace Xplicit
 
             int result = connect(sock->m_Socket, reinterpret_cast<SOCKADDR*>(&sock->m_Addr), sizeof(sock->m_Addr));
             
-            if (result == SOCKET_ERROR) 
+            if (result == -1) 
                 throw HTTPError(HTTP_DNS_ERROR);
 
             return sock;
         }
 
-        int64_t send_from_socket(HTTPSharedPtr& sock, http::HTTPHeader* hdr) {
+        int64_t send_from_socket(HTTPSharedPtr& sock, HTTP::HTTPHeader* hdr) {
 #ifndef NDEBUG
             assert(sock);
             assert(hdr);
@@ -225,7 +233,7 @@ namespace Xplicit
 #endif
 
             int64_t result{ -1 };
-            if (result = send(sock->m_Socket, hdr->Bytes, hdr->SizeOfBytes, 0) != hdr->SizeOfBytes)
+            if (result = send(sock->m_Socket, hdr->Bytes, hdr->Size, 0) != hdr->Size)
                 throw HTTPError(HTTP_INTERNAL_ERROR);
 
             return result;
@@ -235,8 +243,8 @@ namespace Xplicit
             if (!sock) throw HTTPError(HTTP_INTERNAL_ERROR);
             if (!bytes) throw HTTPError(HTTP_INTERNAL_ERROR);
 
-#ifndef NDEBUG
-            assert(sock);
+#ifdef XPLICIT_DEBUG
+            XPLICIT_ASSERT(sock);
 #endif
 
             int64_t data_length{ -1 };

@@ -16,7 +16,7 @@
 #include <Avx.h>
 
 template <typename TypeLeft, typename TypeRight>
-static inline constexpr auto circle_add(
+static inline constexpr auto nplicit_circle_add(
 	const TypeLeft& lhs,
 	const TypeRight rhs,
 	const decltype(lhs + rhs) rmin = 0,
@@ -36,7 +36,7 @@ static inline constexpr auto circle_add(
 }
 
 template <typename TypeLeft, typename TypeRight>
-constexpr auto circle_sub(
+constexpr auto nplicit_circle_sub(
 	const TypeLeft& lhs,
 	const TypeRight rhs,
 	const decltype(lhs + rhs) rmin = 0,
@@ -56,7 +56,7 @@ constexpr auto circle_sub(
 }
 
 template <typename TypeLeft, typename TypeRight>
-static inline constexpr auto circle_mul(
+static inline constexpr auto nplicit_circle_mul(
 	const TypeLeft& lhs,
 	const TypeRight rhs,
 	const decltype(lhs + rhs) rmin = 0,
@@ -76,15 +76,15 @@ static inline constexpr auto circle_mul(
 }
 
 template <typename TypeLeft, typename TypeRight>
-static inline constexpr auto cricle_shortdist(
+static inline constexpr auto nplicit_cricle_shortdist(
 	const TypeLeft& lhs,
 	const TypeRight rhs,
 	const decltype(lhs + rhs) rmin = 0,
 	const double rmax = 360
 )
 {
-	auto a = circle_sub(rhs, lhs, rmin, rmax);
-	auto b = circle_sub(lhs, rhs, rmin, rmax);
+	auto a = nplicit_circle_sub(rhs, lhs, rmin, rmax);
+	auto b = nplicit_circle_sub(lhs, rhs, rmin, rmax);
 
 	return std::min(a, b);
 }

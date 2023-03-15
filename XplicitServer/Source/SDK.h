@@ -29,3 +29,6 @@ extern "C"
 
 #include <rapidxml/rapidxml.hpp>
 #include <rapidxml/rapidxml_utils.hpp>
+
+#include <Nplicit.h>
+#include <RigidBody.h>
